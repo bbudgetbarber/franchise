@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Budget Barber — Portal Suite</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --green:#0D3B2E;--yellow:#F5D100;--accent:#1a5c44;
+  --bg:#F5F5F2;--surf:#fff;--bdr:rgba(0,0,0,0.09);
+}
+html,body{min-height:100%;background:var(--bg);}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1A1A1A;display:flex;flex-direction:column;min-height:100vh;}
+
+.navbar{background:var(--green);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;}
+.nav-tagline{font-size:12px;color:rgba(255,255,255,0.55);letter-spacing:0.06em;text-transform:uppercase;}
+
+.hero{background:var(--green);padding:60px 32px 80px;text-align:center;position:relative;overflow:hidden;}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40px;background:var(--bg);border-radius:40px 40px 0 0;}
+.hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--yellow);margin-bottom:14px;}
+.hero-title{font-size:36px;font-weight:900;color:#fff;line-height:1.15;margin-bottom:12px;}
+.hero-title span{color:var(--yellow);}
+.hero-sub{font-size:15px;color:rgba(255,255,255,0.62);max-width:480px;margin:0 auto;line-height:1.7;}
+
+.portal-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;max-width:1160px;margin:0 auto;padding:48px 32px;}
+
+.portal-card{background:var(--surf);border-radius:20px;border:0.5px solid var(--bdr);overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06);transition:transform .2s,box-shadow .2s;text-decoration:none;display:flex;flex-direction:column;}
+.portal-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.12);}
+
+.pc-header{padding:28px 28px 22px;position:relative;}
+.pc-header.admin{background:linear-gradient(135deg,#0D3B2E 0%,#1a5c44 100%);}
+.pc-header.franchise{background:linear-gradient(135deg,#1a3a6b 0%,#2956a8 100%);}
+.pc-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:16px;}
+.pc-header.admin .pc-icon{background:rgba(245,209,0,0.18);}
+.pc-header.franchise .pc-icon{background:rgba(255,255,255,0.15);}
+.pc-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;}
+.pc-header.admin .pc-badge{background:rgba(245,209,0,0.2);color:var(--yellow);}
+.pc-header.franchise .pc-badge{background:rgba(255,255,255,0.18);color:#fff;}
+.pc-title{font-size:22px;font-weight:800;color:#fff;margin-bottom:5px;}
+.pc-sub{font-size:13px;color:rgba(255,255,255,0.62);line-height:1.6;}
+
+.pc-body{padding:22px 28px;flex:1;display:flex;flex-direction:column;}
+.pc-features{list-style:none;margin-bottom:22px;flex:1;}
+.pc-features li{font-size:13px;color:#4a4a45;padding:7px 0;border-bottom:0.5px solid rgba(0,0,0,0.06);display:flex;align-items:center;gap:9px;}
+.pc-features li:last-child{border-bottom:none;}
+.pc-features li::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.admin-li::before{background:#0D3B2E;}
+.franchise-li::before{background:#2956a8;}
+
+.pc-btn{display:block;width:100%;padding:13px;border-radius:10px;font-size:14px;font-weight:700;text-align:center;text-decoration:none;cursor:pointer;border:none;font-family:inherit;transition:all .15s;}
+.pc-btn.admin-btn{background:var(--green);color:#fff;}
+.pc-btn.admin-btn:hover{background:#0a2e22;}
+.pc-btn.franchise-btn{background:#1a3a6b;color:#fff;}
+.pc-btn.franchise-btn:hover{background:#142d57;}
+
+.divider{width:100%;max-width:1160px;margin:0 auto 0;padding:0 32px;}
+.divider-line{height:0.5px;background:var(--bdr);}
+
+.info-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1160px;margin:0 auto;padding:32px 32px 48px;}
+.is-item{text-align:center;padding:20px;}
+.is-num{font-size:28px;font-weight:800;color:var(--green);margin-bottom:4px;}
+.is-lbl{font-size:12px;color:#7a7a75;font-weight:500;}
+
+footer{background:var(--green);padding:20px 32px;text-align:center;margin-top:auto;}
+footer p{font-size:12px;color:rgba(255,255,255,0.45);}
+
+@media(max-width:900px){
+  .portal-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:640px){
+  .portal-grid{grid-template-columns:1fr;padding:28px 18px;}
+  .hero{padding:44px 18px 64px;}
+  .hero-title{font-size:26px;}
+  .info-strip{grid-template-columns:1fr;padding:20px 18px 36px;}
+  .navbar{padding:14px 18px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <svg width="140" height="34" viewBox="0 0 140 34" xmlns="http://www.w3.org/2000/svg">
+    <rect width="140" height="34" rx="4" fill="#0D3B2E"/>
+    <rect y="20" width="140" height="14" rx="0" fill="#0D3B2E"/>
+    <rect y="18" width="140" height="3" fill="#F5D100"/>
+    <text x="70" y="13" font-family="Arial Black,Arial" font-weight="900" font-size="14" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text>
+    <text x="70" y="28" font-family="Arial Black,Arial" font-weight="900" font-size="12" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text>
+  </svg>
+  <span class="nav-tagline">Portal Suite</span>
+</nav>
+
+<section class="hero">
+  <div class="hero-eyebrow">Budget Barber Franchise System</div>
+  <h1 class="hero-title">One Brand,<br/><span>Three Powerful Portals</span></h1>
+  <p class="hero-sub">Complete franchise management — Admin, Master Franchise &amp; Lead onboarding — all powered by Supabase.</p>
+</section>
+
+<div style="background:#E6F1FB;border-bottom:0.5px solid #B5D4F4;padding:10px 32px;text-align:center;">
+  <span style="font-size:12px;color:#185FA5;font-weight:600;">⚡ Supabase Integration Active — </span>
+  <span style="font-size:12px;color:#185FA5;">Replace <code style="background:#fff;padding:1px 6px;border-radius:4px;font-size:11px;">YOUR_PROJECT_ID</code> and <code style="background:#fff;padding:1px 6px;border-radius:4px;font-size:11px;">YOUR_ANON_KEY</code> in each portal file before use.</span>
+</div>
+
+<div class="portal-grid">
+
+  <!-- ADMIN PORTAL -->
+  <a href="admin.html" class="portal-card">
+    <div class="pc-header admin">
+      <div class="pc-badge">🔐 Admin Access</div>
+      <div class="pc-icon">⚙️</div>
+      <div class="pc-title">Admin Portal</div>
+      <div class="pc-sub">Full control over leads, videos, content, payments, and franchise operations.</div>
+    </div>
+    <div class="pc-body">
+      <ul class="pc-features">
+        <li class="admin-li">Manage all franchise leads — filter, view, close</li>
+        <li class="admin-li">Upload &amp; manage multilingual videos (6 languages)</li>
+        <li class="admin-li">Investment info, ROI data per model (3/4/5 Chair)</li>
+        <li class="admin-li">Payment steps per model · UPI / bank settings</li>
+        <li class="admin-li">Royalty management — tracking, penalties, records</li>
+        <li class="admin-li">All Franchises tab · Franchise Royalty tab</li>
+        <li class="admin-li">MF Accounts — 11 permission toggles per partner</li>
+        <li class="admin-li">Guidelines, support &amp; operations content editing</li>
+      </ul>
+      <div class="pc-btn admin-btn">Open Admin Portal →</div>
+    </div>
+  </a>
+
+  <!-- MASTER FRANCHISE PORTAL -->
+  <a href="master_franchise.html" class="portal-card">
+    <div class="pc-header" style="background:linear-gradient(135deg,#1a3a6b 0%,#2956a8 100%);">
+      <div class="pc-badge" style="background:rgba(255,255,255,0.18);color:#fff;">🏢 MF Access</div>
+      <div class="pc-icon" style="background:rgba(255,255,255,0.15);">🗺</div>
+      <div class="pc-title">Master Franchise Portal</div>
+      <div class="pc-sub">Regional management dashboard — leads, payments &amp; content for your assigned territory.</div>
+    </div>
+    <div class="pc-body">
+      <ul class="pc-features">
+        <li class="franchise-li">View &amp; manage only your region's leads</li>
+        <li class="franchise-li">Full lead modal — progress, payment, notes, timeline</li>
+        <li class="franchise-li">Franchises tab with royalty summary</li>
+        <li class="franchise-li">Full royalty management — record, remind, track</li>
+        <li class="franchise-li">Content access gated by admin permission toggles</li>
+        <li class="franchise-li">Permissions load live from Supabase on login</li>
+      </ul>
+      <div class="pc-btn franchise-btn">Open MF Portal →</div>
+    </div>
+  </a>
+
+  <!-- FRANCHISE APP -->
+  <a href="franchise_lead.html" class="portal-card">
+    <div class="pc-header franchise">
+      <div class="pc-badge">👤 Lead Access</div>
+      <div class="pc-icon">✂️</div>
+      <div class="pc-title">Franchise App</div>
+      <div class="pc-sub">Step-by-step multilingual onboarding journey for franchise leads — mobile-first.</div>
+    </div>
+    <div class="pc-body">
+      <ul class="pc-features">
+        <li class="franchise-li">Multilingual onboarding — 6 languages</li>
+        <li class="franchise-li">Videos, investment &amp; ROI per selected model</li>
+        <li class="franchise-li">Guidelines loaded live from database</li>
+        <li class="franchise-li">Token payment — UPI, screenshot upload</li>
+        <li class="franchise-li">Step progress saved to Supabase per lead</li>
+        <li class="franchise-li">Project dashboard — location, payments, timeline</li>
+        <li class="franchise-li">Back button on every screen · Mobile + desktop</li>
+      </ul>
+      <div class="pc-btn franchise-btn">Open Franchise App →</div>
+    </div>
+  </a>
+
+</div>
+
+<div class="divider"><div class="divider-line"></div></div>
+
+<div class="info-strip">
+  <div class="is-item"><div class="is-num">6</div><div class="is-lbl">Languages Supported</div></div>
+  <div class="is-item"><div class="is-num">18</div><div class="is-lbl">Supabase Tables</div></div>
+  <div class="is-item"><div class="is-num">3</div><div class="is-lbl">Franchise Models</div></div>
+</div>
+
+<footer>
+  <p>© 2026 Budget Barber Pvt Ltd. All rights reserved. · Admin · Master Franchise · Franchise Lead App</p>
+</footer>
+
+</body>
+</html>
