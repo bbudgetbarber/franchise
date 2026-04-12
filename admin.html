@@ -1426,11 +1426,13 @@ input:checked + .slider:before{transform:translateX(16px);}
   </div>
 </div>
 
+<!-- Supabase JS Client — must load BEFORE main script -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── SUPABASE CONFIG ──
 // Replace these values with your actual Supabase project URL and anon key
-const SUPABASE_URL = 'https://lplaxibcbbpuyioqhwhz.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_oLCrG76KYYQcA07xKB4DIw_j7Dlq-D5';
+const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ── ADMIN SESSION ──
@@ -2260,80 +2262,68 @@ function savePortalSettingsUI(){
   });
 }
 
-// ── ADMIN LOGIN — Supabase version ──
+// ── ADMIN LOGIN ──
 function doAdminLogin(){
   var user=(document.getElementById('adm-user')||{}).value||'';
   var pass=(document.getElementById('adm-pass')||{}).value||'';
   var err=document.getElementById('adm-err');
-  // Query Supabase for matching admin user
-  sb.from('admin_users')
-    .select('id, username, password_hash, role, is_active')
-    .eq('username', user.trim().toLowerCase())
-    .eq('is_active', true)
-    .single()
-    .then(({data, error})=>{
-      if(error || !data){
-        if(err)err.style.display='block';
-        return;
+
+  function onSuccess(id,username,role){
+    adminSession={id:id,username:username,role:role};
+    if(err)err.style.display='none';
+    document.getElementById('admin-login-screen').style.display='none';
+    document.getElementById('admin-main-wrap').style.display='flex';
+    loadLeads().then(leads=>{LEADS=leads;buildLeadTable();});
+    loadVideos();
+    loadGuidelines().then(g=>{GUIDELINES=g;});
+    loadMFAccounts().then(mf=>{MF_ACCOUNTS_DATA=mf;});
+    loadFranchises().then(f=>{FRANCHISES=f;});
+    loadPaymentSettings().then(ps=>{
+      if(ps){
+        const upiEl=document.getElementById('upi-id');if(upiEl)upiEl.value=ps.primary_upi_id||'';
+        const upiNameEl=document.getElementById('upi-name');if(upiNameEl)upiNameEl.value=ps.registered_name||'';
+        const amtEl=document.getElementById('upi-amount');if(amtEl)amtEl.value=ps.token_amount||20000;
+        const bankAccEl=document.getElementById('bank-acc');if(bankAccEl)bankAccEl.value=ps.bank_account_no||'';
+        const bankIfscEl=document.getElementById('bank-ifsc');if(bankIfscEl)bankIfscEl.value=ps.bank_ifsc||'';
+        const bankBranchEl=document.getElementById('bank-branch');if(bankBranchEl)bankBranchEl.value=ps.bank_branch||'';
+        const bankNameEl=document.getElementById('bank-name');if(bankNameEl)bankNameEl.value=ps.bank_account_name||'';
+        const prevUpi=document.getElementById('preview-upi');if(prevUpi)prevUpi.textContent=ps.primary_upi_id||'budgetbarber@paytm';
       }
-      // NOTE: In production use bcrypt to compare password_hash
-      // For now compare password_hash directly (store plain during dev, switch to bcrypt in prod)
-      if(data.password_hash === pass || pass === 'Admin@2026'){
-        adminSession = {id: data.id, username: data.username, role: data.role};
-        if(err)err.style.display='none';
-        document.getElementById('admin-login-screen').style.display='none';
-        document.getElementById('admin-main-wrap').style.display='flex';
-        // Load initial data
-        loadLeads().then(leads=>{ LEADS=leads; buildLeadTable(); });
-        loadVideos();
-        loadGuidelines().then(g=>{ GUIDELINES=g; });
-        loadMFAccounts().then(mf=>{ MF_ACCOUNTS_DATA=mf; });
-        loadFranchises().then(f=>{ FRANCHISES=f; });
-        loadPaymentSettings().then(ps=>{
-          if(ps){
-            const upiEl=document.getElementById('upi-id');
-            if(upiEl)upiEl.value=ps.primary_upi_id||'';
-            const upiNameEl=document.getElementById('upi-name');
-            if(upiNameEl)upiNameEl.value=ps.registered_name||'';
-            const amtEl=document.getElementById('upi-amount');
-            if(amtEl)amtEl.value=ps.token_amount||20000;
-            const bankAccEl=document.getElementById('bank-acc');
-            if(bankAccEl)bankAccEl.value=ps.bank_account_no||'';
-            const bankIfscEl=document.getElementById('bank-ifsc');
-            if(bankIfscEl)bankIfscEl.value=ps.bank_ifsc||'';
-            const bankBranchEl=document.getElementById('bank-branch');
-            if(bankBranchEl)bankBranchEl.value=ps.bank_branch||'';
-            const bankNameEl=document.getElementById('bank-name');
-            if(bankNameEl)bankNameEl.value=ps.bank_account_name||'';
-            const prevUpi=document.getElementById('preview-upi');
-            if(prevUpi)prevUpi.textContent=ps.primary_upi_id||'budgetbarber@paytm';
-          }
-        });
-        loadInvestmentModels().then(models=>{
-          models.forEach(m=>{
-            const suffix = m.model_name==='3 Chair'?'3':m.model_name==='4 Chair'?'4':'5';
-            const aEl=document.getElementById('e-a'+suffix+'c');if(aEl)aEl.value=m.area_sqft||'';
-            const pEl=document.getElementById('e-p'+suffix+'c');if(pEl)pEl.value=m.display_price||'';
-            const feeEl=document.getElementById('e-i'+suffix+'fee');if(feeEl)feeEl.value=m.franchise_fee||'';
-            const intEl=document.getElementById('e-i'+suffix+'int');if(intEl)intEl.value=m.interior_setup||'';
-          });
-        });
-        loadOperationsContent().then(ops=>{
-          if(ops){
-            const hrsEl=document.getElementById('e-ophrs');if(hrsEl)hrsEl.value=ops.salon_hours||'';
-            const daysEl=document.getElementById('e-opdays');if(daysEl)daysEl.value=ops.operating_days||'';
-            const breaksEl=document.getElementById('e-opbreaks');if(breaksEl)breaksEl.value=ops.break_policy||'';
-            const otEl=document.getElementById('e-opot');if(otEl)otEl.value=ops.ot_allowance||'';
-            const stdEl=document.getElementById('e-opstd');if(stdEl)stdEl.value=ops.service_standards||'';
-          }
-        });
+    });
+    loadInvestmentModels().then(models=>{
+      models.forEach(m=>{
+        const s=m.model_name==='3 Chair'?'3':m.model_name==='4 Chair'?'4':'5';
+        const aEl=document.getElementById('e-a'+s+'c');if(aEl)aEl.value=m.area_sqft||'';
+        const pEl=document.getElementById('e-p'+s+'c');if(pEl)pEl.value=m.display_price||'';
+        const feeEl=document.getElementById('e-i'+s+'fee');if(feeEl)feeEl.value=m.franchise_fee||'';
+        const intEl=document.getElementById('e-i'+s+'int');if(intEl)intEl.value=m.interior_setup||'';
+      });
+    });
+    loadOperationsContent().then(ops=>{
+      if(ops){
+        const hrsEl=document.getElementById('e-ophrs');if(hrsEl)hrsEl.value=ops.salon_hours||'';
+        const daysEl=document.getElementById('e-opdays');if(daysEl)daysEl.value=ops.operating_days||'';
+        const breaksEl=document.getElementById('e-opbreaks');if(breaksEl)breaksEl.value=ops.break_policy||'';
+        const otEl=document.getElementById('e-opot');if(otEl)otEl.value=ops.ot_allowance||'';
+        const stdEl=document.getElementById('e-opstd');if(stdEl)stdEl.value=ops.service_standards||'';
+      }
+    });
+  }
+
+  sb.from('admin_users')
+    .select('id,username,password_hash,role,is_active')
+    .eq('username',user.trim().toLowerCase())
+    .eq('is_active',true)
+    .single()
+    .then(({data,error})=>{
+      if(error||!data){if(err)err.style.display='block';return;}
+      if(data.password_hash===pass){
+        onSuccess(data.id,data.username,data.role);
       } else {
         if(err)err.style.display='block';
       }
     });
 }
 </script>
-<!-- Supabase JS Client -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </body>
 </html>

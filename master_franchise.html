@@ -787,10 +787,12 @@ input:checked + .slider:before{transform:translateX(16px);}
   </div>
 </div>
 
+<!-- Supabase JS Client — must load BEFORE main script -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ── SUPABASE CONFIG ── (same project as admin)
-const SUPABASE_URL = 'https://lplaxibcbbpuyioqhwhz.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_oLCrG76KYYQcA07xKB4DIw_j7Dlq-D5';
+const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ── MF SESSION (set after login) ──
@@ -1240,64 +1242,62 @@ function openMFFranchiseDetail(id){
   alert('Franchise: '+f.name+'\nCity: '+f.city+'\nModel: '+f.model+'\nLaunch: '+f.launch+'\nRevenue: '+f.revenue);
 }
 
-// ── MF LOGIN — Supabase version ──
+// ── MF LOGIN ──
 function doMFLogin(){
   var user=(document.getElementById('mf-login-user')||{}).value||'';
   var pass=(document.getElementById('mf-login-pass')||{}).value||'';
   var err=document.getElementById('mf-err');
   if(!user||!pass){if(err)err.style.display='block';return;}
-  // Query Supabase for matching MF account
+
+  function onSuccess(data){
+    mfSession={
+      id:data.id, name:data.name, email:data.email||user,
+      region:data.region, cities:data.cities,
+      perms:{
+        leads:data.perm_view_leads, createLeads:data.perm_create_leads,
+        editLeads:data.perm_edit_leads, videos:data.perm_videos,
+        invest:data.perm_invest, guidelines:data.perm_guidelines,
+        support:data.perm_support, ops:data.perm_ops,
+        payments:data.perm_payments, royalty:data.perm_royalty,
+        royaltyEdit:data.perm_royalty_edit
+      }
+    };
+    if(err)err.style.display='none';
+    document.getElementById('mf-login-screen').style.display='none';
+    document.getElementById('mf-main-wrap').style.display='flex';
+    const rb=document.getElementById('mf-region-badge');if(rb)rb.textContent=data.region;
+    const cb=document.getElementById('mf-cities-badge');if(cb)cb.textContent=data.cities;
+    const un=document.getElementById('mf-user-name');if(un)un.textContent=data.name;
+    const dr=document.getElementById('dash-region');if(dr)dr.textContent=data.region;
+    const pn=document.getElementById('prof-name');if(pn)pn.value=data.name;
+    const rl=document.getElementById('royalty-region-lbl');if(rl)rl.textContent=data.region;
+    const fl=document.getElementById('franchise-region-lbl');if(fl)fl.textContent=data.region;
+    applyMFPermissions();
+    mfLoadLeads().then(leads=>{MF_LEADS=leads;buildMFLeadTable();});
+    mfLoadGuidelines().then(gl=>{MF_GUIDELINES=gl;});
+    mfLoadPaymentSettings().then(ps=>{
+      if(ps){
+        const upi=document.getElementById('disp-upi');if(upi)upi.textContent=ps.primary_upi_id||'';
+        const bankAcc=document.getElementById('disp-bank-acc');if(bankAcc)bankAcc.textContent=ps.bank_account_no||'Contact Admin';
+        const bankIfsc=document.getElementById('disp-bank-ifsc');if(bankIfsc)bankIfsc.textContent=ps.bank_ifsc||'Contact Admin';
+      }
+    });
+  }
+
   sb.from('master_franchise_accounts')
     .select('id,name,email,phone,region,cities,status,password_hash,perm_view_leads,perm_create_leads,perm_edit_leads,perm_videos,perm_invest,perm_guidelines,perm_support,perm_ops,perm_payments,perm_royalty,perm_royalty_edit')
-    .eq('email', user.trim().toLowerCase())
-    .eq('status', 'Active')
+    .eq('email',user.trim().toLowerCase())
+    .eq('status','Active')
     .single()
     .then(({data,error})=>{
       if(error||!data){if(err)err.style.display='block';return;}
-      // NOTE: In production use bcrypt to compare password_hash
       if(data.password_hash===pass){
-        // Build session with permissions loaded directly from DB
-        mfSession={
-          id:data.id, name:data.name, email:data.email,
-          region:data.region, cities:data.cities,
-          perms:{
-            leads:data.perm_view_leads, createLeads:data.perm_create_leads,
-            editLeads:data.perm_edit_leads, videos:data.perm_videos,
-            invest:data.perm_invest, guidelines:data.perm_guidelines,
-            support:data.perm_support, ops:data.perm_ops,
-            payments:data.perm_payments, royalty:data.perm_royalty,
-            royaltyEdit:data.perm_royalty_edit
-          }
-        };
-        if(err)err.style.display='none';
-        document.getElementById('mf-login-screen').style.display='none';
-        document.getElementById('mf-main-wrap').style.display='flex';
-        // Update UI with region info
-        const rb=document.getElementById('mf-region-badge');if(rb)rb.textContent=data.region;
-        const cb=document.getElementById('mf-cities-badge');if(cb)cb.textContent=data.cities;
-        const un=document.getElementById('mf-user-name');if(un)un.textContent=data.name;
-        const dr=document.getElementById('dash-region');if(dr)dr.textContent=data.region;
-        const pn=document.getElementById('prof-name');if(pn)pn.value=data.name;
-        const rl=document.getElementById('royalty-region-lbl');if(rl)rl.textContent=data.region;
-        const fl=document.getElementById('franchise-region-lbl');if(fl)fl.textContent=data.region;
-        // Apply permissions from DB — this is the live link to admin toggle changes
-        applyMFPermissions();
-        // Load initial data
-        mfLoadLeads().then(leads=>{MF_LEADS=leads;buildMFLeadTable();});
-        mfLoadGuidelines().then(gl=>{MF_GUIDELINES=gl;});
-        mfLoadPaymentSettings().then(ps=>{
-          if(ps){
-            const upi=document.getElementById('disp-upi');if(upi)upi.textContent=ps.primary_upi_id||'';
-            const bankAcc=document.getElementById('disp-bank-acc');if(bankAcc)bankAcc.textContent=ps.bank_account_no||'Contact Admin';
-            const bankIfsc=document.getElementById('disp-bank-ifsc');if(bankIfsc)bankIfsc.textContent=ps.bank_ifsc||'Contact Admin';
-          }
-        });
+        onSuccess(data);
       } else {
         if(err)err.style.display='block';
       }
     });
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </body>
 </html>
