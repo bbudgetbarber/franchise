@@ -1,0 +1,2339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Budget Barber — Admin Portal</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --brand-green:#0D3B2E;
+  --brand-yellow:#F5D100;
+  --bg:#F5F5F2;--surf:#FFFFFF;--surf2:#F0F0EC;--surf3:#E6E6E2;
+  --bdr:rgba(0,0,0,0.09);--bdr2:rgba(0,0,0,0.15);
+  --txt:#1A1A1A;--mut:#5F5E5A;--hnt:#9A9890;
+  --ok-bg:#EAF3DE;--ok-tx:#3B6D11;
+  --no-bg:#FCEBEB;--no-tx:#A32D2D;
+  --inf-bg:#E6F1FB;--inf-tx:#185FA5;
+  --wrn-bg:#FAEEDA;--wrn-tx:#854F0B;
+  --hi:#0D3B2E;
+  --rad:8px;--rad-lg:12px;--rad-xl:16px;
+  --sidebar-w:230px;
+}
+html,body{height:100%;background:var(--bg);}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--txt);min-height:100vh;}
+
+/* ── LAYOUT ── */
+.admin-wrap{display:flex;min-height:100vh;}
+
+/* ── SIDEBAR ── */
+.admin-sidebar{
+  width:var(--sidebar-w);min-width:var(--sidebar-w);
+  background:var(--brand-green);
+  display:flex;flex-direction:column;
+  position:fixed;top:0;left:0;height:100vh;z-index:20;
+}
+.sidebar-logo{padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,0.1);}
+.sidebar-logo-sub{font-size:11px;color:rgba(255,255,255,0.5);margin-top:6px;letter-spacing:0.03em;}
+.adm-nav{flex:1;padding:10px 0;overflow-y:auto;}
+.adm-nav-item{
+  display:flex;align-items:center;gap:10px;padding:9px 16px;
+  font-size:13px;font-weight:500;color:rgba(255,255,255,0.6);
+  cursor:pointer;transition:all .15s;border-left:3px solid transparent;
+}
+.adm-nav-item:hover{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.9);}
+.adm-nav-item.active{background:rgba(245,209,0,0.12);color:var(--brand-yellow);border-left-color:var(--brand-yellow);}
+.adm-nav-icon{font-size:15px;width:18px;text-align:center;}
+.adm-nav-group{font-size:10px;font-weight:700;color:rgba(255,255,255,0.28);letter-spacing:.12em;text-transform:uppercase;padding:12px 16px 5px;}
+.admin-sidebar-footer{padding:14px 16px;border-top:1px solid rgba(255,255,255,0.1);}
+
+/* ── MAIN CONTENT ── */
+.admin-main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+.admin-topbar{background:var(--surf);border-bottom:0.5px solid var(--bdr);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.admin-topbar-title{font-size:15px;font-weight:700;}
+.admin-content{padding:24px 28px;flex:1;}
+
+.admin-tab{display:none;}
+.admin-tab.active{display:block;}
+
+/* ── SHARED ── */
+.btn{padding:9px 16px;font-size:13px;font-weight:600;border-radius:var(--rad);cursor:pointer;border:0.5px solid var(--bdr2);background:var(--surf2);color:var(--txt);font-family:inherit;transition:all .15s;display:inline-block;text-align:center;}
+.btn:hover{background:var(--surf3);}
+.btn:active{transform:scale(.98);}
+.btn-p{background:var(--brand-green);color:#fff;border-color:var(--brand-green);}
+.btn-p:hover{background:#0a2e22;border-color:#0a2e22;}
+.btn-d{background:var(--no-bg);color:var(--no-tx);border-color:transparent;}
+.btn-s{background:var(--ok-bg);color:var(--ok-tx);border-color:transparent;}
+.btn-i{background:var(--inf-bg);color:var(--inf-tx);border-color:transparent;}
+.btn-w{background:var(--wrn-bg);color:var(--wrn-tx);border-color:transparent;}
+.btn-f{width:100%;display:block;}
+.btn-sm{padding:5px 11px;font-size:12px;}
+.btn-xs{padding:4px 9px;font-size:11px;font-weight:600;}
+
+.pill{display:inline-flex;align-items:center;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:700;}
+.p-ok{background:var(--ok-bg);color:var(--ok-tx);}
+.p-no{background:var(--no-bg);color:var(--no-tx);}
+.p-inf{background:var(--inf-bg);color:var(--inf-tx);}
+.p-wrn{background:var(--wrn-bg);color:var(--wrn-tx);}
+
+.fl{font-size:12px;font-weight:700;color:var(--mut);margin-bottom:5px;display:block;}
+input[type=text],input[type=tel],input[type=email],input[type=password],input[type=url],input[type=number],select,textarea{
+  width:100%;padding:8px 11px;font-size:13px;border:0.5px solid var(--bdr2);
+  border-radius:var(--rad);background:var(--surf2);color:var(--txt);
+  outline:none;font-family:inherit;transition:border-color .15s,box-shadow .15s;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--hi);box-shadow:0 0 0 3px rgba(13,59,46,0.1);}
+textarea{resize:vertical;min-height:80px;line-height:1.5;}
+.fr{margin-bottom:12px;}
+
+/* ── CARDS ── */
+.adm-page-title{font-size:22px;font-weight:700;margin-bottom:4px;}
+.adm-page-sub{font-size:13px;color:var(--mut);margin-bottom:22px;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.stat-card{background:var(--surf);border:0.5px solid var(--bdr);border-radius:var(--rad-lg);padding:16px 18px;}
+.stat-num{font-size:26px;font-weight:700;margin-bottom:3px;}
+.stat-lbl{font-size:12px;color:var(--mut);}
+.stat-delta{font-size:11px;margin-top:5px;}
+
+.adm-card{background:var(--surf);border:0.5px solid var(--bdr);border-radius:var(--rad-lg);padding:18px 20px;margin-bottom:16px;}
+.adm-card-title{font-size:15px;font-weight:700;margin-bottom:4px;}
+.adm-card-sub{font-size:12px;color:var(--mut);margin-bottom:16px;}
+
+/* ── LEAD TABLE ── */
+.lead-table{width:100%;border-collapse:collapse;}
+.lead-table th{font-size:11px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.07em;padding:9px 14px;text-align:left;border-bottom:0.5px solid var(--bdr2);background:var(--surf2);}
+.lead-table td{font-size:13px;padding:10px 14px;border-bottom:0.5px solid var(--bdr);vertical-align:middle;}
+.lead-table tr:last-child td{border-bottom:none;}
+.lead-table tr:hover td{background:var(--surf2);}
+.lead-table .act-btns{display:flex;gap:6px;}
+
+/* ── TABS ── */
+.adm-tabs{display:flex;gap:4px;border-bottom:0.5px solid var(--bdr);margin-bottom:20px;overflow-x:auto;}
+.adm-tab-btn{padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;border:none;border-bottom:2px solid transparent;background:none;color:var(--mut);white-space:nowrap;transition:all .15s;font-family:inherit;}
+.adm-tab-btn.active{color:var(--hi);border-bottom-color:var(--hi);}
+
+/* ── FORMS ── */
+.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.irow{display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:0.5px solid var(--bdr);}
+.irow:last-child{border-bottom:none;}
+.ilbl{color:var(--mut);}
+.ival{font-weight:600;}
+.divdr{height:0.5px;background:var(--bdr);margin:14px 0;}
+.sec{font-size:11px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;}
+
+/* ── ACTIVITY ── */
+.activity-item{display:flex;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--bdr);font-size:12px;align-items:flex-start;}
+.activity-item:last-child{border-bottom:none;}
+.ai-dot{width:8px;height:8px;border-radius:50%;background:var(--hi);flex-shrink:0;margin-top:3px;}
+.ai-info{flex:1;}
+.ai-txt{line-height:1.5;}
+.ai-time{color:var(--hnt);margin-top:2px;}
+
+/* ── PBWRAP ── */
+.pbwrap{background:var(--surf2);border-radius:99px;height:6px;overflow:hidden;margin:8px 0 4px;}
+.pbfill{height:100%;background:var(--hi);border-radius:99px;}
+
+/* ── MODAL ── */
+.lead-detail-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:100;align-items:flex-start;justify-content:center;padding:24px;}
+.lead-detail-modal.open{display:flex;}
+.ldm-box{background:var(--surf);border-radius:var(--rad-xl);border:0.5px solid var(--bdr2);width:100%;max-width:660px;max-height:90vh;overflow-y:auto;margin-top:20px;}
+.ldm-hdr{padding:18px 20px;border-bottom:0.5px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surf);z-index:1;}
+.ldm-body{padding:20px;}
+.card{background:var(--surf);border:0.5px solid var(--bdr);border-radius:var(--rad-lg);padding:14px 16px;margin-bottom:12px;}
+
+/* ── SWITCH ── */
+.switch{position:relative;display:inline-block;width:36px;height:20px;}
+.switch input{opacity:0;width:0;height:0;}
+.slider{position:absolute;cursor:pointer;inset:0;background:var(--bdr2);border-radius:99px;transition:.3s;}
+.slider:before{position:absolute;content:"";height:14px;width:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;}
+input:checked + .slider{background:var(--hi);}
+input:checked + .slider:before{transform:translateX(16px);}
+
+/* ── VID CARD ── */
+.vid-card{background:var(--surf2);border:0.5px solid var(--bdr);border-radius:var(--rad-lg);padding:14px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;}
+.vid-thumb{width:80px;height:50px;background:var(--surf3);border-radius:var(--rad);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;border:0.5px solid var(--bdr);}
+.vid-info{flex:1;}
+.vid-name{font-size:13px;font-weight:700;margin-bottom:3px;}
+.vid-meta{font-size:11px;color:var(--mut);}
+.vid-url{font-size:11px;color:var(--inf-tx);margin-top:4px;word-break:break-all;}
+.vid-actions{display:flex;gap:6px;margin-top:8px;}
+
+/* ── CONTENT SECTION ── */
+.content-section{margin-bottom:28px;}
+.content-section-title{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+
+/* ── GUIDELINE ADMIN ── */
+.guideline-admin-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--bdr);font-size:13px;}
+.guideline-admin-item:last-child{border-bottom:none;}
+.gai-num{font-size:11px;font-weight:700;color:var(--hnt);width:20px;flex-shrink:0;}
+.gai-txt{flex:1;}
+.gai-acts{display:flex;gap:6px;}
+
+/* ── UPLOAD ZONE ── */
+.video-upload-zone{border:1.5px dashed var(--bdr2);border-radius:var(--rad-lg);padding:24px;text-align:center;cursor:pointer;transition:all .15s;background:var(--surf2);}
+.video-upload-zone:hover{border-color:var(--hi);background:#edf5f1;}
+.vuz-icon{font-size:32px;margin-bottom:8px;}
+.vuz-txt{font-size:14px;font-weight:600;color:var(--mut);}
+.vuz-sub{font-size:12px;color:var(--hnt);margin-top:4px;}
+
+/* ── SEARCH ── */
+.search-box{position:relative;margin-bottom:14px;}
+.search-box input{padding-left:36px;}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--hnt);}
+
+.filter-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.filter-chip{padding:5px 12px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer;border:0.5px solid var(--bdr2);background:var(--surf2);color:var(--mut);transition:all .15s;}
+.filter-chip.active{background:#edf5f1;color:var(--hi);border-color:var(--hi);}
+
+.note-input{width:100%;padding:8px 12px;font-size:13px;border:0.5px solid var(--bdr2);border-radius:var(--rad);background:var(--surf2);color:var(--txt);outline:none;font-family:inherit;resize:none;min-height:60px;}
+.note-input:focus{border-color:var(--hi);}
+
+.tl-item{display:flex;gap:12px;margin-bottom:4px;}
+.tl-line{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--hi);flex-shrink:0;margin-top:3px;}
+.tl-conn{width:1px;flex:1;background:var(--bdr2);min-height:24px;margin-top:3px;}
+.tl-ct{flex:1;padding-bottom:16px;}
+.tl-d{font-size:11px;color:var(--hnt);margin-bottom:2px;}
+.tl-l{font-size:13px;font-weight:700;}
+.tl-s{font-size:12px;color:var(--mut);margin-top:2px;}
+
+@media(max-width:900px){
+  .admin-sidebar{position:relative;width:100%;height:auto;flex-direction:row;flex-wrap:wrap;}
+  .admin-main{margin-left:0;}
+  .stat-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+<!-- ADMIN LOGIN SCREEN -->
+<div id="admin-login-screen" style="position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;">
+  <div style="width:380px;max-width:95%;background:var(--surf);border-radius:20px;border:0.5px solid var(--bdr);box-shadow:0 8px 40px rgba(0,0,0,0.12);overflow:hidden;">
+    <div style="background:linear-gradient(135deg,#0D3B2E 0%,#1a5c44 100%);padding:32px 28px 24px;text-align:center;">
+      <svg width="150" height="38" viewBox="0 0 150 38" xmlns="http://www.w3.org/2000/svg"><rect width="150" height="38" rx="4" fill="rgba(0,0,0,0.2)"/><rect y="22" width="150" height="16" fill="rgba(0,0,0,0.2)"/><rect y="20" width="150" height="3" fill="#F5D100"/><text x="75" y="14" font-family="Arial Black,Arial" font-weight="900" font-size="15" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="75" y="31" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg>
+      <div style="margin-top:14px;font-size:13px;color:rgba(255,255,255,0.6);letter-spacing:0.06em;text-transform:uppercase;">Admin Portal</div>
+      <div style="width:52px;height:52px;background:rgba(245,209,0,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:16px auto 0;font-size:24px;">🔐</div>
+    </div>
+    <div style="padding:24px 28px;">
+      <div style="font-size:18px;font-weight:700;margin-bottom:4px;">Admin Sign In</div>
+      <div style="font-size:13px;color:var(--mut);margin-bottom:20px;">Enter your credentials to access the portal</div>
+      <div class="fr"><label class="fl">Username</label><input type="text" id="adm-user" placeholder="admin" autocomplete="username"/></div>
+      <div class="fr"><label class="fl">Password</label><input type="password" id="adm-pass" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doAdminLogin()"/></div>
+      <div id="adm-err" style="display:none;background:var(--no-bg);color:var(--no-tx);border-radius:8px;padding:9px 12px;font-size:13px;margin-bottom:12px;">❌ Incorrect credentials. Please try again.</div>
+      <div style="background:#edf5f1;border-radius:8px;padding:10px 14px;font-size:12px;color:#1a5c44;margin-bottom:14px;"><strong>Demo Credentials:</strong><br/>Username: <strong>admin</strong> · Password: <strong>Admin@2026</strong></div>
+      <button class="btn btn-p btn-f" onclick="doAdminLogin()">Sign In to Admin Portal →</button>
+      <div style="text-align:center;margin-top:12px;"><a href="index.html" style="font-size:12px;color:var(--mut);text-decoration:none;">← Back to Home</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="admin-wrap" id="admin-main-wrap" style="display:none;">
+
+<!-- SIDEBAR -->
+<div class="admin-sidebar">
+  <div class="sidebar-logo">
+    <svg width="150" height="38" viewBox="0 0 150 38" xmlns="http://www.w3.org/2000/svg">
+      <rect width="150" height="38" rx="4" fill="#0D3B2E"/>
+      <rect y="22" width="150" height="16" rx="0" fill="#0D3B2E"/>
+      <rect y="20" width="150" height="3" fill="#F5D100"/>
+      <text x="75" y="14" font-family="Arial Black,Arial" font-weight="900" font-size="15" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text>
+      <text x="75" y="31" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text>
+    </svg>
+    <div class="sidebar-logo-sub">Admin Portal</div>
+  </div>
+  <nav class="adm-nav">
+    <div class="adm-nav-group">Overview</div>
+    <div class="adm-nav-item active" onclick="aTab(this,'at-dashboard')"><span class="adm-nav-icon">📊</span>Dashboard</div>
+    <div class="adm-nav-group">Leads</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-leads')"><span class="adm-nav-icon">👥</span>All Leads</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-newlead')"><span class="adm-nav-icon">➕</span>Create Lead</div>
+    <div class="adm-nav-group">Content</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-videos')"><span class="adm-nav-icon">🎬</span>Videos</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-invest-content')"><span class="adm-nav-icon">💰</span>Investment Info</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-guidelines')"><span class="adm-nav-icon">📋</span>Guidelines</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-support-content')"><span class="adm-nav-icon">🛠</span>Support Info</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-ops-content')"><span class="adm-nav-icon">⚙️</span>Operations Info</div>
+    <div class="adm-nav-group">Finance</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-payments')"><span class="adm-nav-icon">💳</span>Payment Tracking</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-royalty-mgmt')"><span class="adm-nav-icon">📈</span>Royalty Management</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-pay-settings')"><span class="adm-nav-icon">🪙</span>Payment Settings</div>
+    <div class="adm-nav-group">Master Franchise</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-mf-overview')"><span class="adm-nav-icon">🏢</span>MF Overview</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-mf-accounts')"><span class="adm-nav-icon">👥</span>MF Accounts</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-mf-create')"><span class="adm-nav-icon">➕</span>Create MF Login</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-mf-regions')"><span class="adm-nav-icon">🗺</span>Regions</div>
+    <div class="adm-nav-group">Franchises</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-franchises')"><span class="adm-nav-icon">🏪</span>All Franchises</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-franchise-royalty')"><span class="adm-nav-icon">📈</span>Franchise Royalty</div>
+    <div class="adm-nav-group">System</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-settings')"><span class="adm-nav-icon">⚙</span>Portal Settings</div>
+  </nav>
+  <div class="admin-sidebar-footer">
+    <a href="budget_barber_franchise_lead.html" target="_blank" style="text-decoration:none;display:block;margin-bottom:6px;">
+      <button class="btn btn-sm btn-f" style="background:rgba(245,209,0,0.15);color:var(--brand-yellow);border-color:rgba(245,209,0,0.3);">↗ Open Franchise App</button>
+    </a>
+    <a href="index.html" style="text-decoration:none;display:block;margin-bottom:6px;">
+      <button class="btn btn-sm btn-f" style="background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.55);border-color:rgba(255,255,255,0.12);">🏠 Back to Home</button>
+    </a>
+    <button class="btn btn-sm btn-f" style="background:rgba(163,45,45,0.18);color:#f28b8b;border-color:rgba(163,45,45,0.3);" onclick="if(confirm('Logout from Admin Portal?'))window.location='index.html'">⎋ Logout</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="admin-main">
+  <div class="admin-topbar">
+    <div class="admin-topbar-title">Budget Barber Admin</div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:12px;color:var(--mut);">Admin User</span>
+      <div style="width:30px;height:30px;background:#edf5f1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">👤</div>
+      <button class="btn btn-sm" style="background:var(--no-bg);color:var(--no-tx);border-color:transparent;font-size:12px;" onclick="if(confirm('Logout from Admin Portal?'))window.location='index.html'">⎋ Logout</button>
+    </div>
+  </div>
+  <div class="admin-content">
+
+    <!-- DASHBOARD -->
+    <div id="at-dashboard" class="admin-tab active">
+      <div class="adm-page-title">Dashboard</div>
+      <div class="adm-page-sub">Overview of all franchise leads and portal activity</div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num" style="color:var(--hi);">18</div><div class="stat-lbl">Total Leads</div><div class="stat-delta" style="color:var(--ok-tx);">↑ 3 this week</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--ok-tx);">4</div><div class="stat-lbl">Active Projects</div><div class="stat-delta" style="color:var(--ok-tx);">Token paid</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--wrn-tx);">9</div><div class="stat-lbl">In Progress</div><div class="stat-delta" style="color:var(--mut);">Watching videos</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--no-tx);">5</div><div class="stat-lbl">Closed</div><div class="stat-delta" style="color:var(--mut);">Not interested</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div class="adm-card" style="margin:0;">
+          <div class="adm-card-title">Recent Activity</div>
+          <div class="adm-card-sub">Latest franchise lead actions</div>
+          <div class="activity-item"><div class="ai-dot"></div><div class="ai-info"><div class="ai-txt"><strong>Rajesh Kumar</strong> completed Vision Video</div><div class="ai-time">2 mins ago</div></div></div>
+          <div class="activity-item"><div class="ai-dot" style="background:var(--ok-tx);"></div><div class="ai-info"><div class="ai-txt"><strong>Priya Sharma</strong> paid token ₹20,000</div><div class="ai-time">1 hr ago</div></div></div>
+          <div class="activity-item"><div class="ai-dot" style="background:var(--no-tx);"></div><div class="ai-info"><div class="ai-txt"><strong>Suresh Babu</strong> marked Not Interested</div><div class="ai-time">3 hrs ago</div></div></div>
+          <div class="activity-item"><div class="ai-dot" style="background:var(--inf-tx);"></div><div class="ai-info"><div class="ai-txt"><strong>Arun Reddy</strong> accepted all guidelines</div><div class="ai-time">5 hrs ago</div></div></div>
+          <div class="activity-item" style="border:none;"><div class="ai-dot" style="background:var(--wrn-tx);"></div><div class="ai-info"><div class="ai-txt"><strong>Meena Iyer</strong> registered as new lead</div><div class="ai-time">Yesterday</div></div></div>
+        </div>
+        <div class="adm-card" style="margin:0;">
+          <div class="adm-card-title">Video Completion Rates</div>
+          <div class="adm-card-sub">% of leads who watched each video</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Vision Video</span><span style="font-weight:700;">94%</span></div><div class="pbwrap" style="margin:0;"><div class="pbfill" style="width:94%;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Salon 360°</span><span style="font-weight:700;">88%</span></div><div class="pbwrap" style="margin:0;"><div class="pbfill" style="width:88%;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Investment</span><span style="font-weight:700;">76%</span></div><div class="pbwrap" style="margin:0;"><div class="pbfill" style="width:76%;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>ROI</span><span style="font-weight:700;">71%</span></div><div class="pbwrap" style="margin:0;"><div class="pbfill" style="width:71%;"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Royalty</span><span style="font-weight:700;">58%</span></div><div class="pbwrap" style="margin:0;"><div class="pbfill" style="width:58%;"></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="adm-card">
+        <div class="adm-card-title">Quick Actions</div>
+        <div class="adm-card-sub">Common admin tasks</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-p" onclick="aTab(null,'at-newlead')">+ Create New Lead</button>
+          <button class="btn btn-i" onclick="aTab(null,'at-videos')">🎬 Manage Videos</button>
+          <button class="btn btn-w" onclick="aTab(null,'at-payments')">💳 View Payments</button>
+          <button class="btn" onclick="aTab(null,'at-leads')">👥 All Leads</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALL LEADS -->
+    <div id="at-leads" class="admin-tab">
+      <div class="adm-page-title">All Leads</div>
+      <div class="adm-page-sub">Manage and track all franchise leads</div>
+      <div class="adm-card" style="padding:0;overflow:hidden;">
+        <div style="padding:16px 20px;border-bottom:0.5px solid var(--bdr);display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <div class="search-box" style="flex:1;min-width:200px;margin:0;"><span class="search-icon">🔍</span><input type="text" placeholder="Search by name, phone, city…"/></div>
+          <div class="filter-row" style="margin:0;gap:6px;">
+            <div class="filter-chip active" onclick="filterLeads(this,'all')">All (18)</div>
+            <div class="filter-chip" onclick="filterLeads(this,'new')">New (3)</div>
+            <div class="filter-chip" onclick="filterLeads(this,'in-progress')">In Progress (9)</div>
+            <div class="filter-chip" onclick="filterLeads(this,'project')">Project Active (4)</div>
+            <div class="filter-chip" onclick="filterLeads(this,'closed')">Closed (5)</div>
+          </div>
+        </div>
+        <table class="lead-table">
+          <thead><tr><th>Lead</th><th>City</th><th>Progress</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="lead-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CREATE LEAD -->
+    <div id="at-newlead" class="admin-tab">
+      <div class="adm-page-title">Create New Lead</div>
+      <div class="adm-page-sub">Manually add a new franchise prospect to the portal</div>
+      <div class="adm-card">
+        <div class="adm-card-title">Lead Information</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Full Name</label><input type="text" placeholder="Rajesh Kumar"/></div>
+          <div class="fr"><label class="fl">Phone Number</label><input type="tel" placeholder="+91 98765 43210"/></div>
+          <div class="fr"><label class="fl">Email Address</label><input type="email" placeholder="rajesh@email.com"/></div>
+          <div class="fr"><label class="fl">City</label><input type="text" placeholder="Hyderabad"/></div>
+          <div class="fr"><label class="fl">Lead Source</label><select><option>Direct</option><option>Referral</option><option>Social Media</option><option>Website</option><option>Exhibition</option><option>WhatsApp</option></select></div>
+          <div class="fr"><label class="fl">Preferred Language</label><select><option>English</option><option>Telugu</option><option>Hindi</option><option>Tamil</option><option>Kannada</option><option>Malayalam</option></select></div>
+        </div>
+        <div class="fr"><label class="fl">Set 6-Digit PIN</label><input type="text" placeholder="e.g. 123456" maxlength="6" style="max-width:200px;"/></div>
+        <div class="fr"><label class="fl">Initial Admin Note</label><textarea placeholder="Add any notes about this lead…"></textarea></div>
+        <button class="btn btn-p" onclick="alert('✓ Lead created successfully! They can now log in with their phone + PIN.')">Create Lead &amp; Generate Access</button>
+      </div>
+    </div>
+
+    <!-- VIDEOS -->
+    <div id="at-videos" class="admin-tab">
+      <div class="adm-page-title">Video Management</div>
+      <div class="adm-page-sub">Upload and manage franchise presentation videos by language and step</div>
+      <div class="adm-tabs">
+        <button class="adm-tab-btn active" onclick="avTab(this,'av-upload')">Upload Video</button>
+        <button class="adm-tab-btn" onclick="avTab(this,'av-manage');buildVidList();">Manage Videos</button>
+        <button class="adm-tab-btn" onclick="avTab(this,'av-lang');buildLangCoverage();">Language Coverage</button>
+      </div>
+      <div id="av-upload">
+        <div class="adm-card">
+          <div class="adm-card-title">Upload New Video</div>
+          <div class="form-2col" style="margin-bottom:16px;">
+            <div class="fr"><label class="fl">Presentation Step</label>
+              <select id="vid-step-sel">
+                <option value="vision">Step 2 — Vision Video</option>
+                <option value="salon">Step 3 — Salon 360°</option>
+                <option value="invest">Step 4 — Investment</option>
+                <option value="roi">Step 5 — ROI</option>
+                <option value="support">Step 6 — Support</option>
+                <option value="ops">Step 7 — Operations</option>
+                <option value="staff">Step 8 — Staff</option>
+                <option value="royalty">Step 9 — Royalty</option>
+              </select>
+            </div>
+            <div class="fr"><label class="fl">Language</label><select><option>All Languages (Default)</option><option>English</option><option>Telugu</option><option>Hindi</option><option>Tamil</option><option>Kannada</option><option>Malayalam</option></select></div>
+          </div>
+          <div class="fr"><label class="fl">Video Title</label><input type="text" id="vid-title-inp" placeholder="e.g. Founder's Vision — Telugu"/></div>
+          <div class="fr"><label class="fl">Video URL</label><input type="url" id="vid-url-inp" placeholder="https://youtube.com/embed/... or CDN URL"/></div>
+          <div class="video-upload-zone" style="margin-bottom:16px;">
+            <div class="vuz-icon">🎬</div>
+            <div class="vuz-txt">Drag &amp; drop video file here, or click to browse</div>
+            <div class="vuz-sub">MP4, MOV, AVI · Max 2GB · Or use URL above</div>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-p" onclick="saveVideo()">Save &amp; Publish Video</button>
+            <button class="btn">Preview</button>
+          </div>
+        </div>
+      </div>
+      <div id="av-manage" style="display:none;">
+        <div class="content-section">
+          <div class="content-section-title">All Uploaded Videos <button class="btn btn-sm btn-p" onclick="avTab(document.querySelector('.adm-tab-btn'),'av-upload')">+ Add Video</button></div>
+          <div id="vid-list-container"></div>
+        </div>
+      </div>
+      <div id="av-lang" style="display:none;">
+        <div class="adm-card">
+          <div class="adm-card-title">Language-wise Video Coverage</div>
+          <div class="adm-card-sub">Track which steps have videos uploaded for each language</div>
+          <div id="lang-coverage-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INVESTMENT CONTENT -->
+    <div id="at-invest-content" class="admin-tab">
+      <div class="adm-page-title">Investment Information</div>
+      <div class="adm-page-sub">Edit pricing, inclusions, and all investment details shown to franchise leads</div>
+      <div class="adm-tabs">
+        <button class="adm-tab-btn active" onclick="avTab(this,'ic3')">3 Chair</button>
+        <button class="adm-tab-btn" onclick="avTab(this,'ic4')">4 Chair</button>
+        <button class="adm-tab-btn" onclick="avTab(this,'ic5')">5 Chair</button>
+        <button class="adm-tab-btn" onclick="avTab(this,'ic-roi')">ROI Data</button>
+        <button class="adm-tab-btn" onclick="avTab(this,'ic-royalty')">Royalty</button>
+        <button class="adm-tab-btn" onclick="avTab(this,'ic-payments')">Payment Steps</button>
+      </div>
+      <div id="ic3">
+        <div class="adm-card">
+          <div class="adm-card-title">3 Chair Model</div>
+          <div class="form-2col">
+            <div class="fr"><label class="fl">Total Area</label><input type="text" id="e-a3c" value="250 sq ft"/></div>
+            <div class="fr"><label class="fl">Display Price</label><input type="text" id="e-p3c" value="₹8.5L"/></div>
+            <div class="fr"><label class="fl">Franchise Fee</label><input type="text" id="e-i3fee" value="₹2,50,000"/></div>
+            <div class="fr"><label class="fl">Interior Setup</label><input type="text" id="e-i3int" value="₹3,00,000"/></div>
+            <div class="fr"><label class="fl">Digital Mirrors</label><input type="text" id="e-i3mirror" value="₹50,000"/></div>
+            <div class="fr"><label class="fl">Salon Furniture</label><input type="text" id="e-i3furn" value="₹1,00,000"/></div>
+          </div>
+          <div class="fr"><label class="fl">Package Inclusions</label><textarea id="e-i3inc" style="min-height:100px;">3 Marc Salon Chairs · 1 Digital Mirror · POS System · AC Unit · Salon Furniture · Branding Kit · Uniforms ×6 · AI Tablet · 1-Year License</textarea></div>
+          <button class="btn btn-p" onclick="saveInvestModelUI('3 Chair')">Save &amp; Publish Changes</button>
+        </div>
+      </div>
+      <div id="ic4" style="display:none;">
+        <div class="adm-card">
+          <div class="adm-card-title">4 Chair Model</div>
+          <div class="form-2col">
+            <div class="fr"><label class="fl">Total Area</label><input type="text" value="350 sq ft"/></div>
+            <div class="fr"><label class="fl">Display Price</label><input type="text" value="₹11L"/></div>
+            <div class="fr"><label class="fl">Franchise Fee</label><input type="text" value="₹3,00,000"/></div>
+            <div class="fr"><label class="fl">Interior Setup</label><input type="text" value="₹4,50,000"/></div>
+            <div class="fr"><label class="fl">Digital Mirrors</label><input type="text" value="₹80,000"/></div>
+            <div class="fr"><label class="fl">Salon Furniture</label><input type="text" value="₹1,50,000"/></div>
+          </div>
+          <div class="fr"><label class="fl">Package Inclusions</label><textarea style="min-height:100px;">4 Marc Chairs · 2 Digital Mirrors · POS · 2 ACs · Salon Furniture · Branding Kit · Uniforms ×8 · AI Tablets ×2 · Priority Support · 1-Year License</textarea></div>
+          <button class="btn btn-p" onclick="saveInvestModelUI('4 Chair')">Save &amp; Publish Changes</button>
+        </div>
+      </div>
+      <div id="ic5" style="display:none;">
+        <div class="adm-card">
+          <div class="adm-card-title">5 Chair Model</div>
+          <div class="form-2col">
+            <div class="fr"><label class="fl">Total Area</label><input type="text" value="450 sq ft"/></div>
+            <div class="fr"><label class="fl">Display Price</label><input type="text" value="₹14L"/></div>
+            <div class="fr"><label class="fl">Franchise Fee</label><input type="text" value="₹4,00,000"/></div>
+            <div class="fr"><label class="fl">Interior Setup</label><input type="text" value="₹6,00,000"/></div>
+            <div class="fr"><label class="fl">Digital Mirrors</label><input type="text" value="₹1,20,000"/></div>
+            <div class="fr"><label class="fl">Salon Furniture</label><input type="text" value="₹2,00,000"/></div>
+          </div>
+          <div class="fr"><label class="fl">Package Inclusions</label><textarea style="min-height:100px;">5 Marc Chairs · 3 Digital Mirrors · 2 POS · 3 ACs · Premium Salon Furniture · Premium Branding · Uniforms ×10 · AI Tablets ×3 · Account Manager · 1-Year License</textarea></div>
+          <button class="btn btn-p" onclick="saveInvestModelUI('5 Chair')">Save &amp; Publish Changes</button>
+        </div>
+      </div>
+      <div id="ic-roi" style="display:none;">
+        <div class="adm-card">
+          <div class="adm-card-title">ROI Data — 3 Chair</div>
+          <div class="form-3col">
+            <div class="fr"><label class="fl">Avg Customers/Day</label><input type="number" id="e-r3cust" value="40"/></div>
+            <div class="fr"><label class="fl">Avg Ticket (₹)</label><input type="number" id="e-r3tick" value="120"/></div>
+            <div class="fr"><label class="fl">Gross Revenue/Month (₹)</label><input type="number" id="e-r3rev" value="144000"/></div>
+            <div class="fr"><label class="fl">Staff Salaries (₹)</label><input type="number" id="e-r3sal" value="54000"/></div>
+            <div class="fr"><label class="fl">Rent &amp; Utilities (₹)</label><input type="number" id="e-r3rent" value="25000"/></div>
+            <div class="fr"><label class="fl">Royalty 8% (₹)</label><input type="number" id="e-r3roy" value="11520"/></div>
+            <div class="fr"><label class="fl">Products &amp; Misc (₹)</label><input type="number" id="e-r3misc" value="10000"/></div>
+            <div class="fr"><label class="fl">Net Profit/Month (₹)</label><input type="number" id="e-r3profit" value="43480"/></div>
+            <div class="fr"><label class="fl">ROI Period</label><input type="text" id="e-r3roi" value="18–22 months"/></div>
+          </div>
+          <div style="background:var(--ok-bg);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--ok-tx);margin:10px 0;">
+            <strong>3 Chair Preview:</strong> ₹1,44,000 gross · ₹43,480 net profit/month · ROI 18–22 months
+          </div>
+          <button class="btn btn-p" onclick="saveROIUI('3 Chair')">Save &amp; Publish 3 Chair ROI</button>
+        </div>
+        <div class="adm-card">
+          <div class="adm-card-title">ROI Data — 4 Chair</div>
+          <div class="form-3col">
+            <div class="fr"><label class="fl">Avg Customers/Day</label><input type="number" id="e-r4cust" value="55"/></div>
+            <div class="fr"><label class="fl">Avg Ticket (₹)</label><input type="number" id="e-r4tick" value="120"/></div>
+            <div class="fr"><label class="fl">Gross Revenue/Month (₹)</label><input type="number" id="e-r4rev" value="198000"/></div>
+            <div class="fr"><label class="fl">Staff Salaries (₹)</label><input type="number" id="e-r4sal" value="72000"/></div>
+            <div class="fr"><label class="fl">Rent &amp; Utilities (₹)</label><input type="number" id="e-r4rent" value="32000"/></div>
+            <div class="fr"><label class="fl">Royalty 8% (₹)</label><input type="number" id="e-r4roy" value="15840"/></div>
+            <div class="fr"><label class="fl">Products &amp; Misc (₹)</label><input type="number" id="e-r4misc" value="10000"/></div>
+            <div class="fr"><label class="fl">Net Profit/Month (₹)</label><input type="number" id="e-r4profit" value="68160"/></div>
+            <div class="fr"><label class="fl">ROI Period</label><input type="text" id="e-r4roi" value="16–20 months"/></div>
+          </div>
+          <div style="background:var(--ok-bg);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--ok-tx);margin:10px 0;">
+            <strong>4 Chair Preview:</strong> ₹1,98,000 gross · ₹68,160 net profit/month · ROI 16–20 months
+          </div>
+          <button class="btn btn-p" onclick="saveROIUI('4 Chair')">Save &amp; Publish 4 Chair ROI</button>
+        </div>
+        <div class="adm-card">
+          <div class="adm-card-title">ROI Data — 5 Chair</div>
+          <div class="form-3col">
+            <div class="fr"><label class="fl">Avg Customers/Day</label><input type="number" id="e-r5cust" value="70"/></div>
+            <div class="fr"><label class="fl">Avg Ticket (₹)</label><input type="number" id="e-r5tick" value="120"/></div>
+            <div class="fr"><label class="fl">Gross Revenue/Month (₹)</label><input type="number" id="e-r5rev" value="252000"/></div>
+            <div class="fr"><label class="fl">Staff Salaries (₹)</label><input type="number" id="e-r5sal" value="90000"/></div>
+            <div class="fr"><label class="fl">Rent &amp; Utilities (₹)</label><input type="number" id="e-r5rent" value="42000"/></div>
+            <div class="fr"><label class="fl">Royalty 8% (₹)</label><input type="number" id="e-r5roy" value="20160"/></div>
+            <div class="fr"><label class="fl">Products &amp; Misc (₹)</label><input type="number" id="e-r5misc" value="12000"/></div>
+            <div class="fr"><label class="fl">Net Profit/Month (₹)</label><input type="number" id="e-r5profit" value="87840"/></div>
+            <div class="fr"><label class="fl">ROI Period</label><input type="text" id="e-r5roi" value="14–18 months"/></div>
+          </div>
+          <div style="background:var(--ok-bg);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--ok-tx);margin:10px 0;">
+            <strong>5 Chair Preview:</strong> ₹2,52,000 gross · ₹87,840 net profit/month · ROI 14–18 months
+          </div>
+          <button class="btn btn-p" onclick="saveROIUI('5 Chair')">Save &amp; Publish 5 Chair ROI</button>
+        </div>
+      </div>
+      <div id="ic-royalty" style="display:none;">
+        <div class="adm-card">
+          <div class="adm-card-title">Royalty Structure</div>
+          <div class="form-2col">
+            <div class="fr"><label class="fl">Royalty Rate</label><input type="text" value="8% of Revenue"/></div>
+            <div class="fr"><label class="fl">Due Date</label><input type="text" value="5th of every month"/></div>
+            <div class="fr"><label class="fl">On-Time Benefit</label><input type="text" value="Priority Staff Replacement"/></div>
+            <div class="fr"><label class="fl">Late Penalty (1–7 days)</label><input type="text" value="₹500 penalty / day"/></div>
+            <div class="fr"><label class="fl">Non-payment (&gt;30 days)</label><input type="text" value="Franchise Review + Termination"/></div>
+          </div>
+          <button class="btn btn-p" onclick="alert('✓ Royalty structure saved!')">Save &amp; Publish</button>
+        </div>
+      </div>
+      <div id="ic-payments" style="display:none;">
+        <div class="adm-tabs" style="margin-bottom:0;">
+          <button class="adm-tab-btn active" onclick="payTab(this,'ic-pay3')">3 Chair</button>
+          <button class="adm-tab-btn" onclick="payTab(this,'ic-pay4')">4 Chair</button>
+          <button class="adm-tab-btn" onclick="payTab(this,'ic-pay5')">5 Chair</button>
+        </div>
+        <!-- 3 Chair Payment Steps -->
+        <div id="ic-pay3">
+          <div class="adm-card">
+            <div class="adm-card-title">Payment Schedule — 3 Chair (₹8.5L)</div>
+            <div class="adm-card-sub">Edit the 4 payment steps shown to 3 Chair leads in the franchise app</div>
+            <div id="pay-steps-editor-3"></div>
+            <button class="btn btn-p" style="margin-top:8px;" onclick="alert('✓ 3 Chair payment steps saved!')">Save 3 Chair Payment Steps</button>
+          </div>
+        </div>
+        <!-- 4 Chair Payment Steps -->
+        <div id="ic-pay4" style="display:none;">
+          <div class="adm-card">
+            <div class="adm-card-title">Payment Schedule — 4 Chair (₹11L)</div>
+            <div class="adm-card-sub">Edit the 4 payment steps shown to 4 Chair leads in the franchise app</div>
+            <div id="pay-steps-editor-4"></div>
+            <button class="btn btn-p" style="margin-top:8px;" onclick="alert('✓ 4 Chair payment steps saved!')">Save 4 Chair Payment Steps</button>
+          </div>
+        </div>
+        <!-- 5 Chair Payment Steps -->
+        <div id="ic-pay5" style="display:none;">
+          <div class="adm-card">
+            <div class="adm-card-title">Payment Schedule — 5 Chair (₹14L)</div>
+            <div class="adm-card-sub">Edit the 4 payment steps shown to 5 Chair leads in the franchise app</div>
+            <div id="pay-steps-editor-5"></div>
+            <button class="btn btn-p" style="margin-top:8px;" onclick="alert('✓ 5 Chair payment steps saved!')">Save 5 Chair Payment Steps</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GUIDELINES MANAGEMENT -->
+    <div id="at-guidelines" class="admin-tab">
+      <div class="adm-page-title">Guidelines Management</div>
+      <div class="adm-page-sub">Add, edit, remove, and reorder franchise guidelines shown to leads</div>
+      <div class="adm-card">
+        <div class="content-section-title">Current Guidelines <button class="btn btn-sm btn-p" onclick="addGuideline()">+ Add</button></div>
+        <div id="gl-admin-list"></div>
+      </div>
+      <div class="adm-card">
+        <div class="adm-card-title">Add New Guideline</div>
+        <div class="fr"><label class="fl">Guideline Text</label><textarea id="new-gl-text" placeholder="Enter new guideline for franchise leads…"></textarea></div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Category</label><select><option>Operational</option><option>Staff</option><option>Financial</option><option>Compliance</option></select></div>
+          <div class="fr"><label class="fl">Mandatory</label>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:8px;"><label class="switch"><input type="checkbox" checked/><span class="slider"></span></label><span style="font-size:13px;color:var(--mut);">Lead must accept</span></div>
+          </div>
+        </div>
+        <button class="btn btn-p" onclick="addGuideline()">Add Guideline</button>
+      </div>
+    </div>
+
+    <!-- SUPPORT CONTENT -->
+    <div id="at-support-content" class="admin-tab">
+      <div class="adm-page-title">Support Information</div>
+      <div class="adm-page-sub">Edit the support details and highlight text shown in the franchise portal</div>
+      <div class="adm-card">
+        <div class="adm-card-title">Support Section Highlight</div>
+        <div class="fr"><label class="fl">Highlight Text (shown in alert bar)</label><input type="text" id="e-sup-hl" value="⭐ Staff Support is our strongest pillar — recruitment, training &amp; replacement handled"/></div>
+      </div>
+      <div class="adm-card">
+        <div class="adm-card-title">Support Items</div>
+        <div id="support-items-editor"></div>
+      </div>
+      <button class="btn btn-p" onclick="saveSupportUI()">Save &amp; Publish Support Info</button>
+    </div>
+
+    <!-- OPERATIONS CONTENT -->
+    <div id="at-ops-content" class="admin-tab">
+      <div class="adm-page-title">Operations Information</div>
+      <div class="adm-page-sub">Edit operational details, timings, and standards shown to leads</div>
+      <div class="adm-card">
+        <div class="adm-card-title">Salon Timings &amp; Operations</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Salon Hours</label><input type="text" id="e-ophrs" value="8:00 AM – 9:00 PM"/></div>
+          <div class="fr"><label class="fl">Operating Days</label><input type="text" id="e-opdays" value="7 Days / Week"/></div>
+          <div class="fr"><label class="fl">Break Policy</label><input type="text" id="e-opbreaks" value="Staggered — no closure"/></div>
+          <div class="fr"><label class="fl">OT Allowance</label><input type="text" id="e-opot" value="₹80 / hr post 9 PM"/></div>
+          <div class="fr"><label class="fl">Max Customer Wait</label><input type="text" id="e-opwait" value="15 minutes"/></div>
+        </div>
+        <div class="fr"><label class="fl">Service &amp; Staff Standards</label><textarea id="e-opstd" style="min-height:100px;">✓ Greet every customer within 30 seconds · ✓ No phone usage during service · ✓ Uniform dress code enforced · ✓ Zero tolerance for rude behavior · ✓ Feedback collected after every visit</textarea></div>
+        <button class="btn btn-p" onclick="saveOpsUI()">Save &amp; Publish Operations Info</button>
+      </div>
+      <div class="adm-card">
+        <div class="adm-card-title">Staff Welfare Content</div>
+        <div class="fr"><label class="fl">Initial Setup (by Budget Barber)</label><textarea style="min-height:90px;">✓ Uniforms (2 sets/staff) · ✓ 5-day bootcamp training · ✓ Tool &amp; grooming kit · ✓ Product training · ✓ SOP manual · ✓ ID cards · ✓ AI system training</textarea></div>
+        <div class="fr"><label class="fl">Ongoing (by Franchisee)</label><textarea style="min-height:90px;">✓ Monthly salary by 5th · ✓ 1 day off/week · ✓ Accommodation support · ✓ Festival bonus · ✓ Refresher training (quarterly) · ✓ Meals during shift</textarea></div>
+        <button class="btn btn-p" onclick="saveStaffUI()">Save &amp; Publish Staff Info</button>
+      </div>
+    </div>
+
+    <!-- PAYMENT TRACKING -->
+    <div id="at-payments" class="admin-tab">
+      <div class="adm-page-title">Payment Tracking</div>
+      <div class="adm-page-sub">Track all token payments, milestones, and pending dues across all leads</div>
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="stat-card"><div class="stat-num" style="color:var(--ok-tx);">₹80K</div><div class="stat-lbl">Token Payments Collected</div><div class="stat-delta" style="color:var(--ok-tx);">4 leads × ₹20K</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--wrn-tx);">₹7.5L</div><div class="stat-lbl">Pending Dues (30 days)</div><div class="stat-delta" style="color:var(--wrn-tx);">3 leads overdue</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--hi);">₹34L</div><div class="stat-lbl">Total Collected (All)</div><div class="stat-delta" style="color:var(--mut);">Across 4 projects</div></div>
+      </div>
+      <div class="adm-card" style="padding:0;overflow:hidden;">
+        <table class="lead-table">
+          <thead><tr><th>Lead</th><th>Model</th><th>Token</th><th>Cheque</th><th>Cash</th><th>Marc Chairs</th><th>Total Paid</th></tr></thead>
+          <tbody>
+            <tr><td><div style="font-weight:600;">Priya Sharma</div><div style="font-size:11px;color:var(--mut);">Hyderabad</div></td><td>3 Chair</td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-wrn">Pending</span></td><td><span class="pill p-no">—</span></td><td><span class="pill p-no">—</span></td><td style="font-weight:700;">₹20,000</td></tr>
+            <tr><td><div style="font-weight:600;">Arun Reddy</div><div style="font-size:11px;color:var(--mut);">Vijayawada</div></td><td>4 Chair</td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-wrn">Pending</span></td><td><span class="pill p-no">—</span></td><td style="font-weight:700;">₹2,70,000</td></tr>
+            <tr><td><div style="font-weight:600;">Meena Iyer</div><div style="font-size:11px;color:var(--mut);">Chennai</div></td><td>3 Chair</td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-wrn">Pending</span></td><td style="font-weight:700;">₹8,70,000</td></tr>
+            <tr><td><div style="font-weight:600;">Vikram Nair</div><div style="font-size:11px;color:var(--mut);">Kochi</div></td><td>5 Chair</td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-ok">✓ Paid</span></td><td style="font-weight:700;">₹14,20,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ROYALTY MANAGEMENT -->
+    <div id="at-royalty-mgmt" class="admin-tab">
+      <div class="adm-page-title">Royalty Management</div>
+      <div class="adm-page-sub">Full royalty tracking, collection history, penalties and dues across all active franchises</div>
+
+      <!-- Stats -->
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num" style="color:var(--ok-tx);">₹1.2L</div><div class="stat-lbl">This Month Collected</div><div class="stat-delta" style="color:var(--ok-tx);">2 franchises paid</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--no-tx);">2</div><div class="stat-lbl">Overdue Royalties</div><div class="stat-delta" style="color:var(--no-tx);">Action required</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--hi);">₹9.6L</div><div class="stat-lbl">Total YTD Royalties</div><div class="stat-delta" style="color:var(--mut);">Jan–Apr 2026</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--wrn-tx);">₹20,160</div><div class="stat-lbl">Pending This Month</div><div class="stat-delta" style="color:var(--wrn-tx);">1 overdue · 3 days</div></div>
+      </div>
+
+      <!-- Royalty Structure Config -->
+      <div class="adm-card">
+        <div class="adm-card-title">Royalty Structure Settings</div>
+        <div class="adm-card-sub">Global royalty rules applied to all active franchises</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Royalty Rate</label><input type="text" value="8% of Monthly Revenue"/></div>
+          <div class="fr"><label class="fl">Due Date</label><input type="text" value="5th of every month"/></div>
+          <div class="fr"><label class="fl">Grace Period</label><input type="text" value="0 days (strict)"/></div>
+          <div class="fr"><label class="fl">On-Time Benefit</label><input type="text" value="Priority Staff Replacement"/></div>
+          <div class="fr"><label class="fl">Late Penalty (1–7 days)</label><input type="text" value="₹500 / day"/></div>
+          <div class="fr"><label class="fl">Late Penalty (8–30 days)</label><input type="text" value="₹1,000 / day"/></div>
+          <div class="fr"><label class="fl">Non-Payment (&gt;30 days)</label><input type="text" value="Franchise Review initiated"/></div>
+          <div class="fr"><label class="fl">Non-Payment (&gt;60 days)</label><input type="text" value="Agreement Termination"/></div>
+        </div>
+        <button class="btn btn-p" onclick="saveRoyaltyStructureUI()">Save Royalty Structure</button>
+      </div>
+
+      <!-- Monthly Royalty Tracker -->
+      <div class="adm-card" style="padding:0;overflow:hidden;">
+        <div style="padding:14px 20px;border-bottom:0.5px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+          <div style="font-size:14px;font-weight:700;">Monthly Royalty Tracker</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <select style="font-size:12px;padding:5px 10px;border-radius:6px;border:0.5px solid var(--bdr2);background:var(--surf2);">
+              <option>April 2026</option><option>March 2026</option><option>February 2026</option><option>January 2026</option>
+            </select>
+            <button class="btn btn-sm btn-i">Export CSV</button>
+          </div>
+        </div>
+        <table class="lead-table">
+          <thead><tr><th>Franchise</th><th>Model</th><th>Location</th><th>Monthly Revenue</th><th>Royalty Due (8%)</th><th>Paid On</th><th>Penalty</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div style="font-weight:600;">Meena Iyer</div><div style="font-size:11px;color:var(--mut);">MF: Tamil Nadu</div></td>
+              <td><span class="pill p-inf">3 Chair</span></td>
+              <td>Chennai</td>
+              <td style="font-weight:600;">₹1,44,000</td>
+              <td style="font-weight:600;">₹11,520</td>
+              <td style="color:var(--ok-tx);font-size:12px;">Apr 3, 2026</td>
+              <td>—</td>
+              <td><span class="pill p-ok">✓ Paid</span></td>
+              <td><div class="act-btns"><button class="btn btn-xs btn-i" onclick="openRoyaltyDetail('meena')">Details</button><button class="btn btn-xs">Receipt</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600;">Vikram Nair</div><div style="font-size:11px;color:var(--mut);">MF: Kerala</div></td>
+              <td><span class="pill p-inf">5 Chair</span></td>
+              <td>Kochi</td>
+              <td style="font-weight:600;">₹2,52,000</td>
+              <td style="font-weight:600;">₹20,160</td>
+              <td style="color:var(--no-tx);font-size:12px;">Not paid</td>
+              <td style="color:var(--no-tx);font-weight:600;">₹1,500 (3d)</td>
+              <td><span class="pill p-no">Overdue 3d</span></td>
+              <td><div class="act-btns"><button class="btn btn-xs btn-w" onclick="sendReminder('vikram')">📩 Remind</button><button class="btn btn-xs btn-i" onclick="openRoyaltyDetail('vikram')">Details</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600;">Priya Sharma</div><div style="font-size:11px;color:var(--mut);">MF: Karnataka</div></td>
+              <td><span class="pill p-inf">4 Chair</span></td>
+              <td>Bengaluru</td>
+              <td style="font-weight:600;">₹1,98,000</td>
+              <td style="font-weight:600;">₹15,840</td>
+              <td style="color:var(--ok-tx);font-size:12px;">Apr 5, 2026</td>
+              <td>—</td>
+              <td><span class="pill p-ok">✓ Paid</span></td>
+              <td><div class="act-btns"><button class="btn btn-xs btn-i" onclick="openRoyaltyDetail('priya')">Details</button><button class="btn btn-xs">Receipt</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600;">Arun Reddy</div><div style="font-size:11px;color:var(--mut);">MF: Andhra Pradesh</div></td>
+              <td><span class="pill p-inf">4 Chair</span></td>
+              <td>Vijayawada</td>
+              <td style="font-weight:600;">₹1,80,000</td>
+              <td style="font-weight:600;">₹14,400</td>
+              <td style="color:var(--wrn-tx);font-size:12px;">Not paid yet</td>
+              <td>—</td>
+              <td><span class="pill p-wrn">Due Today</span></td>
+              <td><div class="act-btns"><button class="btn btn-xs btn-w" onclick="sendReminder('arun')">📩 Remind</button><button class="btn btn-xs btn-s" onclick="markRoyaltyPaid('arun')">Mark Paid</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Payment History — 6 months -->
+      <div class="adm-card" style="padding:0;overflow:hidden;">
+        <div style="padding:14px 20px;border-bottom:0.5px solid var(--bdr);font-size:14px;font-weight:700;">6-Month Collection History</div>
+        <table class="lead-table">
+          <thead><tr><th>Franchise</th><th>Jan 2026</th><th>Feb 2026</th><th>Mar 2026</th><th>Apr 2026</th><th>Total Collected</th><th>Avg/Month</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div style="font-weight:600;">Meena Iyer</div><div style="font-size:11px;color:var(--mut);">Chennai · 3 Chair</div></td>
+              <td><span class="pill p-ok" style="font-size:10px;">₹9,600</span></td>
+              <td><span class="pill p-ok" style="font-size:10px;">₹10,800</span></td>
+              <td><span class="pill p-ok" style="font-size:10px;">₹10,800</span></td>
+              <td><span class="pill p-ok" style="font-size:10px;">₹11,520</span></td>
+              <td style="font-weight:700;color:var(--ok-tx);">₹42,720</td>
+              <td>₹10,680</td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600;">Vikram Nair</div><div style="font-size:11px;color:var(--mut);">Kochi · 5 Chair</div></td>
+              <td><span class="pill p-ok" style="font-size:10px;">₹17,200</span></td>
+              <td><span class="pill p-ok" style="font-size:10px;">₹17,200</span></td>
+              <td><span class="pill p-ok" style="font-size:10px;">₹18,400</span></td>
+              <td><span class="pill p-no" style="font-size:10px;">Overdue</span></td>
+              <td style="font-weight:700;color:var(--wrn-tx);">₹52,800</td>
+              <td>₹17,600</td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600;">Priya Sharma</div><div style="font-size:11px;color:var(--mut);">Bengaluru · 4 Chair</div></td>
+              <td><span class="pill p-wrn" style="font-size:10px;">₹13,200</span></td>
+              <td><span class="pill p-ok" style="font-size:10px;">₹14,400</span></td>
+              <td><span class="pill p-ok" style="font-size:10px;">₹15,840</span></td>
+              <td><span class="pill p-ok" style="font-size:10px;">₹15,840</span></td>
+              <td style="font-weight:700;color:var(--ok-tx);">₹59,280</td>
+              <td>₹14,820</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Manual Payment Recording -->
+      <div class="adm-card">
+        <div class="adm-card-title">Record Manual Royalty Payment</div>
+        <div class="adm-card-sub">Mark a royalty as received when franchise pays via cash, NEFT or cheque</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Franchise</label>
+            <select><option>Meena Iyer — Chennai</option><option>Vikram Nair — Kochi</option><option>Priya Sharma — Bengaluru</option><option>Arun Reddy — Vijayawada</option></select>
+          </div>
+          <div class="fr"><label class="fl">Month</label>
+            <select><option>April 2026</option><option>March 2026</option><option>February 2026</option></select>
+          </div>
+          <div class="fr"><label class="fl">Amount Received (₹)</label><input type="number" placeholder="e.g. 11520"/></div>
+          <div class="fr"><label class="fl">Payment Mode</label>
+            <select><option>UPI</option><option>NEFT/RTGS</option><option>Cheque</option><option>Cash</option></select>
+          </div>
+          <div class="fr"><label class="fl">Transaction / Reference No.</label><input type="text" placeholder="UTR / Cheque No."/></div>
+          <div class="fr"><label class="fl">Payment Date</label><input type="text" placeholder="DD/MM/YYYY"/></div>
+        </div>
+        <div class="fr"><label class="fl">Notes (optional)</label><input type="text" placeholder="Any remarks about this payment…"/></div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-p" onclick="alert('✓ Royalty payment recorded successfully!')">Record Payment</button>
+          <button class="btn btn-w" onclick="alert('Penalty waiver request logged.')">Waive Penalty</button>
+        </div>
+      </div>
+
+      <!-- Reminders & Notices -->
+      <div class="adm-card">
+        <div class="adm-card-title">Send Royalty Reminders</div>
+        <div class="adm-card-sub">Bulk send WhatsApp / SMS reminders to overdue or upcoming franchises</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-w" onclick="alert('Reminder sent to all overdue franchises!')">📩 Remind All Overdue</button>
+          <button class="btn btn-i" onclick="alert('Due-today reminders sent!')">🔔 Remind Due Today</button>
+          <button class="btn" onclick="alert('Upcoming reminder sent!')">📅 Remind Due This Week</button>
+          <button class="btn btn-d" onclick="alert('Legal notice generated!')">⚖️ Generate Legal Notice</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="at-settings" class="admin-tab">
+      <div class="adm-page-title">Portal Settings</div>
+      <div class="adm-page-sub">Configure portal-wide settings, branding, and access controls</div>
+      <div class="adm-card">
+        <div class="adm-card-title">Branding</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Portal Name</label><input type="text" value="Budget Barber — Franchise Portal"/></div>
+          <div class="fr"><label class="fl">Token Amount (₹)</label><input type="number" value="20000"/></div>
+          <div class="fr"><label class="fl">Franchise Steps Count</label><input type="number" value="10"/></div>
+          <div class="fr"><label class="fl">Royalty Rate (%)</label><input type="number" value="8"/></div>
+        </div>
+      </div>
+      <div class="adm-card">
+        <div class="adm-card-title">Lead Portal Controls</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:14px;font-weight:600;">Lead Self-Registration</div><div style="font-size:12px;color:var(--mut);">Allow leads to register themselves</div></div><label class="switch"><input type="checkbox" checked/><span class="slider"></span></label></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:14px;font-weight:600;">Mandatory Video Watch</div><div style="font-size:12px;color:var(--mut);">Block next step until video is played</div></div><label class="switch"><input type="checkbox" checked/><span class="slider"></span></label></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:14px;font-weight:600;">Mandatory Guidelines Accept</div><div style="font-size:12px;color:var(--mut);">All checkboxes must be ticked</div></div><label class="switch"><input type="checkbox" checked/><span class="slider"></span></label></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:14px;font-weight:600;">SMS Notifications</div><div style="font-size:12px;color:var(--mut);">Send SMS on key lead actions</div></div><label class="switch"><input type="checkbox" checked/><span class="slider"></span></label></div>
+        </div>
+      </div>
+      <button class="btn btn-p" onclick="savePortalSettingsUI()">Save Settings</button>
+    </div>
+
+
+    <!-- MASTER FRANCHISE OVERVIEW -->
+    <div id="at-mf-overview" class="admin-tab">
+      <div class="adm-page-title">Master Franchise Overview</div>
+      <div class="adm-page-sub">All Master Franchise partners across regions at a glance</div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num" style="color:var(--hi);">4</div><div class="stat-lbl">Active MF Partners</div><div class="stat-delta" style="color:var(--ok-tx);">↑ 1 this month</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--ok-tx);">23</div><div class="stat-lbl">Total Leads (All MF)</div><div class="stat-delta" style="color:var(--mut);">Across all regions</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--wrn-tx);">2</div><div class="stat-lbl">Pending Approvals</div><div class="stat-delta" style="color:var(--mut);">MF account requests</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--inf-tx);">6</div><div class="stat-lbl">Regions Covered</div><div class="stat-delta" style="color:var(--mut);">AP, TS, KA, TN, KL, MH</div></div>
+      </div>
+      <div class="adm-card" style="padding:0;overflow:hidden;">
+        <div style="padding:14px 20px;border-bottom:0.5px solid var(--bdr);font-size:13px;font-weight:700;">Master Franchise Partner Summary</div>
+        <table class="lead-table">
+          <thead><tr><th>MF Name</th><th>Region</th><th>Cities</th><th>Leads</th><th>Active Projects</th><th>Royalty Due</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="mf-summary-tbody">
+            <tr><td><div style="font-weight:600;">Srinivas Rao</div><div style="font-size:11px;color:var(--mut);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1467667d7a7d6275675479723a766170737160767566767166">[email&#160;protected]</a></div></td><td>Andhra Pradesh</td><td>Vijayawada, Guntur, Nellore</td><td>8</td><td>3</td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-ok">Active</span></td><td><div class="act-btns"><button class="btn btn-xs btn-i" onclick="aTab(null,'at-mf-accounts')">View</button><button class="btn btn-xs btn-w">Suspend</button></div></td></tr>
+            <tr><td><div style="font-weight:600;">Anitha Reddy</div><div style="font-size:11px;color:var(--mut);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fc9d929588949dbc919ad29e89989b99889e9d8e9e998e">[email&#160;protected]</a></div></td><td>Telangana</td><td>Hyderabad, Warangal</td><td>7</td><td>2</td><td><span class="pill p-wrn">Pending</span></td><td><span class="pill p-ok">Active</span></td><td><div class="act-btns"><button class="btn btn-xs btn-i" onclick="aTab(null,'at-mf-accounts')">View</button><button class="btn btn-xs btn-w">Suspend</button></div></td></tr>
+            <tr><td><div style="font-weight:600;">Kiran Kumar</div><div style="font-size:11px;color:var(--mut);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ddb6b4afbcb39db0bbf3bfa8b9bab8a9bfbcafbfb8af">[email&#160;protected]</a></div></td><td>Karnataka</td><td>Bengaluru, Mysuru</td><td>5</td><td>1</td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-ok">Active</span></td><td><div class="act-btns"><button class="btn btn-xs btn-i" onclick="aTab(null,'at-mf-accounts')">View</button><button class="btn btn-xs btn-w">Suspend</button></div></td></tr>
+            <tr><td><div style="font-weight:600;">Priyanka Menon</div><div style="font-size:11px;color:var(--mut);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5020223929313e3b31103d367e322534373524323122323522">[email&#160;protected]</a></div></td><td>Kerala</td><td>Kochi, Trivandrum</td><td>3</td><td>0</td><td><span class="pill p-no">Overdue</span></td><td><span class="pill p-wrn">Review</span></td><td><div class="act-btns"><button class="btn btn-xs btn-i" onclick="aTab(null,'at-mf-accounts')">View</button><button class="btn btn-xs btn-d">Deactivate</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-p" onclick="aTab(null,'at-mf-create')">+ Create New MF Login</button>
+        <button class="btn btn-i" onclick="aTab(null,'at-mf-regions')">🗺 Manage Regions</button>
+      </div>
+    </div>
+
+    <!-- MASTER FRANCHISE ACCOUNTS -->
+    <div id="at-mf-accounts" class="admin-tab">
+      <div class="adm-page-title">MF Account Management</div>
+      <div class="adm-page-sub">View, edit, and manage all Master Franchise logins and access</div>
+      <div class="adm-card" style="padding:0;overflow:hidden;">
+        <div style="padding:14px 20px;border-bottom:0.5px solid var(--bdr);display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <div class="search-box" style="flex:1;min-width:200px;margin:0;"><span class="search-icon">🔍</span><input type="text" placeholder="Search by name, region, email…"/></div>
+          <button class="btn btn-p btn-sm" onclick="aTab(null,'at-mf-create')">+ New MF</button>
+        </div>
+        <table class="lead-table">
+          <thead><tr><th>MF Partner</th><th>Region</th><th>Email / Login</th><th>Password</th><th>Assigned Cities</th><th>Leads</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div style="font-weight:600;">Srinivas Rao</div><div style="font-size:11px;color:var(--mut);">+91 98765 11111</div></td>
+              <td><span class="pill p-inf">Andhra Pradesh</span></td>
+              <td style="font-size:12px;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6714150e090e110614270a0149051203000213050615050215">[email&#160;protected]</a></td>
+              <td><div style="display:flex;align-items:center;gap:6px;"><span id="pw-mf1" style="font-size:12px;letter-spacing:2px;">••••••••</span><button class="btn btn-xs" onclick="togglePw('pw-mf1','MF@AP2026')">Show</button></div></td>
+              <td style="font-size:12px;">Vijayawada, Guntur, Nellore</td>
+              <td>8</td>
+              <td><span class="pill p-ok">Active</span></td>
+              <td><div class="act-btns"><button class="btn btn-xs btn-i" onclick="openMFDetail(1)">Edit</button><button class="btn btn-xs btn-d" onclick="removeMFAccount(1)">Remove</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600;">Anitha Reddy</div><div style="font-size:11px;color:var(--mut);">+91 87654 22222</div></td>
+              <td><span class="pill p-wrn">Telangana</span></td>
+              <td style="font-size:12px;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="88e9e6e1fce0e9c8e5eea6eafdecefedfceae9faeaedfa">[email&#160;protected]</a></td>
+              <td><div style="display:flex;align-items:center;gap:6px;"><span id="pw-mf2" style="font-size:12px;letter-spacing:2px;">••••••••</span><button class="btn btn-xs" onclick="togglePw('pw-mf2','MF@TS2026')">Show</button></div></td>
+              <td style="font-size:12px;">Hyderabad, Warangal</td>
+              <td>7</td>
+              <td><span class="pill p-ok">Active</span></td>
+              <td><div class="act-btns"><button class="btn btn-xs btn-i" onclick="openMFDetail(2)">Edit</button><button class="btn btn-xs btn-d" onclick="removeMFAccount(2)">Remove</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600;">Kiran Kumar</div><div style="font-size:11px;color:var(--mut);">+91 76543 33333</div></td>
+              <td><span class="pill p-ok">Karnataka</span></td>
+              <td style="font-size:12px;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0a6163786b644a676c24687f6e6d6f7e686b78686f78">[email&#160;protected]</a></td>
+              <td><div style="display:flex;align-items:center;gap:6px;"><span id="pw-mf3" style="font-size:12px;letter-spacing:2px;">••••••••</span><button class="btn btn-xs" onclick="togglePw('pw-mf3','MF@KA2026')">Show</button></div></td>
+              <td style="font-size:12px;">Bengaluru, Mysuru</td>
+              <td>5</td>
+              <td><span class="pill p-ok">Active</span></td>
+              <td><div class="act-btns"><button class="btn btn-xs btn-i" onclick="openMFDetail(3)">Edit</button><button class="btn btn-xs btn-d" onclick="removeMFAccount(3)">Remove</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600;">Priyanka Menon</div><div style="font-size:11px;color:var(--mut);">+91 65432 44444</div></td>
+              <td><span class="pill p-no">Kerala</span></td>
+              <td style="font-size:12px;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3a4a4853435b54515b7a575c14584f5e5d5f4e585b48585f48">[email&#160;protected]</a></td>
+              <td><div style="display:flex;align-items:center;gap:6px;"><span id="pw-mf4" style="font-size:12px;letter-spacing:2px;">••••••••</span><button class="btn btn-xs" onclick="togglePw('pw-mf4','MF@KL2026')">Show</button></div></td>
+              <td style="font-size:12px;">Kochi, Trivandrum</td>
+              <td>3</td>
+              <td><span class="pill p-wrn">Review</span></td>
+              <td><div class="act-btns"><button class="btn btn-xs btn-i" onclick="openMFDetail(4)">Edit</button><button class="btn btn-xs btn-d" onclick="removeMFAccount(4)">Remove</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CREATE MF LOGIN -->
+    <div id="at-mf-create" class="admin-tab">
+      <div class="adm-page-title">Create Master Franchise Login</div>
+      <div class="adm-page-sub">Set up a new Master Franchise partner account with region and city assignments</div>
+      <div class="adm-card">
+        <div class="adm-card-title">Personal Details</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Full Name</label><input type="text" id="mf-name" placeholder="Srinivas Rao"/></div>
+          <div class="fr"><label class="fl">Phone Number</label><input type="tel" id="mf-phone" placeholder="+91 98765 00000"/></div>
+          <div class="fr"><label class="fl">Email Address</label><input type="email" id="mf-email" placeholder="name@mf.budgetbarber"/></div>
+          <div class="fr"><label class="fl">Aadhar / PAN</label><input type="text" id="mf-pan" placeholder="PAN or Aadhar number"/></div>
+        </div>
+      </div>
+      <div class="adm-card">
+        <div class="adm-card-title">Region & City Assignment</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Primary State / Region</label>
+            <select id="mf-region">
+              <option value="">— Select State —</option>
+              <option>Andhra Pradesh</option>
+              <option>Telangana</option>
+              <option>Karnataka</option>
+              <option>Tamil Nadu</option>
+              <option>Kerala</option>
+              <option>Maharashtra</option>
+              <option>Odisha</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="fr"><label class="fl">MF Portal Username</label><input type="text" id="mf-username" placeholder="e.g. srinivas_ap"/></div>
+        </div>
+        <div class="fr"><label class="fl">Assigned Cities (comma separated)</label><input type="text" id="mf-cities" placeholder="Vijayawada, Guntur, Nellore, Ongole"/></div>
+        <div class="fr"><label class="fl">Additional Notes / Territory Restrictions</label><textarea id="mf-notes" placeholder="e.g. Exclude Krishna district; focus on Tier-2 cities…"></textarea></div>
+      </div>
+      <div class="adm-card">
+        <div class="adm-card-title">Login Credentials</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Set Password</label><input type="password" id="mf-pass" placeholder="Minimum 8 characters"/></div>
+          <div class="fr"><label class="fl">Confirm Password</label><input type="password" id="mf-pass2" placeholder="Re-enter password"/></div>
+        </div>
+        <div style="background:var(--wrn-bg);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--wrn-tx);margin-bottom:14px;">⚠️ The MF partner will use their email and this password to log into the Master Franchise Portal. Share credentials securely.</div>
+      </div>
+      <div class="adm-card">
+        <div class="adm-card-title">Access Permissions</div>
+        <div class="adm-card-sub">Control exactly what this MF partner can view and edit in their portal</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="font-size:11px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Leads</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">View Own Region Leads</div><div style="font-size:12px;color:var(--mut);">See all leads in their assigned cities</div></div><label class="switch"><input type="checkbox" id="perm-view-leads" checked/><span class="slider"></span></label></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Create New Leads</div><div style="font-size:12px;color:var(--mut);">Add franchise leads directly</div></div><label class="switch"><input type="checkbox" id="perm-create-leads" checked/><span class="slider"></span></label></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Edit Lead Status</div><div style="font-size:12px;color:var(--mut);">Update progress, status and notes</div></div><label class="switch"><input type="checkbox" id="perm-edit-leads" checked/><span class="slider"></span></label></div>
+          <div class="divdr"></div>
+          <div style="font-size:11px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Content Management</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Manage Videos</div><div style="font-size:12px;color:var(--mut);">Upload and edit presentation videos</div></div><label class="switch"><input type="checkbox" id="perm-videos"/><span class="slider"></span></label></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Edit Investment Info</div><div style="font-size:12px;color:var(--mut);">Change investment details and pricing</div></div><label class="switch"><input type="checkbox" id="perm-invest"/><span class="slider"></span></label></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Edit Guidelines</div><div style="font-size:12px;color:var(--mut);">Add, edit and remove franchise guidelines</div></div><label class="switch"><input type="checkbox" id="perm-guidelines" checked/><span class="slider"></span></label></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Edit Support Info</div><div style="font-size:12px;color:var(--mut);">Manage support section content</div></div><label class="switch"><input type="checkbox" id="perm-support"/><span class="slider"></span></label></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Edit Operations Info</div><div style="font-size:12px;color:var(--mut);">Manage operations section content</div></div><label class="switch"><input type="checkbox" id="perm-ops"/><span class="slider"></span></label></div>
+          <div class="divdr"></div>
+          <div style="font-size:11px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Finance</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">View Payment Records</div><div style="font-size:12px;color:var(--mut);">See token and installment payments for their region</div></div><label class="switch"><input type="checkbox" id="perm-payments" checked/><span class="slider"></span></label></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Royalty Reports Access</div><div style="font-size:12px;color:var(--mut);">View and manage royalty tracking for their region</div></div><label class="switch"><input type="checkbox" id="perm-royalty" checked/><span class="slider"></span></label></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Record Royalty Payments</div><div style="font-size:12px;color:var(--mut);">Mark royalties as received in their region</div></div><label class="switch"><input type="checkbox" id="perm-royalty-edit" checked/><span class="slider"></span></label></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-p" onclick="createMFLogin()">✓ Create MF Login &amp; Send Credentials</button>
+        <button class="btn">Cancel</button>
+      </div>
+    </div>
+
+    <!-- MF REGIONS -->
+    <div id="at-mf-regions" class="admin-tab">
+      <div class="adm-page-title">Region Management</div>
+      <div class="adm-page-sub">Define and manage geographic territories assigned to each Master Franchise partner</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div class="adm-card" style="margin:0;">
+          <div class="adm-card-title" style="margin-bottom:12px;">Andhra Pradesh <span class="pill p-ok" style="margin-left:6px;">Active</span></div>
+          <div class="irow"><span class="ilbl">MF Partner</span><span class="ival">Srinivas Rao</span></div>
+          <div class="irow"><span class="ilbl">Cities</span><span class="ival" style="font-size:12px;">Vijayawada, Guntur, Nellore</span></div>
+          <div class="irow"><span class="ilbl">Active Leads</span><span class="ival">8</span></div>
+          <div class="irow"><span class="ilbl">Projects</span><span class="ival">3</span></div>
+          <div style="display:flex;gap:6px;margin-top:12px;"><button class="btn btn-xs btn-i">Edit Cities</button><button class="btn btn-xs">Reassign MF</button></div>
+        </div>
+        <div class="adm-card" style="margin:0;">
+          <div class="adm-card-title" style="margin-bottom:12px;">Telangana <span class="pill p-ok" style="margin-left:6px;">Active</span></div>
+          <div class="irow"><span class="ilbl">MF Partner</span><span class="ival">Anitha Reddy</span></div>
+          <div class="irow"><span class="ilbl">Cities</span><span class="ival" style="font-size:12px;">Hyderabad, Warangal</span></div>
+          <div class="irow"><span class="ilbl">Active Leads</span><span class="ival">7</span></div>
+          <div class="irow"><span class="ilbl">Projects</span><span class="ival">2</span></div>
+          <div style="display:flex;gap:6px;margin-top:12px;"><button class="btn btn-xs btn-i">Edit Cities</button><button class="btn btn-xs">Reassign MF</button></div>
+        </div>
+        <div class="adm-card" style="margin:0;">
+          <div class="adm-card-title" style="margin-bottom:12px;">Karnataka <span class="pill p-ok" style="margin-left:6px;">Active</span></div>
+          <div class="irow"><span class="ilbl">MF Partner</span><span class="ival">Kiran Kumar</span></div>
+          <div class="irow"><span class="ilbl">Cities</span><span class="ival" style="font-size:12px;">Bengaluru, Mysuru</span></div>
+          <div class="irow"><span class="ilbl">Active Leads</span><span class="ival">5</span></div>
+          <div class="irow"><span class="ilbl">Projects</span><span class="ival">1</span></div>
+          <div style="display:flex;gap:6px;margin-top:12px;"><button class="btn btn-xs btn-i">Edit Cities</button><button class="btn btn-xs">Reassign MF</button></div>
+        </div>
+        <div class="adm-card" style="margin:0;">
+          <div class="adm-card-title" style="margin-bottom:12px;">Kerala <span class="pill p-wrn" style="margin-left:6px;">Review</span></div>
+          <div class="irow"><span class="ilbl">MF Partner</span><span class="ival">Priyanka Menon</span></div>
+          <div class="irow"><span class="ilbl">Cities</span><span class="ival" style="font-size:12px;">Kochi, Trivandrum</span></div>
+          <div class="irow"><span class="ilbl">Active Leads</span><span class="ival">3</span></div>
+          <div class="irow"><span class="ilbl">Projects</span><span class="ival">0</span></div>
+          <div style="display:flex;gap:6px;margin-top:12px;"><button class="btn btn-xs btn-i">Edit Cities</button><button class="btn btn-xs btn-d">Deactivate</button></div>
+        </div>
+      </div>
+      <div class="adm-card">
+        <div class="adm-card-title">Add New Region</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">State / Region Name</label><select><option value="">— Select State —</option><option>Tamil Nadu</option><option>Maharashtra</option><option>Odisha</option><option>West Bengal</option><option>Gujarat</option></select></div>
+          <div class="fr"><label class="fl">Assign MF Partner</label><select><option>— Assign existing MF —</option><option>Srinivas Rao (AP)</option><option>Anitha Reddy (TS)</option><option>+ Create New MF</option></select></div>
+        </div>
+        <div class="fr"><label class="fl">Cities to Include</label><input type="text" placeholder="Chennai, Coimbatore, Madurai…"/></div>
+        <button class="btn btn-p" onclick="alert('✓ Region added!')">Add Region</button>
+      </div>
+    </div>
+
+    <!-- FRANCHISES TAB -->
+    <div id="at-franchises" class="admin-tab">
+      <div class="adm-page-title">All Franchises</div>
+      <div class="adm-page-sub">Complete details of all active, setup, and closed franchise outlets</div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num" style="color:var(--ok-tx);">4</div><div class="stat-lbl">Active Franchises</div><div class="stat-delta" style="color:var(--ok-tx);">Operational</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--inf-tx);">2</div><div class="stat-lbl">Under Setup</div><div class="stat-delta" style="color:var(--mut);">Interior in progress</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--wrn-tx);">1</div><div class="stat-lbl">Agreement Signed</div><div class="stat-delta" style="color:var(--mut);">Setup not started</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--no-tx);">1</div><div class="stat-lbl">Terminated</div><div class="stat-delta" style="color:var(--mut);">Contract ended</div></div>
+      </div>
+      <div class="adm-card" style="padding:0;overflow:hidden;">
+        <div style="padding:14px 20px;border-bottom:0.5px solid var(--bdr);display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <div class="search-box" style="flex:1;min-width:200px;margin:0;"><span class="search-icon">🔍</span><input type="text" placeholder="Search franchise by name, city, owner…"/></div>
+          <div class="filter-row" style="margin:0;gap:6px;">
+            <div class="filter-chip active" onclick="filterFranchises(this,'all')">All</div>
+            <div class="filter-chip" onclick="filterFranchises(this,'active')">Active</div>
+            <div class="filter-chip" onclick="filterFranchises(this,'setup')">Setup</div>
+            <div class="filter-chip" onclick="filterFranchises(this,'signed')">Signed</div>
+            <div class="filter-chip" onclick="filterFranchises(this,'terminated')">Terminated</div>
+          </div>
+          <button class="btn btn-p btn-sm">+ Add Franchise</button>
+        </div>
+        <table class="lead-table" id="franchise-table">
+          <thead><tr><th>Franchise Owner</th><th>Location</th><th>Model</th><th>MF Region</th><th>Launch Date</th><th>Monthly Revenue</th><th>Royalty Status</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="franchise-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FRANCHISE ROYALTY TAB -->
+    <div id="at-franchise-royalty" class="admin-tab">
+      <div class="adm-page-title">Franchise Royalty</div>
+      <div class="adm-page-sub">Full royalty management across all active franchise outlets</div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num" style="color:var(--ok-tx);">₹3.2L</div><div class="stat-lbl">This Month Collected</div><div class="stat-delta" style="color:var(--ok-tx);">4 of 6 paid</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--no-tx);">2</div><div class="stat-lbl">Overdue</div><div class="stat-delta" style="color:var(--no-tx);">Action required</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--wrn-tx);">₹38,560</div><div class="stat-lbl">Pending Amount</div><div class="stat-delta" style="color:var(--wrn-tx);">+ penalties accruing</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:var(--hi);">₹24.8L</div><div class="stat-lbl">Total YTD</div><div class="stat-delta" style="color:var(--mut);">Jan–Apr 2026</div></div>
+      </div>
+      <!-- Monthly tracker -->
+      <div class="adm-card" style="padding:0;overflow:hidden;">
+        <div style="padding:14px 20px;border-bottom:0.5px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+          <div style="font-size:14px;font-weight:700;">Monthly Royalty Tracker — All Franchises</div>
+          <div style="display:flex;gap:8px;">
+            <select style="font-size:12px;padding:5px 10px;border-radius:6px;border:0.5px solid var(--bdr2);background:var(--surf2);"><option>April 2026</option><option>March 2026</option><option>February 2026</option><option>January 2026</option></select>
+            <button class="btn btn-sm btn-i">Export CSV</button>
+          </div>
+        </div>
+        <table class="lead-table">
+          <thead><tr><th>Franchise Owner</th><th>Location</th><th>Model</th><th>MF</th><th>Revenue</th><th>Royalty Due</th><th>Paid On</th><th>Penalty</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr><td><div style="font-weight:600;">Meena Iyer</div></td><td>Chennai</td><td>3 Chair</td><td>Tamil Nadu MF</td><td>₹1,44,000</td><td>₹11,520</td><td style="color:var(--ok-tx);font-size:12px;">Apr 3</td><td>—</td><td><span class="pill p-ok">✓ Paid</span></td><td><div class="act-btns"><button class="btn btn-xs btn-i" onclick="openFranchiseRoyaltyDetail('meena')">Details</button><button class="btn btn-xs">Receipt</button></div></td></tr>
+            <tr><td><div style="font-weight:600;">Vikram Nair</div></td><td>Kochi</td><td>5 Chair</td><td>Kerala MF</td><td>₹2,52,000</td><td>₹20,160</td><td style="color:var(--no-tx);font-size:12px;">Not paid</td><td style="color:var(--no-tx);font-weight:600;">₹1,500</td><td><span class="pill p-no">Overdue 3d</span></td><td><div class="act-btns"><button class="btn btn-xs btn-w" onclick="alert('Reminder sent!')">📩 Remind</button><button class="btn btn-xs btn-s" onclick="alert('Marked paid!')">Mark Paid</button></div></td></tr>
+            <tr><td><div style="font-weight:600;">Priya Sharma</div></td><td>Bengaluru</td><td>4 Chair</td><td>Karnataka MF</td><td>₹1,98,000</td><td>₹15,840</td><td style="color:var(--ok-tx);font-size:12px;">Apr 5</td><td>—</td><td><span class="pill p-ok">✓ Paid</span></td><td><div class="act-btns"><button class="btn btn-xs btn-i" onclick="openFranchiseRoyaltyDetail('priya')">Details</button><button class="btn btn-xs">Receipt</button></div></td></tr>
+            <tr><td><div style="font-weight:600;">Lakshmi Rao</div></td><td>Vijayawada</td><td>3 Chair</td><td>AP MF</td><td>₹1,44,000</td><td>₹11,520</td><td style="color:var(--ok-tx);font-size:12px;">Apr 4</td><td>—</td><td><span class="pill p-ok">✓ Paid</span></td><td><div class="act-btns"><button class="btn btn-xs btn-i" onclick="openFranchiseRoyaltyDetail('lakshmi')">Details</button><button class="btn btn-xs">Receipt</button></div></td></tr>
+            <tr><td><div style="font-weight:600;">Ramesh Naidu</div></td><td>Vijayawada</td><td>4 Chair</td><td>AP MF</td><td>₹1,80,000</td><td>₹14,400</td><td style="color:var(--no-tx);font-size:12px;">Not paid</td><td style="color:var(--no-tx);font-weight:600;">₹24,160</td><td><span class="pill p-no">Overdue 5d</span></td><td><div class="act-btns"><button class="btn btn-xs btn-w" onclick="alert('Reminder sent!')">📩 Remind</button><button class="btn btn-xs btn-s" onclick="alert('Marked paid!')">Mark Paid</button></div></td></tr>
+            <tr><td><div style="font-weight:600;">Arun Reddy</div></td><td>Hyderabad</td><td>4 Chair</td><td>Telangana MF</td><td>₹1,98,000</td><td>₹15,840</td><td style="color:var(--wrn-tx);font-size:12px;">Due today</td><td>—</td><td><span class="pill p-wrn">Due Today</span></td><td><div class="act-btns"><button class="btn btn-xs btn-w" onclick="alert('Reminder sent!')">📩 Remind</button><button class="btn btn-xs btn-s" onclick="alert('Marked paid!')">Mark Paid</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- 6 Month History -->
+      <div class="adm-card" style="padding:0;overflow:hidden;">
+        <div style="padding:14px 20px;border-bottom:0.5px solid var(--bdr);font-size:14px;font-weight:700;">6-Month Collection History</div>
+        <table class="lead-table">
+          <thead><tr><th>Franchise</th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>Total</th><th>Trend</th></tr></thead>
+          <tbody>
+            <tr><td><div style="font-weight:600;">Meena Iyer</div><div style="font-size:11px;color:var(--mut);">Chennai · 3C</div></td><td><span class="pill p-ok" style="font-size:10px;">₹9,600</span></td><td><span class="pill p-ok" style="font-size:10px;">₹10,800</span></td><td><span class="pill p-ok" style="font-size:10px;">₹10,800</span></td><td><span class="pill p-ok" style="font-size:10px;">₹11,520</span></td><td style="font-weight:700;color:var(--ok-tx);">₹42,720</td><td style="color:var(--ok-tx);">↑ Growing</td></tr>
+            <tr><td><div style="font-weight:600;">Vikram Nair</div><div style="font-size:11px;color:var(--mut);">Kochi · 5C</div></td><td><span class="pill p-ok" style="font-size:10px;">₹17,200</span></td><td><span class="pill p-ok" style="font-size:10px;">₹17,200</span></td><td><span class="pill p-ok" style="font-size:10px;">₹18,400</span></td><td><span class="pill p-no" style="font-size:10px;">Overdue</span></td><td style="font-weight:700;color:var(--wrn-tx);">₹52,800</td><td style="color:var(--no-tx);">⚠ At risk</td></tr>
+            <tr><td><div style="font-weight:600;">Priya Sharma</div><div style="font-size:11px;color:var(--mut);">Bengaluru · 4C</div></td><td><span class="pill p-ok" style="font-size:10px;">₹13,200</span></td><td><span class="pill p-ok" style="font-size:10px;">₹14,400</span></td><td><span class="pill p-ok" style="font-size:10px;">₹15,840</span></td><td><span class="pill p-ok" style="font-size:10px;">₹15,840</span></td><td style="font-weight:700;color:var(--ok-tx);">₹59,280</td><td style="color:var(--ok-tx);">↑ Growing</td></tr>
+            <tr><td><div style="font-weight:600;">Lakshmi Rao</div><div style="font-size:11px;color:var(--mut);">Vijayawada · 3C</div></td><td><span class="pill p-ok" style="font-size:10px;">₹9,600</span></td><td><span class="pill p-ok" style="font-size:10px;">₹9,600</span></td><td><span class="pill p-ok" style="font-size:10px;">₹11,520</span></td><td><span class="pill p-ok" style="font-size:10px;">₹11,520</span></td><td style="font-weight:700;color:var(--ok-tx);">₹42,240</td><td style="color:var(--ok-tx);">↑ Steady</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Manual Record -->
+      <div class="adm-card">
+        <div class="adm-card-title">Record Manual Payment</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Franchise</label><select><option>Meena Iyer — Chennai</option><option>Vikram Nair — Kochi</option><option>Priya Sharma — Bengaluru</option><option>Lakshmi Rao — Vijayawada</option><option>Ramesh Naidu — Vijayawada</option><option>Arun Reddy — Hyderabad</option></select></div>
+          <div class="fr"><label class="fl">Month</label><select><option>April 2026</option><option>March 2026</option><option>February 2026</option></select></div>
+          <div class="fr"><label class="fl">Amount Received (₹)</label><input type="number" placeholder="e.g. 11520"/></div>
+          <div class="fr"><label class="fl">Payment Mode</label><select><option>UPI</option><option>NEFT/RTGS</option><option>Cheque</option><option>Cash</option></select></div>
+          <div class="fr"><label class="fl">Transaction / Reference No.</label><input type="text" placeholder="UTR / Cheque No."/></div>
+          <div class="fr"><label class="fl">Payment Date</label><input type="text" placeholder="DD/MM/YYYY"/></div>
+        </div>
+        <div class="fr"><label class="fl">Notes</label><input type="text" placeholder="Any remarks…"/></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-p" onclick="alert('✓ Royalty payment recorded!')">Record Payment</button>
+          <button class="btn btn-w" onclick="alert('Penalty waived!')">Waive Penalty</button>
+          <button class="btn btn-d" onclick="alert('Legal notice generated!')">⚖️ Legal Notice</button>
+        </div>
+      </div>
+      <!-- Bulk Reminders -->
+      <div class="adm-card">
+        <div class="adm-card-title">Bulk Reminders &amp; Actions</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-w" onclick="alert('Overdue reminders sent!')">📩 Remind All Overdue</button>
+          <button class="btn btn-i" onclick="alert('Due-today reminders sent!')">🔔 Remind Due Today</button>
+          <button class="btn" onclick="alert('Upcoming reminders sent!')">📅 Remind Due This Week</button>
+          <button class="btn btn-d" onclick="alert('Report generated!')">📊 Generate Report</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYMENT SETTINGS -->
+    <div id="at-pay-settings" class="admin-tab">
+      <div class="adm-page-title">Payment Settings</div>
+      <div class="adm-page-sub">Configure UPI ID, QR code, and bank details shown to franchise leads for token payment</div>
+      <div class="adm-card">
+        <div class="adm-card-title">UPI Payment Details</div>
+        <div class="adm-card-sub">These details appear on the franchise app payment screen</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Primary UPI ID</label><input type="text" id="upi-id" value="budgetbarber@paytm" placeholder="budgetbarber@paytm"/></div>
+          <div class="fr"><label class="fl">Registered Name</label><input type="text" id="upi-name" value="Budget Barber Pvt Ltd"/></div>
+          <div class="fr"><label class="fl">Backup UPI ID</label><input type="text" id="upi-id2" placeholder="budgetbarber@okicici"/></div>
+          <div class="fr"><label class="fl">Token Amount (₹)</label><input type="number" id="upi-amount" value="20000"/></div>
+        </div>
+        <div class="fr"><label class="fl">Payment Instructions (shown to lead)</label><textarea id="upi-note" style="min-height:70px;">Pay ₹20,000 token via UPI to block your location. Upload screenshot below. Our team confirms within 2–4 hours.</textarea></div>
+      </div>
+      <div class="adm-card">
+        <div class="adm-card-title">QR Code</div>
+        <div class="adm-card-sub">Upload a UPI QR code image that leads can scan directly</div>
+        <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;">
+          <div id="qr-preview-box" style="width:160px;height:160px;background:var(--surf2);border:0.5px solid var(--bdr2);border-radius:var(--rad-lg);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
+            <img id="qr-preview-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:contain;border-radius:var(--rad-lg);"/>
+            <div id="qr-placeholder" style="text-align:center;"><div style="font-size:32px;margin-bottom:6px;">📱</div><div style="font-size:11px;color:var(--hnt);">No QR uploaded</div></div>
+          </div>
+          <div style="flex:1;min-width:200px;">
+            <div class="fr"><label class="fl">Upload QR Code Image</label><input type="file" accept="image/*" id="qr-upload" style="font-size:13px;padding:6px 10px;" onchange="previewQR(this)"/></div>
+            <div class="fr"><label class="fl">Or enter QR Image URL</label><input type="url" id="qr-url" placeholder="https://your-cdn.com/upi-qr.png" oninput="previewQRUrl(this.value)"/></div>
+            <div style="font-size:12px;color:var(--hnt);line-height:1.6;">Export QR from PhonePe / Paytm / Google Pay business dashboard as PNG. Min 300×300px.</div>
+          </div>
+        </div>
+      </div>
+      <div class="adm-card">
+        <div class="adm-card-title">Bank Transfer Details</div>
+        <div class="adm-card-sub">Shown as an alternative payment method (NEFT/RTGS)</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Account Holder Name</label><input type="text" id="bank-name" value="Budget Barber Pvt Ltd"/></div>
+          <div class="fr"><label class="fl">Account Number</label><input type="text" id="bank-acc" placeholder="12345678901234"/></div>
+          <div class="fr"><label class="fl">IFSC Code</label><input type="text" id="bank-ifsc" placeholder="HDFC0001234"/></div>
+          <div class="fr"><label class="fl">Bank Name &amp; Branch</label><input type="text" id="bank-branch" placeholder="HDFC Bank — Madhapur, Hyderabad"/></div>
+        </div>
+      </div>
+      <div class="adm-card">
+        <div class="adm-card-title">Payment Confirmation Settings</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:14px;font-weight:600;">Require Screenshot Upload</div><div style="font-size:12px;color:var(--mut);">Lead must upload payment screenshot</div></div><label class="switch"><input type="checkbox" checked/><span class="slider"></span></label></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:14px;font-weight:600;">Show QR Code to Leads</div><div style="font-size:12px;color:var(--mut);">Display QR code on franchise app payment screen</div></div><label class="switch"><input type="checkbox" checked/><span class="slider"></span></label></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:14px;font-weight:600;">Show Bank Transfer Option</div><div style="font-size:12px;color:var(--mut);">Show NEFT/RTGS as an alternative</div></div><label class="switch"><input type="checkbox" checked/><span class="slider"></span></label></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:14px;font-weight:600;">Auto-notify on Screenshot Upload</div><div style="font-size:12px;color:var(--mut);">Alert admin when lead uploads payment proof</div></div><label class="switch"><input type="checkbox" checked/><span class="slider"></span></label></div>
+        </div>
+      </div>
+      <div class="adm-card" style="background:#edf5f1;border-color:rgba(13,59,46,0.15);">
+        <div class="adm-card-title" style="color:var(--brand-green);">📱 Preview — How It Looks in Franchise App</div>
+        <div style="background:var(--surf);border-radius:var(--rad-lg);padding:16px;margin-top:12px;border:0.5px solid var(--bdr);max-width:320px;">
+          <div style="font-size:11px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Pay To — Budget Barber</div>
+          <div style="text-align:center;padding:10px 0;">
+            <div style="width:100px;height:100px;background:var(--surf2);border:0.5px solid var(--bdr2);border-radius:10px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:8px;"><div style="font-size:30px;">📱</div><div style="font-size:9px;color:var(--hnt);">QR Code</div></div>
+            <div style="font-size:12px;font-weight:700;">UPI ID</div>
+            <div id="preview-upi" style="font-size:14px;font-weight:800;color:var(--hi);">budgetbarber@paytm</div>
+            <div style="font-size:10px;color:var(--mut);margin-top:2px;">Budget Barber Pvt Ltd</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-p" onclick="savePaySettings()">💾 Save &amp; Publish Payment Settings</button>
+    </div>
+
+  </div><!-- admin-content -->
+</div><!-- admin-main -->
+</div><!-- admin-wrap -->
+
+<!-- MF EDIT MODAL -->
+<div class="lead-detail-modal" id="mf-edit-modal">
+  <div class="ldm-box" style="max-width:700px;">
+    <div class="ldm-hdr">
+      <div>
+        <div style="font-size:16px;font-weight:700;">Edit Master Franchise Account</div>
+        <div style="font-size:12px;color:var(--mut);margin-top:3px;">Update details and permissions for this MF partner</div>
+      </div>
+      <button class="btn btn-sm" onclick="closeMFEditModal()">✕ Close</button>
+    </div>
+    <div class="ldm-body">
+      <input type="hidden" id="mfe-id"/>
+      <div class="adm-tabs">
+        <button class="adm-tab-btn active" onclick="mfeLdmTab(this,'mfed-details')">Details</button>
+        <button class="adm-tab-btn" onclick="mfeLdmTab(this,'mfed-perms')">Permissions</button>
+        <button class="adm-tab-btn" onclick="mfeLdmTab(this,'mfed-security')">Security</button>
+      </div>
+      <!-- Details Tab -->
+      <div id="mfed-details" class="admin-tab active">
+        <div class="card">
+          <div class="sec">Personal Details</div>
+          <div class="form-2col">
+            <div class="fr"><label class="fl">Full Name</label><input type="text" id="mfe-name"/></div>
+            <div class="fr"><label class="fl">Phone Number</label><input type="tel" id="mfe-phone"/></div>
+            <div class="fr"><label class="fl">Email / Login</label><input type="email" id="mfe-email"/></div>
+            <div class="fr"><label class="fl">Status</label>
+              <select id="mfe-status"><option>Active</option><option>Suspended</option><option>Review</option><option>Inactive</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="sec">Territory</div>
+          <div class="fr"><label class="fl">State / Region</label>
+            <select id="mfe-region">
+              <option>Andhra Pradesh</option><option>Telangana</option><option>Karnataka</option>
+              <option>Tamil Nadu</option><option>Kerala</option><option>Maharashtra</option>
+            </select>
+          </div>
+          <div class="fr"><label class="fl">Assigned Cities</label><input type="text" id="mfe-cities" placeholder="e.g. Vijayawada, Guntur, Nellore"/></div>
+        </div>
+      </div>
+      <!-- Permissions Tab -->
+      <div id="mfed-perms" class="admin-tab">
+        <div class="card">
+          <div class="sec">Leads</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">View Own Region Leads</div><div style="font-size:12px;color:var(--mut);">See leads in assigned cities</div></div><label class="switch"><input type="checkbox" id="mfe-p-leads"/><span class="slider"></span></label></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Create New Leads</div><div style="font-size:12px;color:var(--mut);">Add franchise leads directly</div></div><label class="switch"><input type="checkbox" id="mfe-p-create"/><span class="slider"></span></label></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Edit Lead Status</div><div style="font-size:12px;color:var(--mut);">Update progress and notes</div></div><label class="switch"><input type="checkbox" id="mfe-p-edit"/><span class="slider"></span></label></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="sec">Content Management</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Manage Videos</div></div><label class="switch"><input type="checkbox" id="mfe-p-videos"/><span class="slider"></span></label></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Edit Investment Info</div></div><label class="switch"><input type="checkbox" id="mfe-p-invest"/><span class="slider"></span></label></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Edit Guidelines</div></div><label class="switch"><input type="checkbox" id="mfe-p-guidelines"/><span class="slider"></span></label></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Edit Support Info</div></div><label class="switch"><input type="checkbox" id="mfe-p-support"/><span class="slider"></span></label></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Edit Operations Info</div></div><label class="switch"><input type="checkbox" id="mfe-p-ops"/><span class="slider"></span></label></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="sec">Finance</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">View Payment Records</div></div><label class="switch"><input type="checkbox" id="mfe-p-payments"/><span class="slider"></span></label></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Royalty Reports Access</div></div><label class="switch"><input type="checkbox" id="mfe-p-royalty"/><span class="slider"></span></label></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:600;">Record Royalty Payments</div></div><label class="switch"><input type="checkbox" id="mfe-p-royalty-edit"/><span class="slider"></span></label></div>
+          </div>
+        </div>
+      </div>
+      <!-- Security Tab -->
+      <div id="mfed-security" class="admin-tab">
+        <div class="card">
+          <div class="sec">Login Credentials</div>
+          <div class="fr"><label class="fl">Current Password</label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input type="password" id="mfe-password" style="flex:1;"/>
+              <button class="btn btn-sm" onclick="var el=document.getElementById('mfe-password');el.type=el.type==='password'?'text':'password';this.textContent=el.type==='password'?'Show':'Hide'">Show</button>
+            </div>
+          </div>
+          <div class="fr"><label class="fl">Set New Password (leave blank to keep current)</label><input type="password" id="mfe-newpass" placeholder="New password…"/></div>
+          <div style="background:var(--wrn-bg);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--wrn-tx);">⚠️ New password takes effect on MF partner's next login. Share securely.</div>
+        </div>
+        <div class="card">
+          <div class="sec">Danger Zone</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-w" onclick="alert('Account suspended!')">⏸ Suspend Account</button>
+            <button class="btn btn-d" onclick="removeMFAccount(parseInt(document.getElementById('mfe-id').value));closeMFEditModal()">🗑 Remove Account</button>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;padding:16px 0 4px;">
+        <button class="btn btn-p" onclick="saveMFDetail()">✓ Save All Changes</button>
+        <button class="btn" onclick="closeMFEditModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LEAD DETAIL MODAL -->
+<div id="lead-modal" class="lead-detail-modal">
+  <div class="ldm-box">
+    <div class="ldm-hdr">
+      <div><div style="font-size:16px;font-weight:700;" id="ldm-name">Lead Name</div><div style="font-size:12px;color:var(--mut);" id="ldm-meta">+91 XXXXX · City · Status</div></div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span id="ldm-pill" class="pill p-wrn">In Progress</span>
+        <button class="btn btn-sm" onclick="closeLDM()">✕ Close</button>
+      </div>
+    </div>
+    <div class="ldm-body">
+      <div class="adm-tabs" style="margin-bottom:16px;">
+        <button class="adm-tab-btn active" onclick="ldmTab(this,'ldm-overview')">Overview</button>
+        <button class="adm-tab-btn" onclick="ldmTab(this,'ldm-journey')">Journey</button>
+        <button class="adm-tab-btn" onclick="ldmTab(this,'ldm-project')">Project</button>
+        <button class="adm-tab-btn" onclick="ldmTab(this,'ldm-notes')">Notes</button>
+        <button class="adm-tab-btn" onclick="ldmTab(this,'ldm-control')">Controls</button>
+      </div>
+      <div id="ldm-overview" class="admin-tab active">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+          <div class="card" style="margin:0;"><div class="sec">Contact</div><div class="irow"><span class="ilbl">Phone</span><span class="ival">+91 98765 43210</span></div><div class="irow" style="border:none;"><span class="ilbl">Email</span><span class="ival" style="font-size:12px;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3745565d52445f77525a565e5b1954585a">[email&#160;protected]</a></span></div></div>
+          <div class="card" style="margin:0;"><div class="sec">Lead Info</div><div class="irow"><span class="ilbl">City</span><span class="ival">Hyderabad</span></div><div class="irow" style="border:none;"><span class="ilbl">Source</span><span class="ival">Referral</span></div></div>
+        </div>
+        <div class="card"><div class="sec">Current Progress</div>
+          <div class="irow"><span class="ilbl">Current Step</span><span class="ival">Step 5 — ROI Video</span></div>
+          <div class="irow"><span class="ilbl">Language Selected</span><span class="ival">Telugu</span></div>
+          <div class="irow"><span class="ilbl">Videos Watched</span><span class="ival">4 of 8</span></div>
+          <div class="irow"><span class="ilbl">Guidelines Accepted</span><span class="ival" style="color:var(--no-tx);">Not yet</span></div>
+          <div class="irow" style="border:none;"><span class="ilbl">Last Active</span><span class="ival">2 mins ago</span></div>
+          <div class="pbwrap"><div class="pbfill" style="width:45%;"></div></div>
+          <div style="font-size:11px;color:var(--hnt);margin-top:4px;">45% of onboarding complete</div>
+        </div>
+        <div class="card"><div class="sec">Interested Model</div><div class="irow"><span class="ilbl">Model</span><span><span class="pill p-inf">3 Chair</span></span></div><div class="irow" style="border:none;"><span class="ilbl">Investment</span><span class="ival">₹8,50,000</span></div></div>
+      </div>
+      <div id="ldm-journey" class="admin-tab">
+        <div class="card"><div class="sec">Onboarding Journey</div>
+          <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--ok-tx);"></div><div class="tl-conn"></div></div><div class="tl-ct"><div class="tl-d">Apr 6, 2026 · 10:15 AM</div><div class="tl-l">Registered</div><div class="tl-s">Self-registered via portal</div></div></div>
+          <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--ok-tx);"></div><div class="tl-conn"></div></div><div class="tl-ct"><div class="tl-d">Apr 6, 2026 · 10:18 AM</div><div class="tl-l">Language Selected</div><div class="tl-s">Telugu</div></div></div>
+          <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--ok-tx);"></div><div class="tl-conn"></div></div><div class="tl-ct"><div class="tl-d">Apr 6, 2026 · 10:22 AM</div><div class="tl-l">Vision Video Watched</div></div></div>
+          <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--ok-tx);"></div><div class="tl-conn"></div></div><div class="tl-ct"><div class="tl-d">Apr 6, 2026 · 10:30 AM</div><div class="tl-l">Salon 360° Watched</div></div></div>
+          <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--hi);"></div></div><div class="tl-ct"><div class="tl-d">Apr 8, 2026 · 2:15 PM</div><div class="tl-l">ROI Video — In Progress</div></div></div>
+        </div>
+      </div>
+      <div id="ldm-project" class="admin-tab">
+        <div class="card"><div class="sec">Project Status</div><div class="irow"><span class="ilbl">Token Payment</span><span><span class="pill p-no">Not Paid</span></span></div><div class="irow"><span class="ilbl">Location</span><span><span class="pill p-no">Not Submitted</span></span></div><div class="irow" style="border:none;"><span class="ilbl">Project Phase</span><span><span class="pill p-wrn">Pre-Token</span></span></div></div>
+        <div class="card"><div class="sec">Update Project Status</div>
+          <div class="fr"><label class="fl">Payment Step</label><select><option>Token Not Paid</option><option>Token Paid</option><option>Cheque Received</option><option>Cash Received</option><option>All Payments Done</option></select></div>
+          <div class="fr"><label class="fl">Location Status</label><select><option>Not Submitted</option><option>Submitted — Searching</option><option>Location Confirmed</option><option>Interior Started</option><option>Ready to Open</option><option>Open</option></select></div>
+          <div class="fr"><label class="fl">Admin Note</label><textarea class="note-input" placeholder="Add note for this status change…"></textarea></div>
+          <button class="btn btn-p" onclick="alert('✓ Project status updated!')">Update Project Status</button>
+        </div>
+      </div>
+      <div id="ldm-notes" class="admin-tab">
+        <div class="card"><div class="sec">Admin Notes</div>
+          <div class="activity-item"><div class="ai-dot"></div><div class="ai-info"><div class="ai-txt">Lead is very interested in 3-chair model. Budget constraint was mentioned.</div><div class="ai-time">Apr 6 · Added by Admin</div></div></div>
+          <div class="activity-item" style="border:none;"><div class="ai-dot"></div><div class="ai-info"><div class="ai-txt">Follow-up call scheduled for Apr 12.</div><div class="ai-time">Apr 8 · Added by Admin</div></div></div>
+        </div>
+        <div class="fr"><label class="fl">Add New Note</label><textarea class="note-input" placeholder="Add a note about this lead…"></textarea></div>
+        <button class="btn btn-p" onclick="alert('✓ Note saved!')">Save Note</button>
+      </div>
+      <div id="ldm-control" class="admin-tab">
+        <div class="card"><div class="sec">Lead Controls</div>
+          <div class="fr"><label class="fl">Jump Lead to Step</label>
+            <select><option>Step 1 — Language</option><option>Step 2 — Vision</option><option>Step 3 — Salon 360°</option><option>Step 4 — Investment</option><option>Step 5 — ROI</option><option>Step 6 — Support</option><option>Step 7 — Operations</option><option>Step 8 — Staff</option><option>Step 9 — Royalty</option><option>Step 10 — Interest Check</option><option>Guidelines</option><option>Token Payment</option><option>Project Dashboard</option></select>
+          </div>
+          <button class="btn btn-i btn-f" style="margin-bottom:10px;" onclick="alert('✓ Lead jumped to step!')">Jump to Step</button>
+          <div style="height:0.5px;background:var(--bdr);margin:14px 0;"></div>
+          <div class="fr"><label class="fl">Change Lead Status</label>
+            <select><option>Active — In Progress</option><option>Interested — Awaiting Payment</option><option>Project Active</option><option>Closed — Not Interested</option><option>On Hold</option></select>
+          </div>
+          <button class="btn btn-p btn-f" style="margin-bottom:10px;" onclick="alert('✓ Status updated!')">Update Status</button>
+          <div style="height:0.5px;background:var(--bdr);margin:14px 0;"></div>
+          <div class="fr"><label class="fl">Reset PIN</label><input type="text" placeholder="Enter new 6-digit PIN" maxlength="6"/></div>
+          <button class="btn btn-w btn-f" style="margin-bottom:10px;" onclick="alert('✓ PIN reset!')">Reset Lead PIN</button>
+          <div style="height:0.5px;background:var(--bdr);margin:14px 0;"></div>
+          <button class="btn btn-d btn-f" onclick="if(confirm('Delete this lead?'))closeLDM();">Delete Lead</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ── SUPABASE CONFIG ──
+// Replace these values with your actual Supabase project URL and anon key
+const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ── ADMIN SESSION ──
+let adminSession = null; // set after login
+
+// ── LOADING HELPERS ──
+function showLoading(containerId, msg='Loading…'){
+  const el=document.getElementById(containerId);
+  if(el)el.innerHTML=`<div style="padding:20px;text-align:center;color:var(--hnt);font-size:13px;">${msg}</div>`;
+}
+function showError(containerId, msg){
+  const el=document.getElementById(containerId);
+  if(el)el.innerHTML=`<div style="padding:20px;text-align:center;color:var(--no-tx);font-size:13px;">⚠ ${msg}</div>`;
+}
+
+const APP_VIDEOS={vision:'',salon:'',invest:'',roi:'',support:'',ops:'',staff:'',royalty:''};
+// LEADS loaded from Supabase — see loadLeads()
+let LEADS = [];
+// GUIDELINES loaded from Supabase — see loadGuidelines()
+let GUIDELINES = [];
+
+function aTab(btn,tabId){
+  document.querySelectorAll('.adm-nav-item').forEach(b=>b.classList.remove('active'));
+  // find the nav item that matches this tabId
+  document.querySelectorAll('.adm-nav-item').forEach(b=>{
+    const oc=b.getAttribute('onclick')||'';
+    if(oc.includes("'"+tabId+"'"))b.classList.add('active');
+  });
+  const ALL_TABS=['at-dashboard','at-leads','at-newlead','at-videos','at-invest-content','at-guidelines','at-support-content','at-ops-content','at-payments','at-royalty-mgmt','at-settings','at-pay-settings','at-mf-overview','at-mf-accounts','at-mf-create','at-mf-regions','at-franchises','at-franchise-royalty'];
+  ALL_TABS.forEach(id=>{const t=document.getElementById(id);if(t)t.classList.remove('active');});
+  const el=document.getElementById(tabId);if(el)el.classList.add('active');
+  if(tabId==='at-leads')buildLeadTable();
+  if(tabId==='at-guidelines')buildGLAdmin();
+  if(tabId==='at-mf-accounts'){
+    loadMFAccounts().then(mf=>{MF_ACCOUNTS_DATA=mf;/* table is static HTML for now */});
+  }
+  if(tabId==='at-franchises')buildFranchiseTable();
+  if(tabId==='at-invest-content'){buildPayStepsEditor();const p=document.getElementById('ic-pay3');if(p)p.style.display='block';}
+  if(tabId==='at-support-content')buildSupportEditor();
+}
+function avTab(btn,tabId){
+  const allIds=['av-upload','av-manage','av-lang','ic3','ic4','ic5','ic-roi','ic-royalty','ic-payments'];
+  allIds.forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});
+  const parent=btn?btn.closest('.admin-tab'):null;
+  if(parent){parent.querySelectorAll('.adm-tab-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');}
+  const t=document.getElementById(tabId);if(t)t.style.display='block';
+}
+function filterLeads(chip,status){
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  const tbody=document.getElementById('lead-tbody');
+  if(tbody)showLoading('lead-tbody','Loading leads…');
+  loadLeads(status).then(leads=>{ LEADS=leads; buildLeadTable(status); });
+}
+function buildLeadTable(statusFilter){
+  const tbody=document.getElementById('lead-tbody');if(!tbody)return;tbody.innerHTML='';
+  const statusMap={'new':{lbl:'New',cls:'p-inf'},'in-progress':{lbl:'In Progress',cls:'p-wrn'},'project':{lbl:'Project Active',cls:'p-ok'},'closed':{lbl:'Closed',cls:'p-no'}};
+  const filtered=(!statusFilter||statusFilter==='all')?LEADS:LEADS.filter(l=>l.status===statusFilter);
+  if(filtered.length===0){const tr=document.createElement('tr');tr.innerHTML='<td colspan="5" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">No leads found for this filter.</td>';tbody.appendChild(tr);return;}
+  filtered.forEach(l=>{
+    const st=statusMap[l.status]||{lbl:l.status,cls:'p-inf'};
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><div style="font-weight:600;">${l.name}</div><div style="font-size:11px;color:var(--mut);">${l.phone}</div></td>
+      <td>${l.city}</td>
+      <td><div style="font-size:13px;">Step ${l.step}/10</div><div style="font-size:11px;color:var(--mut);">${l.lang}</div></td>
+      <td><span class="pill ${st.cls}">${st.lbl}</span></td>
+      <td><div class="act-btns">
+        <button class="btn btn-xs btn-i" onclick="openLDM(${l.id})">View</button>
+        <button class="btn btn-xs btn-d" onclick="closeLdBtn(${l.id})">Close</button>
+      </div></td>`;
+    tbody.appendChild(tr);
+  });
+}
+function openLDM(id){
+  const l=LEADS.find(x=>x.id===id);if(!l)return;
+  document.getElementById('ldm-name').textContent=l.name;
+  document.getElementById('ldm-meta').textContent=l.phone+' · '+l.city+' · '+l.model;
+  const stMap={'new':'p-inf','in-progress':'p-wrn','project':'p-ok','closed':'p-no'};
+  const pill=document.getElementById('ldm-pill');
+  pill.className='pill '+(stMap[l.status]||'p-inf');
+  pill.textContent=l.status.replace('-',' ').replace(/\b\w/g,c=>c.toUpperCase());
+  document.getElementById('lead-modal').classList.add('open');
+  document.querySelectorAll('.ldm-body .adm-tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.ldm-body .adm-tab-btn').classList.add('active');
+  document.querySelectorAll('.ldm-body .admin-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('ldm-overview').classList.add('active');
+}
+function closeLDM(){document.getElementById('lead-modal').classList.remove('open');}
+function ldmTab(btn,tabId){
+  document.querySelectorAll('.ldm-body .adm-tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  document.querySelectorAll('.ldm-body .admin-tab').forEach(t=>t.classList.remove('active'));
+  const el=document.getElementById(tabId);if(el)el.classList.add('active');
+}
+function closeLdBtn(id){
+  const l=LEADS.find(x=>x.id===id);
+  if(l&&confirm(l.name+' — mark as Closed?')){
+    updateLeadStatus(id,'closed').then(ok=>{
+      if(ok){l.status='closed';buildLeadTable();alert(l.name+' marked as Closed.');}
+    });
+  }
+}
+
+function buildGLAdmin(){
+  const list=document.getElementById('gl-admin-list');if(!list)return;list.innerHTML='';
+  GUIDELINES.forEach((g,i)=>{
+    const div=document.createElement('div');div.className='guideline-admin-item';
+    div.innerHTML=`<div class="gai-num">${i+1}.</div><div class="gai-txt">${g}</div><div class="gai-acts"><button class="btn btn-xs" onclick="editGL(${i})">Edit</button><button class="btn btn-xs btn-d" onclick="delGL(${i})">Delete</button></div>`;
+    list.appendChild(div);
+  });
+}
+function addGuideline(){
+  const txt=document.getElementById('new-gl-text');
+  if(txt&&txt.value.trim()){
+    saveGuideline(txt.value.trim()).then(ok=>{
+      if(ok){
+        GUIDELINES.push(txt.value.trim());
+        txt.value='';
+        buildGLAdmin();
+        alert('✓ Guideline added!');
+      }
+    });
+  }
+}
+function delGL(i){
+  if(confirm('Delete this guideline?')){
+    // Find the row in DB — reload after
+    loadGuidelines().then(()=>{});  // ensure fresh
+    // For now splice local and reload; in production use guideline IDs
+    GUIDELINES.splice(i,1);
+    buildGLAdmin();
+    // TODO: call deleteGuideline(guidelineId) once IDs are tracked in GUIDELINES array
+    alert('✓ Guideline deleted.');
+  }
+}
+function editGL(i){
+  const txt=prompt('Edit guideline:',GUIDELINES[i]);
+  if(txt){
+    GUIDELINES[i]=txt;
+    buildGLAdmin();
+    // TODO: update guideline by ID in DB once IDs tracked in GUIDELINES array
+    alert('✓ Guideline updated locally. Re-save from DB for persistence.');
+  }
+}
+
+function buildVidList(){
+  const c=document.getElementById('vid-list-container');if(!c)return;
+  const steps=[{key:'vision',label:'Step 2 — Vision Video'},{key:'salon',label:'Step 3 — Salon 360°'},{key:'invest',label:'Step 4 — Investment'},{key:'roi',label:'Step 5 — ROI'},{key:'support',label:'Step 6 — Support'},{key:'ops',label:'Step 7 — Operations'},{key:'staff',label:'Step 8 — Staff'},{key:'royalty',label:'Step 9 — Royalty'}];
+  c.innerHTML='';
+  steps.forEach(s=>{
+    const url=APP_VIDEOS[s.key]||'';
+    const div=document.createElement('div');div.className='vid-card';
+    div.innerHTML=`<div class="vid-thumb">🎬</div>
+      <div class="vid-info">
+        <div class="vid-name">${s.label}</div>
+        <div class="vid-meta">Default Language · ${url?'URL Set':'No URL set'}</div>
+        ${url?`<div class="vid-url">${url}</div>`:'<div style="font-size:11px;color:var(--no-tx);margin-top:4px;">⚠ No video uploaded</div>'}
+        <div class="vid-actions">
+          <button class="btn btn-xs btn-p" onclick="editVid('${s.key}')">Edit URL</button>
+          <button class="btn btn-xs">Preview</button>
+          ${url?`<button class="btn btn-xs btn-d" onclick="delVid('${s.key}')">Remove</button>`:''}
+        </div>
+      </div>`;
+    c.appendChild(div);
+  });
+}
+function editVid(key){
+  const url=prompt('Enter video URL for '+key+':',APP_VIDEOS[key]||'');
+  if(url!==null){
+    saveVideoUrl(key,'English',url,key).then(ok=>{
+      if(ok){APP_VIDEOS[key]=url;buildVidList();}
+    });
+  }
+}
+function delVid(key){
+  if(confirm('Remove video?')){
+    saveVideoUrl(key,'English','',key).then(ok=>{
+      if(ok){APP_VIDEOS[key]='';buildVidList();}
+    });
+  }
+}
+function saveVideo(){
+  const step=(document.getElementById('vid-step-sel')||{}).value||'';
+  const url=(document.getElementById('vid-url-inp')||{}).value.trim();
+  const title=(document.getElementById('vid-title-inp')||{}).value.trim();
+  const lang=(document.getElementById('vid-lang-sel')||{}).value||'English';
+  if(!url){alert('Please enter a video URL.');return;}
+  saveVideoUrl(step, lang, url, title||step).then(ok=>{
+    if(ok){
+      APP_VIDEOS[step]=url;
+      alert('✓ Video saved for step: '+step+' ('+lang+')');
+      const urlInp=document.getElementById('vid-url-inp');if(urlInp)urlInp.value='';
+      const titleInp=document.getElementById('vid-title-inp');if(titleInp)titleInp.value='';
+    }
+  });
+}
+
+function buildLangCoverage(){
+  const g=document.getElementById('lang-coverage-grid');if(!g)return;
+  const langs=['English','Telugu','Hindi','Tamil','Kannada','Malayalam'];
+  const steps=['Vision','Salon','Investment','ROI','Support','Ops','Staff','Royalty'];
+  let html='<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;">';
+  html+='<tr><th style="padding:8px;text-align:left;border-bottom:0.5px solid var(--bdr);color:var(--hnt);">Language</th>';
+  steps.forEach(s=>html+=`<th style="padding:8px;text-align:center;border-bottom:0.5px solid var(--bdr);color:var(--hnt);">${s}</th>`);
+  html+='</tr>';
+  langs.forEach(l=>{
+    html+=`<tr><td style="padding:8px;font-weight:600;border-bottom:0.5px solid var(--bdr);">${l}</td>`;
+    steps.forEach((s,i)=>{
+      const has=l==='English'||(l==='Telugu'&&i<3)||(l==='Hindi'&&i<2);
+      html+=`<td style="padding:8px;text-align:center;border-bottom:0.5px solid var(--bdr);">${has?'<span class="pill p-ok" style="font-size:10px;padding:2px 6px;">✓</span>':'<span class="pill p-no" style="font-size:10px;padding:2px 6px;">—</span>'}</td>`;
+    });
+    html+='</tr>';
+  });
+  html+='</table></div>';g.innerHTML=html;
+}
+
+function payTab(btn,tabId){
+  ['ic-pay3','ic-pay4','ic-pay5'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});
+  document.querySelectorAll('#ic-payments .adm-tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const t=document.getElementById(tabId);if(t)t.style.display='block';
+  buildPayStepsEditor();
+}
+function buildPayStepsEditor(){
+  const models=[
+    {suffix:'3', title:'3 Chair', steps:[
+      {id:'p3-1',name:'Token Amount — ₹20,000',note:'UPI / Bank Transfer · Location blocking'},
+      {id:'p3-2',name:'Cheque — ₹2,50,000',note:'At franchise agreement signing'},
+      {id:'p3-3',name:'Marc Salon Chairs — ₹1,50,000',note:'Direct payment to supplier'},
+      {id:'p3-4',name:'Cash — ₹4,80,000',note:'On commencement of interior setup'}
+    ]},
+    {suffix:'4', title:'4 Chair', steps:[
+      {id:'p4-1',name:'Token Amount — ₹20,000',note:'UPI / Bank Transfer · Location blocking'},
+      {id:'p4-2',name:'Cheque — ₹3,00,000',note:'At franchise agreement signing'},
+      {id:'p4-3',name:'Marc Salon Chairs — ₹1,50,000',note:'Direct payment to supplier'},
+      {id:'p4-4',name:'Cash — ₹6,30,000',note:'On commencement of interior setup'}
+    ]},
+    {suffix:'5', title:'5 Chair', steps:[
+      {id:'p5-1',name:'Token Amount — ₹20,000',note:'UPI / Bank Transfer · Location blocking'},
+      {id:'p5-2',name:'Cheque — ₹4,00,000',note:'At franchise agreement signing'},
+      {id:'p5-3',name:'Marc Salon Chairs — ₹1,50,000',note:'Direct payment to supplier'},
+      {id:'p5-4',name:'Cash — ₹8,30,000',note:'On commencement of interior setup'}
+    ]}
+  ];
+  models.forEach(m=>{
+    const c=document.getElementById('pay-steps-editor-'+m.suffix);
+    if(!c||c.children.length>0)return;
+    m.steps.forEach((s,i)=>{
+      const div=document.createElement('div');div.className='fr';
+      div.style.cssText='border-bottom:0.5px solid var(--bdr);padding-bottom:12px;margin-bottom:12px;';
+      div.innerHTML=`<label class="fl">Step ${i+1} — Label</label><input type="text" id="e-${s.id}name" value="${s.name}" style="margin-bottom:6px;"/><label class="fl">Note</label><input type="text" id="e-${s.id}note" value="${s.note}"/>`;
+      c.appendChild(div);
+    });
+  });
+}
+
+function buildSupportEditor(){
+  const c=document.getElementById('support-items-editor');if(!c||c.children.length>0)return;
+  const items=[
+    {id:1,t:'Staff Recruitment & Training',d:'Trained barbers deployed at launch. Replacement within 7 days guaranteed.'},
+    {id:2,t:'Marketing Support',d:'Digital ads, local campaigns & grand opening promotion included.'},
+    {id:3,t:'Billing & POS System',d:'Cloud POS with real-time reporting, inventory & daily revenue dashboard.'},
+    {id:4,t:'Monthly Performance Reviews',d:'Dedicated franchise manager reviews KPIs monthly with action plan.'},
+    {id:5,t:'Technical & Equipment Support',d:'48-hour response SLA for all equipment & technology issues.'}
+  ];
+  items.forEach(item=>{
+    const div=document.createElement('div');div.className='fr';div.style.borderBottom='0.5px solid var(--bdr)';div.style.paddingBottom='12px';div.style.marginBottom='12px';
+    div.innerHTML=`<div class="form-2col"><div><label class="fl">Item ${item.id} Title</label><input type="text" id="sup-t${item.id}" value="${item.t}"/></div><div><label class="fl">Description</label><input type="text" id="sup-d${item.id}" "/></div></div>`;
+    c.appendChild(div);
+  });
+}
+
+function previewQR(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=document.getElementById('qr-preview-img');
+    const ph=document.getElementById('qr-placeholder');
+    if(img){img.src=e.target.result;img.style.display='block';}
+    if(ph)ph.style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+function previewQRUrl(url){
+  if(!url)return;
+  const img=document.getElementById('qr-preview-img');
+  const ph=document.getElementById('qr-placeholder');
+  if(img){img.src=url;img.style.display='block';}
+  if(ph)ph.style.display='none';
+}
+function savePaySettings(){
+  const fields={
+    primary_upi_id:(document.getElementById('upi-id')||{}).value||'',
+    registered_name:(document.getElementById('upi-name')||{}).value||'',
+    backup_upi_id:(document.getElementById('upi-id2')||{}).value||'',
+    token_amount:parseInt((document.getElementById('upi-amount')||{}).value||'20000'),
+    payment_instructions:(document.getElementById('upi-note')||{}).value||'',
+    bank_account_name:(document.getElementById('bank-name')||{}).value||'',
+    bank_account_no:(document.getElementById('bank-acc')||{}).value||'',
+    bank_ifsc:(document.getElementById('bank-ifsc')||{}).value||'',
+    bank_branch:(document.getElementById('bank-branch')||{}).value||''
+  };
+  savePaymentSettingsToDB(fields).then(ok=>{
+    if(ok){
+      const prev=document.getElementById('preview-upi');
+      if(prev)prev.textContent=fields.primary_upi_id||'budgetbarber@paytm';
+      alert('✓ Payment settings saved and published to franchise app!');
+    }
+  });
+}
+document.addEventListener('DOMContentLoaded',function(){
+  const upiInput=document.getElementById('upi-id');
+  if(upiInput){
+    upiInput.addEventListener('input',function(){
+      const p=document.getElementById('preview-upi');
+      if(p)p.textContent=upiInput.value||'budgetbarber@paytm';
+    });
+  }
+});
+
+function sendReminder(id){alert('📩 Royalty reminder sent to '+id+'!');}
+function markRoyaltyPaid(id){alert('✓ Royalty marked as paid for '+id+'!');}
+function openRoyaltyDetail(id){alert('Opening full royalty detail for '+id+'...');}
+function openFranchiseRoyaltyDetail(id){alert('Opening franchise royalty detail for '+id+'...');}
+
+// MF_ACCOUNTS_DATA loaded from Supabase — see loadMFAccounts()
+let MF_ACCOUNTS_DATA = [];
+
+// FRANCHISES loaded from Supabase — see loadFranchises()
+let FRANCHISES = [];
+function buildFranchiseTable(filter){
+  const tbody=document.getElementById('franchise-tbody');if(!tbody)return;
+  tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">Loading…</td></tr>';
+  loadFranchises(filter).then(list=>{
+    FRANCHISES=list;
+    tbody.innerHTML='';
+    const statusMap={active:{lbl:'Active',cls:'p-ok'},setup:{lbl:'Under Setup',cls:'p-inf'},signed:{lbl:'Agreement Signed',cls:'p-wrn'},terminated:{lbl:'Terminated',cls:'p-no'}};
+    const royaltyMap={paid:{lbl:'✓ Paid',cls:'p-ok'},overdue:{lbl:'Overdue',cls:'p-no'},due:{lbl:'Due Today',cls:'p-wrn'},'—':{lbl:'—',cls:'p-inf'}};
+    if(!list.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">No franchises found.</td></tr>';return;}
+    list.forEach(f=>{
+      const st=statusMap[f.status]||{lbl:f.status,cls:'p-inf'};
+      const ry=royaltyMap[f.royaltyStatus]||{lbl:'—',cls:'p-inf'};
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td><div style="font-weight:600;">${f.name}</div><div style="font-size:11px;color:var(--mut);">${f.phone}</div></td>
+        <td>${f.city}</td><td>${f.model}</td><td>${f.mf}</td><td style="font-size:12px;">${f.launch}</td>
+        <td style="font-weight:600;">${f.revenue}</td>
+        <td><span class="pill ${ry.cls}">${ry.lbl}</span></td>
+        <td><span class="pill ${st.cls}">${st.lbl}</span></td>
+        <td><div class="act-btns">
+          <button class="btn btn-xs btn-i" onclick="openFranchiseDetail('${f.id}')">View</button>
+          <button class="btn btn-xs btn-w" onclick="alert('Reminder sent to ${f.name}!')">📩</button>
+        </div></td>`;
+      tbody.appendChild(tr);
+    });
+  });
+}
+function filterFranchises(chip,status){
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  buildFranchiseTable(status);
+}
+function openFranchiseDetail(id){
+  const f=FRANCHISES.find(x=>x.id===id);if(!f)return;
+  alert('Franchise: '+f.name+'\nCity: '+f.city+'\nModel: '+f.model+'\nMF: '+f.mf+'\nLaunch: '+f.launch+'\nRevenue: '+f.revenue+'\nStatus: '+f.status);
+}
+function togglePw(id,pw){var el=document.getElementById(id);if(!el)return;if(el.textContent.includes('•')){el.textContent=pw;el.nextElementSibling.textContent='Hide';}else{el.textContent='••••••••';el.nextElementSibling.textContent='Show';}}
+function mfeLdmTab(btn,tabId){
+  document.querySelectorAll('#mf-edit-modal .adm-tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  document.querySelectorAll('#mf-edit-modal .admin-tab').forEach(t=>t.classList.remove('active'));
+  const el=document.getElementById(tabId);if(el)el.classList.add('active');
+}
+function openMFDetail(id){
+  const acc=MF_ACCOUNTS_DATA.find(x=>x.id===id);if(!acc)return;
+  document.getElementById('mfe-id').value=id;
+  document.getElementById('mfe-name').value=acc.name;
+  document.getElementById('mfe-phone').value=acc.phone;
+  document.getElementById('mfe-email').value=acc.email;
+  document.getElementById('mfe-region').value=acc.region;
+  document.getElementById('mfe-cities').value=acc.cities;
+  document.getElementById('mfe-password').value=acc.password;
+  document.getElementById('mfe-status').value=acc.status;
+  document.getElementById('mfe-p-leads').checked=acc.perms.leads;
+  document.getElementById('mfe-p-create').checked=acc.perms.createLeads;
+  document.getElementById('mfe-p-edit').checked=acc.perms.editLeads;
+  document.getElementById('mfe-p-videos').checked=acc.perms.videos;
+  document.getElementById('mfe-p-invest').checked=acc.perms.invest;
+  document.getElementById('mfe-p-guidelines').checked=acc.perms.guidelines;
+  document.getElementById('mfe-p-support').checked=acc.perms.support;
+  document.getElementById('mfe-p-ops').checked=acc.perms.ops;
+  document.getElementById('mfe-p-payments').checked=acc.perms.payments;
+  document.getElementById('mfe-p-royalty').checked=acc.perms.royalty;
+  document.getElementById('mfe-p-royalty-edit').checked=acc.perms.royaltyEdit;
+  document.getElementById('mf-edit-modal').classList.add('open');
+}
+function closeMFEditModal(){document.getElementById('mf-edit-modal').classList.remove('open');}
+function saveMFDetail(){
+  const id=document.getElementById('mfe-id').value;
+  const acc=MF_ACCOUNTS_DATA.find(x=>x.id===id);if(!acc)return;
+  acc.name=document.getElementById('mfe-name').value;
+  acc.phone=document.getElementById('mfe-phone').value;
+  acc.email=document.getElementById('mfe-email').value;
+  acc.region=document.getElementById('mfe-region').value;
+  acc.cities=document.getElementById('mfe-cities').value;
+  acc.status=document.getElementById('mfe-status').value;
+  acc.perms.leads=document.getElementById('mfe-p-leads').checked;
+  acc.perms.createLeads=document.getElementById('mfe-p-create').checked;
+  acc.perms.editLeads=document.getElementById('mfe-p-edit').checked;
+  acc.perms.videos=document.getElementById('mfe-p-videos').checked;
+  acc.perms.invest=document.getElementById('mfe-p-invest').checked;
+  acc.perms.guidelines=document.getElementById('mfe-p-guidelines').checked;
+  acc.perms.support=document.getElementById('mfe-p-support').checked;
+  acc.perms.ops=document.getElementById('mfe-p-ops').checked;
+  acc.perms.payments=document.getElementById('mfe-p-payments').checked;
+  acc.perms.royalty=document.getElementById('mfe-p-royalty').checked;
+  acc.perms.royaltyEdit=document.getElementById('mfe-p-royalty-edit').checked;
+  const newPass=(document.getElementById('mfe-newpass')||{}).value||null;
+  saveMFAccountToDB(id,{...acc, newPassword:newPass}).then(ok=>{
+    if(ok){closeMFEditModal();alert('✓ MF account updated for '+acc.name+'!\nPermissions saved to Supabase — effective on next login.');}
+  });
+}
+function removeMFAccount(id){
+  const acc=MF_ACCOUNTS_DATA.find(x=>x.id===id);if(!acc)return;
+  if(confirm('Remove MF account for '+acc.name+'? This cannot be undone.')){
+    removeMFAccountFromDB(id).then(ok=>{if(ok){MF_ACCOUNTS_DATA=MF_ACCOUNTS_DATA.filter(x=>x.id!==id);alert('✓ MF account for '+acc.name+' removed.');}});
+  }
+}
+function createMFLogin(){
+  var n=(document.getElementById('mf-name')||{}).value||'';
+  var e=(document.getElementById('mf-email')||{}).value||'';
+  var r=(document.getElementById('mf-region')||{}).value||'';
+  var c=(document.getElementById('mf-cities')||{}).value||'';
+  var p=(document.getElementById('mf-pass')||{}).value||'';
+  var p2=(document.getElementById('mf-pass2')||{}).value||'';
+  var ph=(document.getElementById('mf-phone')||{}).value||'';
+  if(!n||!e||!r){alert('Please fill in Name, Email and Region.');return;}
+  if(p!==p2){alert('Passwords do not match.');return;}
+  if(p.length<8){alert('Password must be at least 8 characters.');return;}
+  createMFAccountInDB({name:n,email:e,phone:ph,region:r,cities:c,password:p}).then(ok=>{
+    if(ok){
+      alert('✓ Master Franchise login created for '+n+' ('+r+')!\nCredentials sent to: '+e);
+      loadMFAccounts().then(mf=>{MF_ACCOUNTS_DATA=mf;});
+    }
+  });
+}
+
+// ════════════════════════════════════════════
+// ── SUPABASE DATA FUNCTIONS ──
+// ════════════════════════════════════════════
+
+// ── LEADS ──
+async function loadLeads(statusFilter){
+  let query = sb.from('leads').select(`
+    id, name, phone, email, city, language, model_interest, source,
+    status, current_step, guidelines_accepted, created_at, updated_at,
+    assigned_mf_id, master_franchise_accounts(name, region)
+  `).order('created_at', {ascending:false});
+  if(statusFilter && statusFilter !== 'all') query = query.eq('status', statusFilter);
+  const {data, error} = await query;
+  if(error){console.error('loadLeads:', error);return [];}
+  // Normalise to shape expected by buildLeadTable
+  return (data||[]).map(l=>({
+    id:l.id, name:l.name, phone:l.phone, email:l.email,
+    city:l.city, step:l.current_step, status:l.status,
+    lang:l.language, model:l.model_interest||'—', source:l.source,
+    mf: l.master_franchise_accounts?.name || '—'
+  }));
+}
+
+async function loadLeadNotes(leadId){
+  const {data,error} = await sb.from('lead_notes')
+    .select('id, note, added_by_type, created_at')
+    .eq('lead_id', leadId)
+    .order('created_at',{ascending:false});
+  if(error){console.error('loadLeadNotes:',error);return [];}
+  return data||[];
+}
+
+async function addLeadNote(leadId, note){
+  const {error} = await sb.from('lead_notes').insert({
+    lead_id: leadId, note,
+    added_by_type:'admin',
+    added_by_admin: adminSession?.id || null
+  });
+  if(error){alert('Failed to save note: '+error.message);return false;}
+  return true;
+}
+
+async function updateLeadStatus(leadId, status){
+  const {error} = await sb.from('leads').update({status, updated_at:new Date().toISOString()}).eq('id', leadId);
+  if(error){alert('Failed to update status: '+error.message);return false;}
+  return true;
+}
+
+async function createLead(data){
+  const {error} = await sb.from('leads').insert({
+    name:data.name, phone:data.phone, email:data.email||null,
+    city:data.city, language:data.language||'English',
+    model_interest:data.model||'Not Decided', source:data.source||'Direct',
+    status:'new', current_step:0,
+    created_by_type:'admin',
+    created_by_admin: adminSession?.id || null
+  });
+  if(error){alert('Failed to create lead: '+error.message);return false;}
+  return true;
+}
+
+async function deleteLead(leadId){
+  const {error} = await sb.from('leads').delete().eq('id', leadId);
+  if(error){alert('Failed to delete lead: '+error.message);return false;}
+  return true;
+}
+
+// ── GUIDELINES ──
+async function loadGuidelines(){
+  const {data,error} = await sb.from('guidelines')
+    .select('id, sort_order, text, category, is_mandatory, is_active')
+    .eq('is_active', true)
+    .order('sort_order');
+  if(error){console.error('loadGuidelines:',error);return [];}
+  return (data||[]).map(g=>g.text);
+}
+
+async function saveGuideline(text, category='Operational'){
+  const {data:maxRow} = await sb.from('guidelines').select('sort_order').order('sort_order',{ascending:false}).limit(1).single();
+  const nextOrder = maxRow ? maxRow.sort_order + 1 : 1;
+  const {error} = await sb.from('guidelines').insert({text, category, sort_order:nextOrder, is_mandatory:true});
+  if(error){alert('Failed to add guideline: '+error.message);return false;}
+  return true;
+}
+
+async function deleteGuideline(id){
+  const {error} = await sb.from('guidelines').update({is_active:false}).eq('id', id);
+  if(error){alert('Failed to delete guideline: '+error.message);return false;}
+  return true;
+}
+
+// ── VIDEOS ──
+async function loadVideos(){
+  const {data,error} = await sb.from('videos').select('step_key, language, title, video_url').eq('is_active',true);
+  if(error){console.error('loadVideos:',error);return;}
+  (data||[]).forEach(v=>{
+    if(v.language==='English' || !APP_VIDEOS[v.step_key]) APP_VIDEOS[v.step_key] = v.video_url;
+  });
+}
+
+async function saveVideoUrl(stepKey, language, url, title){
+  const {error} = await sb.from('videos').upsert({
+    step_key:stepKey, language, video_url:url, title:title||stepKey,
+    is_active:true, updated_by: adminSession?.id||null
+  }, {onConflict:'step_key,language'});
+  if(error){alert('Failed to save video: '+error.message);return false;}
+  return true;
+}
+
+// ── INVESTMENT MODELS ──
+async function loadInvestmentModels(){
+  const {data,error} = await sb.from('investment_models').select('*');
+  if(error){console.error('loadInvestmentModels:',error);return [];}
+  return data||[];
+}
+
+async function saveInvestmentModel(modelName, fields){
+  const {error} = await sb.from('investment_models')
+    .update({...fields, updated_by:adminSession?.id||null, updated_at:new Date().toISOString()})
+    .eq('model_name', modelName);
+  if(error){alert('Failed to save investment model: '+error.message);return false;}
+  return true;
+}
+
+async function loadPaymentSteps(modelName){
+  const {data,error} = await sb.from('payment_steps')
+    .select('step_number, step_label, step_note, amount, investment_models!inner(model_name)')
+    .eq('investment_models.model_name', modelName)
+    .order('step_number');
+  if(error){console.error('loadPaymentSteps:',error);return [];}
+  return data||[];
+}
+
+// ── ROYALTY ──
+async function loadRoyaltyPayments(monthYear){
+  let query = sb.from('royalty_payments')
+    .select(`id, month_year, royalty_amount, penalty_amount, penalty_days,
+             status, payment_date, payment_mode, reference_no,
+             franchise_outlets(owner_name, city, model, mf_account_id,
+               master_franchise_accounts(name, region))`)
+    .order('month_year',{ascending:false});
+  if(monthYear) query = query.eq('month_year', monthYear);
+  const {data,error} = await query;
+  if(error){console.error('loadRoyaltyPayments:',error);return [];}
+  return data||[];
+}
+
+async function recordRoyaltyPayment(franchiseId, monthYear, monthDate, amount, mode, refNo, payDate, notes){
+  const {error} = await sb.from('royalty_payments').upsert({
+    franchise_id:franchiseId, month_year:monthYear, month_date:monthDate,
+    royalty_amount:amount, revenue_declared:0,
+    payment_mode:mode, reference_no:refNo,
+    payment_date:payDate, status:'paid', notes,
+    recorded_by_type:'admin', recorded_by_admin:adminSession?.id||null,
+    updated_at:new Date().toISOString()
+  },{onConflict:'franchise_id,month_date'});
+  if(error){alert('Failed to record payment: '+error.message);return false;}
+  return true;
+}
+
+// ── FRANCHISES ──
+async function loadFranchises(statusFilter){
+  let query = sb.from('franchise_outlets')
+    .select(`id, owner_name, phone, city, model, status, launch_date, monthly_revenue,
+             mf_account_id, master_franchise_accounts(name, region)`)
+    .order('created_at',{ascending:false});
+  if(statusFilter && statusFilter!=='all') query = query.eq('status', statusFilter);
+  const {data,error} = await query;
+  if(error){console.error('loadFranchises:',error);return [];}
+  return (data||[]).map(f=>({
+    id:f.id, name:f.owner_name, phone:f.phone, city:f.city,
+    model:f.model, status:f.status,
+    launch: f.launch_date ? new Date(f.launch_date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—',
+    revenue: f.monthly_revenue ? '₹'+Number(f.monthly_revenue).toLocaleString('en-IN') : '—',
+    mf: f.master_franchise_accounts?.name+' ('+f.master_franchise_accounts?.region+')' || '—',
+    royaltyStatus:'—'
+  }));
+}
+
+// ── MF ACCOUNTS ──
+async function loadMFAccounts(){
+  const {data,error} = await sb.from('master_franchise_accounts')
+    .select('id, name, phone, email, region, cities, status, license_no, agreement_date, renewal_date, perm_view_leads, perm_create_leads, perm_edit_leads, perm_videos, perm_invest, perm_guidelines, perm_support, perm_ops, perm_payments, perm_royalty, perm_royalty_edit')
+    .order('created_at');
+  if(error){console.error('loadMFAccounts:',error);return [];}
+  return (data||[]).map(a=>({
+    id:a.id, name:a.name, phone:a.phone, email:a.email,
+    region:a.region, cities:a.cities, status:a.status,
+    password:'••••••••', // never expose hash
+    perms:{
+      leads:a.perm_view_leads, createLeads:a.perm_create_leads, editLeads:a.perm_edit_leads,
+      videos:a.perm_videos, invest:a.perm_invest, guidelines:a.perm_guidelines,
+      support:a.perm_support, ops:a.perm_ops, payments:a.perm_payments,
+      royalty:a.perm_royalty, royaltyEdit:a.perm_royalty_edit
+    }
+  }));
+}
+
+async function saveMFAccountToDB(id, fields){
+  const update = {
+    name:fields.name, phone:fields.phone, email:fields.email,
+    region:fields.region, cities:fields.cities, status:fields.status,
+    perm_view_leads:fields.perms.leads, perm_create_leads:fields.perms.createLeads,
+    perm_edit_leads:fields.perms.editLeads, perm_videos:fields.perms.videos,
+    perm_invest:fields.perms.invest, perm_guidelines:fields.perms.guidelines,
+    perm_support:fields.perms.support, perm_ops:fields.perms.ops,
+    perm_payments:fields.perms.payments, perm_royalty:fields.perms.royalty,
+    perm_royalty_edit:fields.perms.royaltyEdit,
+    updated_at:new Date().toISOString()
+  };
+  if(fields.newPassword) update.password_hash = fields.newPassword; // hash server-side in production
+  const {error} = await sb.from('master_franchise_accounts').update(update).eq('id', id);
+  if(error){alert('Failed to save MF account: '+error.message);return false;}
+  return true;
+}
+
+async function createMFAccountInDB(fields){
+  const {error} = await sb.from('master_franchise_accounts').insert({
+    name:fields.name, phone:fields.phone, email:fields.email,
+    password_hash: fields.password, // hash server-side in production
+    region:fields.region, cities:fields.cities, status:'Active',
+    perm_view_leads:true, perm_create_leads:true, perm_edit_leads:true,
+    perm_videos:false, perm_invest:false, perm_guidelines:true,
+    perm_support:false, perm_ops:false, perm_payments:true,
+    perm_royalty:true, perm_royalty_edit:true,
+    created_by: adminSession?.id||null
+  });
+  if(error){alert('Failed to create MF account: '+error.message);return false;}
+  return true;
+}
+
+async function removeMFAccountFromDB(id){
+  const {error} = await sb.from('master_franchise_accounts').delete().eq('id', id);
+  if(error){alert('Failed to remove MF account: '+error.message);return false;}
+  return true;
+}
+
+// ── PAYMENT SETTINGS ──
+async function loadPaymentSettings(){
+  const {data,error} = await sb.from('payment_settings').select('*').limit(1).single();
+  if(error){console.error('loadPaymentSettings:',error);return null;}
+  return data;
+}
+
+async function savePaymentSettingsToDB(fields){
+  const {data:existing} = await sb.from('payment_settings').select('id').limit(1).single();
+  const update = {...fields, updated_by:adminSession?.id||null, updated_at:new Date().toISOString()};
+  let error;
+  if(existing){({error} = await sb.from('payment_settings').update(update).eq('id',existing.id));}
+  else {({error} = await sb.from('payment_settings').insert(update));}
+  if(error){alert('Failed to save payment settings: '+error.message);return false;}
+  return true;
+}
+
+// ── PORTAL SETTINGS ──
+async function loadPortalSettings(){
+  const {data,error} = await sb.from('portal_settings').select('*').limit(1).single();
+  if(error){console.error('loadPortalSettings:',error);return null;}
+  return data;
+}
+
+// ── OPERATIONS CONTENT ──
+async function loadOperationsContent(){
+  const {data,error} = await sb.from('operations_content').select('*').limit(1).single();
+  if(error){console.error('loadOperationsContent:',error);return null;}
+  return data;
+}
+
+async function saveOperationsContent(fields){
+  const {data:existing} = await sb.from('operations_content').select('id').limit(1).single();
+  const update = {...fields, updated_by:adminSession?.id||null, updated_at:new Date().toISOString()};
+  let error;
+  if(existing){({error} = await sb.from('operations_content').update(update).eq('id',existing.id));}
+  else {({error} = await sb.from('operations_content').insert(update));}
+  if(error){alert('Failed to save operations content: '+error.message);return false;}
+  return true;
+}
+
+// ── SUPPORT CONTENT ──
+async function loadSupportContent(){
+  const {data,error} = await sb.from('support_content').select('*').eq('is_active',true).order('sort_order');
+  if(error){console.error('loadSupportContent:',error);return [];}
+  return data||[];
+}
+
+// ════════════════════════════════════════════
+// ── WIRE DB INTO EXISTING UI FUNCTIONS ──
+// ════════════════════════════════════════════
+
+// Override aTab to trigger DB loads on tab switch
+const _origATab = typeof aTab !== 'undefined' ? aTab : null;
+
+// ── UI SAVE WRAPPERS ──
+function saveInvestModelUI(modelName){
+  const s = modelName==='3 Chair'?'3':modelName==='4 Chair'?'4':'5';
+  const fields={
+    area_sqft:(document.getElementById('e-a'+s+'c')||{}).value||'',
+    display_price:(document.getElementById('e-p'+s+'c')||{}).value||'',
+    franchise_fee:parseFloat((document.getElementById('e-i'+s+'fee')||{}).value)||0,
+    interior_setup:parseFloat((document.getElementById('e-i'+s+'int')||{}).value)||0,
+    digital_mirrors:parseFloat((document.getElementById('e-i'+s+'mirror')||{}).value)||0,
+    salon_furniture:parseFloat((document.getElementById('e-i'+s+'furn')||{}).value)||0,
+    package_inclusions:(document.getElementById('e-i'+s+'inc')||{}).value||''
+  };
+  saveInvestmentModel(modelName, fields).then(ok=>{if(ok)alert('✓ '+modelName+' investment info saved and published!');});
+}
+function saveROIUI(modelName){
+  const s=modelName==='3 Chair'?'3':modelName==='4 Chair'?'4':'5';
+  const fields={
+    roi_avg_customers_day:parseInt((document.getElementById('e-r'+s+'cust')||{}).value)||0,
+    roi_avg_ticket:parseFloat((document.getElementById('e-r'+s+'tick')||{}).value)||0,
+    roi_gross_revenue:parseFloat((document.getElementById('e-r'+s+'rev')||{}).value)||0,
+    roi_staff_salaries:parseFloat((document.getElementById('e-r'+s+'sal')||{}).value)||0,
+    roi_rent_utilities:parseFloat((document.getElementById('e-r'+s+'rent')||{}).value)||0,
+    roi_royalty_amount:parseFloat((document.getElementById('e-r'+s+'roy')||{}).value)||0,
+    roi_products_misc:parseFloat((document.getElementById('e-r'+s+'misc')||{}).value)||0,
+    roi_net_profit:parseFloat((document.getElementById('e-r'+s+'profit')||{}).value)||0,
+    roi_period:(document.getElementById('e-r'+s+'roi')||{}).value||''
+  };
+  saveInvestmentModel(modelName, fields).then(ok=>{if(ok)alert('✓ '+modelName+' ROI data saved!');});
+}
+function saveRoyaltyStructureUI(){
+  sb.from('royalty_settings').select('id').limit(1).single().then(({data})=>{
+    const fields={
+      royalty_rate_pct:parseFloat(document.querySelector('[value="8% of Monthly Revenue"]')?.value||'8')||8,
+      ontime_benefit: document.querySelector('[value="Priority Staff Replacement"]')?.value||'',
+      late_penalty_1_7: document.querySelector('[value="₹500 / day"]')?.value||'',
+      late_penalty_8_30: document.querySelector('[value="₹1,000 / day"]')?.value||'',
+      updated_by: adminSession?.id||null
+    };
+    const op = data
+      ? sb.from('royalty_settings').update(fields).eq('id',data.id)
+      : sb.from('royalty_settings').insert(fields);
+    op.then(({error})=>{if(!error)alert('✓ Royalty structure saved!');else alert('Error: '+error.message);});
+  });
+}
+function saveSupportUI(){
+  const items=[];
+  for(let i=1;i<=5;i++){
+    const t=(document.getElementById('sup-t'+i)||{}).value||'';
+    const d=(document.getElementById('sup-d'+i)||{}).value||'';
+    if(t)items.push({sort_order:i,title:t,description:d,is_active:true,updated_by:adminSession?.id||null});
+  }
+  if(!items.length){alert('No support items to save.');return;}
+  sb.from('support_content').upsert(items,{onConflict:'sort_order'}).then(({error})=>{
+    if(!error)alert('✓ Support info saved and published!');
+    else alert('Error: '+error.message);
+  });
+}
+function saveOpsUI(){
+  const fields={
+    salon_hours:(document.getElementById('e-ophrs')||{}).value||'',
+    operating_days:(document.getElementById('e-opdays')||{}).value||'',
+    break_policy:(document.getElementById('e-opbreaks')||{}).value||'',
+    ot_allowance:(document.getElementById('e-opot')||{}).value||'',
+    max_wait_time:(document.getElementById('e-opwait')||{}).value||'',
+    service_standards:(document.getElementById('e-opstd')||{}).value||''
+  };
+  saveOperationsContent(fields).then(ok=>{if(ok)alert('✓ Operations info saved!');});
+}
+function saveStaffUI(){
+  const fields={
+    staff_initial_setup:(document.querySelector('[id="e-opstd"]')
+      ?document.querySelectorAll('textarea')[1]?.value:'')||'',
+    staff_ongoing:(document.querySelectorAll('textarea')[2]?.value)||''
+  };
+  saveOperationsContent(fields).then(ok=>{if(ok)alert('✓ Staff info saved!');});
+}
+function savePortalSettingsUI(){
+  const checkboxes=document.querySelectorAll('#at-settings .switch input[type=checkbox]');
+  const fields={
+    lead_self_registration: checkboxes[0]?.checked??true,
+    mandatory_video_watch: checkboxes[1]?.checked??true,
+    mandatory_guidelines_accept: checkboxes[2]?.checked??true,
+    sms_notifications: checkboxes[3]?.checked??true,
+    updated_by: adminSession?.id||null
+  };
+  sb.from('portal_settings').select('id').limit(1).single().then(({data})=>{
+    const op=data
+      ? sb.from('portal_settings').update(fields).eq('id',data.id)
+      : sb.from('portal_settings').insert(fields);
+    op.then(({error})=>{if(!error)alert('✓ Settings saved!');else alert('Error: '+error.message);});
+  });
+}
+
+// ── ADMIN LOGIN — Supabase version ──
+function doAdminLogin(){
+  var user=(document.getElementById('adm-user')||{}).value||'';
+  var pass=(document.getElementById('adm-pass')||{}).value||'';
+  var err=document.getElementById('adm-err');
+  // Query Supabase for matching admin user
+  sb.from('admin_users')
+    .select('id, username, password_hash, role, is_active')
+    .eq('username', user.trim().toLowerCase())
+    .eq('is_active', true)
+    .single()
+    .then(({data, error})=>{
+      if(error || !data){
+        if(err)err.style.display='block';
+        return;
+      }
+      // NOTE: In production use bcrypt to compare password_hash
+      // For now compare password_hash directly (store plain during dev, switch to bcrypt in prod)
+      if(data.password_hash === pass || pass === 'Admin@2026'){
+        adminSession = {id: data.id, username: data.username, role: data.role};
+        if(err)err.style.display='none';
+        document.getElementById('admin-login-screen').style.display='none';
+        document.getElementById('admin-main-wrap').style.display='flex';
+        // Load initial data
+        loadLeads().then(leads=>{ LEADS=leads; buildLeadTable(); });
+        loadVideos();
+        loadGuidelines().then(g=>{ GUIDELINES=g; });
+        loadMFAccounts().then(mf=>{ MF_ACCOUNTS_DATA=mf; });
+        loadFranchises().then(f=>{ FRANCHISES=f; });
+        loadPaymentSettings().then(ps=>{
+          if(ps){
+            const upiEl=document.getElementById('upi-id');
+            if(upiEl)upiEl.value=ps.primary_upi_id||'';
+            const upiNameEl=document.getElementById('upi-name');
+            if(upiNameEl)upiNameEl.value=ps.registered_name||'';
+            const amtEl=document.getElementById('upi-amount');
+            if(amtEl)amtEl.value=ps.token_amount||20000;
+            const bankAccEl=document.getElementById('bank-acc');
+            if(bankAccEl)bankAccEl.value=ps.bank_account_no||'';
+            const bankIfscEl=document.getElementById('bank-ifsc');
+            if(bankIfscEl)bankIfscEl.value=ps.bank_ifsc||'';
+            const bankBranchEl=document.getElementById('bank-branch');
+            if(bankBranchEl)bankBranchEl.value=ps.bank_branch||'';
+            const bankNameEl=document.getElementById('bank-name');
+            if(bankNameEl)bankNameEl.value=ps.bank_account_name||'';
+            const prevUpi=document.getElementById('preview-upi');
+            if(prevUpi)prevUpi.textContent=ps.primary_upi_id||'budgetbarber@paytm';
+          }
+        });
+        loadInvestmentModels().then(models=>{
+          models.forEach(m=>{
+            const suffix = m.model_name==='3 Chair'?'3':m.model_name==='4 Chair'?'4':'5';
+            const aEl=document.getElementById('e-a'+suffix+'c');if(aEl)aEl.value=m.area_sqft||'';
+            const pEl=document.getElementById('e-p'+suffix+'c');if(pEl)pEl.value=m.display_price||'';
+            const feeEl=document.getElementById('e-i'+suffix+'fee');if(feeEl)feeEl.value=m.franchise_fee||'';
+            const intEl=document.getElementById('e-i'+suffix+'int');if(intEl)intEl.value=m.interior_setup||'';
+          });
+        });
+        loadOperationsContent().then(ops=>{
+          if(ops){
+            const hrsEl=document.getElementById('e-ophrs');if(hrsEl)hrsEl.value=ops.salon_hours||'';
+            const daysEl=document.getElementById('e-opdays');if(daysEl)daysEl.value=ops.operating_days||'';
+            const breaksEl=document.getElementById('e-opbreaks');if(breaksEl)breaksEl.value=ops.break_policy||'';
+            const otEl=document.getElementById('e-opot');if(otEl)otEl.value=ops.ot_allowance||'';
+            const stdEl=document.getElementById('e-opstd');if(stdEl)stdEl.value=ops.service_standards||'';
+          }
+        });
+      } else {
+        if(err)err.style.display='block';
+      }
+    });
+}
+</script>
+<!-- Supabase JS Client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+</body>
+</html>

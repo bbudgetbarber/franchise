@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Budget Barber — Franchise Portal</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --brand-green:#0D3B2E;
+  --brand-yellow:#F5D100;
+  --accent:#1a5c44;
+  --bg:#F7F7F5;--surf:#FFFFFF;--surf2:#F2F2EF;--surf3:#E8E8E4;
+  --bdr:rgba(0,0,0,0.09);--bdr2:rgba(0,0,0,0.16);
+  --txt:#1A1A1A;--mut:#5F5E5A;--hnt:#9A9890;
+  --ok-bg:#EAF3DE;--ok-tx:#3B6D11;
+  --no-bg:#FCEBEB;--no-tx:#A32D2D;
+  --inf-bg:#E6F1FB;--inf-tx:#185FA5;
+  --wrn-bg:#FAEEDA;--wrn-tx:#854F0B;
+  --hi:#1a5c44;
+  --rad:8px;--rad-lg:12px;--rad-xl:16px;
+}
+html,body{height:100%;background:var(--bg);}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--txt);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;}
+
+/* Mobile shell centered */
+#franchise-app{
+  width:420px;min-width:320px;max-width:100%;background:var(--surf);
+  border-left:0.5px solid var(--bdr2);border-right:0.5px solid var(--bdr2);
+  display:flex;flex-direction:column;min-height:100vh;
+  position:relative;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,0.07);
+}
+.fscreen{display:none;flex-direction:column;height:100%;animation:fi .25s ease;}
+.fscreen.active{display:flex;}
+.fscreen-scroll{flex:1;overflow-y:auto;padding-bottom:24px;}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── LOGO ── */
+.bb-logo-svg{display:flex;align-items:center;}
+
+.hdr{background:var(--surf);border-bottom:0.5px solid var(--bdr);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.badge{font-size:11px;padding:3px 9px;border-radius:99px;background:var(--ok-bg);color:var(--ok-tx);font-weight:700;}
+
+.sbody{padding:18px 20px 24px;}
+.stitle{font-size:20px;font-weight:700;margin-bottom:5px;}
+.ssub{font-size:13px;color:var(--mut);margin-bottom:18px;line-height:1.6;}
+
+.card{background:var(--surf);border:0.5px solid var(--bdr);border-radius:var(--rad-lg);padding:14px 16px;margin-bottom:12px;}
+.sec{font-size:11px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;}
+
+.fl{font-size:12px;font-weight:700;color:var(--mut);margin-bottom:6px;display:block;}
+input[type=text],input[type=tel],input[type=email],input[type=password],input[type=url],input[type=number],select,textarea{
+  width:100%;padding:9px 12px;font-size:14px;border:0.5px solid var(--bdr2);
+  border-radius:var(--rad);background:var(--surf2);color:var(--txt);
+  outline:none;font-family:inherit;transition:border-color .15s,box-shadow .15s;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--hi);box-shadow:0 0 0 3px rgba(26,92,68,0.12);}
+textarea{resize:vertical;min-height:80px;line-height:1.5;}
+.fr{margin-bottom:13px;}
+
+.btn{padding:10px 18px;font-size:14px;font-weight:600;border-radius:var(--rad);cursor:pointer;border:0.5px solid var(--bdr2);background:var(--surf2);color:var(--txt);font-family:inherit;transition:all .15s;display:inline-block;text-align:center;}
+.btn:hover{background:var(--surf3);}
+.btn:active{transform:scale(.98);}
+.btn-p{background:var(--brand-green);color:#fff;border-color:var(--brand-green);}
+.btn-p:hover{background:#0a2e22;border-color:#0a2e22;}
+.btn-d{background:var(--no-bg);color:var(--no-tx);border-color:transparent;}
+.btn-s{background:var(--ok-bg);color:var(--ok-tx);border-color:transparent;}
+.btn-i{background:var(--inf-bg);color:var(--inf-tx);border-color:transparent;}
+.btn-w{background:var(--wrn-bg);color:var(--wrn-tx);border-color:transparent;}
+.btn-f{width:100%;display:block;}
+.btn-sm{padding:6px 12px;font-size:12px;}
+.btn-xs{padding:4px 9px;font-size:11px;font-weight:600;}
+
+.pin-grid{display:flex;gap:10px;justify-content:center;margin:16px 0;}
+.pin-i{width:46px;height:54px;text-align:center;font-size:22px;font-weight:700;border:0.5px solid var(--bdr2);border-radius:var(--rad);background:var(--surf2);color:var(--txt);outline:none;font-family:inherit;}
+.pin-i:focus{border-color:var(--hi);box-shadow:0 0 0 3px rgba(26,92,68,0.12);}
+
+.step-bar{display:flex;gap:5px;padding:10px 20px 0;overflow-x:auto;}
+.sdot{width:8px;height:8px;border-radius:50%;background:var(--bdr2);flex-shrink:0;transition:background .3s;}
+.sdot.done{background:var(--hi);}
+.sdot.active{background:var(--hi);box-shadow:0 0 0 3px rgba(26,92,68,0.2);}
+
+.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.lang-btn{padding:14px 10px;border:0.5px solid var(--bdr2);border-radius:var(--rad-lg);cursor:pointer;text-align:center;background:var(--surf2);font-size:14px;font-weight:700;transition:all .15s;color:var(--txt);}
+.lang-btn:hover,.lang-btn.sel{border-color:var(--hi);background:#edf5f1;color:var(--hi);}
+.lang-em{font-size:24px;display:block;margin-bottom:5px;}
+
+.vmock{background:var(--surf2);border-radius:var(--rad-lg);border:0.5px solid var(--bdr);aspect-ratio:16/9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;position:relative;overflow:hidden;}
+.vplay{width:52px;height:52px;background:rgba(26,92,68,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;}
+.vplay:hover{background:rgba(26,92,68,0.22);}
+.vtri{width:0;height:0;border-style:solid;border-width:11px 0 11px 20px;border-color:transparent transparent transparent var(--hi);margin-left:4px;}
+.vlbl{font-size:13px;color:var(--mut);}
+.vprog{position:absolute;bottom:0;left:0;height:3px;background:var(--hi);width:0%;transition:width 2.2s linear;border-radius:0 2px 2px 0;}
+.vtag{position:absolute;top:10px;left:10px;background:var(--brand-green);color:var(--brand-yellow);font-size:11px;padding:3px 9px;border-radius:99px;font-weight:700;}
+.vurl-badge{position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,0.6);color:#fff;font-size:10px;padding:3px 8px;border-radius:4px;}
+
+.ccard{border:0.5px solid var(--bdr2);border-radius:var(--rad-lg);padding:12px;text-align:center;cursor:pointer;transition:all .15s;background:var(--surf2);}
+.ccard:hover,.ccard.sel{border-color:var(--hi);background:#edf5f1;}
+.cnum{font-size:24px;font-weight:700;color:var(--hi);}
+.clbl{font-size:11px;color:var(--mut);}
+.cprc{font-size:13px;font-weight:700;margin-top:6px;}
+.carea{font-size:11px;color:var(--hnt);}
+
+.rrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--bdr);font-size:13px;}
+.rrow:last-child{border-bottom:none;}
+.rval{font-weight:700;}
+
+.cli{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--bdr);font-size:13px;}
+.cli:last-child{border-bottom:none;}
+.cbox{width:20px;height:20px;border:0.5px solid var(--bdr2);border-radius:5px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:var(--surf2);transition:all .15s;margin-top:1px;}
+.cbox.chk{background:var(--hi);border-color:var(--hi);}
+.cico{color:#fff;font-size:12px;font-weight:700;}
+.ctxt{flex:1;line-height:1.55;}
+
+.pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700;}
+.p-ok{background:var(--ok-bg);color:var(--ok-tx);}
+.p-no{background:var(--no-bg);color:var(--no-tx);}
+.p-inf{background:var(--inf-bg);color:var(--inf-tx);}
+.p-wrn{background:var(--wrn-bg);color:var(--wrn-tx);}
+.p-green{background:#e0f0ea;color:var(--hi);}
+
+.tabs{display:flex;gap:4px;border-bottom:0.5px solid var(--bdr);margin-bottom:16px;overflow-x:auto;}
+.tab{padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;border:none;border-bottom:2px solid transparent;background:none;color:var(--mut);white-space:nowrap;transition:all .15s;font-family:inherit;}
+.tab.active{color:var(--hi);border-bottom-color:var(--hi);}
+
+.mnav{display:flex;border-bottom:0.5px solid var(--bdr);overflow-x:auto;padding:0 16px;gap:2px;}
+.mnbtn{padding:11px 12px;font-size:12px;font-weight:600;border:none;background:none;cursor:pointer;color:var(--mut);border-bottom:2px solid transparent;white-space:nowrap;font-family:inherit;transition:all .15s;}
+.mnbtn.active{color:var(--hi);border-bottom-color:var(--hi);}
+.logout-btn{padding:5px 11px;font-size:11px;font-weight:700;border-radius:99px;cursor:pointer;border:0.5px solid rgba(163,45,45,0.35);background:var(--no-bg);color:var(--no-tx);font-family:inherit;transition:all .15s;white-space:nowrap;}
+.logout-btn:hover{opacity:0.8;}
+.back-btn{padding:5px 11px;font-size:12px;font-weight:600;border-radius:var(--rad);cursor:pointer;border:0.5px solid var(--bdr2);background:var(--surf2);color:var(--mut);font-family:inherit;transition:all .15s;}
+.back-btn:hover{background:var(--surf3);}
+
+.irow{display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:0.5px solid var(--bdr);}
+.irow:last-child{border-bottom:none;}
+.ilbl{color:var(--mut);}
+.ival{font-weight:600;}
+.divdr{height:0.5px;background:var(--bdr);margin:14px 0;}
+
+.sup-item{display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--bdr);font-size:13px;align-items:flex-start;}
+.sup-item:last-child{border-bottom:none;}
+.sup-icon{width:30px;height:30px;border-radius:var(--rad);background:#edf5f1;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;}
+
+.tl-item{display:flex;gap:12px;margin-bottom:4px;}
+.tl-line{display:flex;flex-direction:column;align-items:center;flex-shrink:0;}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--hi);flex-shrink:0;margin-top:3px;}
+.tl-conn{width:1px;flex:1;background:var(--bdr2);min-height:24px;margin-top:3px;}
+.tl-ct{flex:1;padding-bottom:16px;}
+.tl-d{font-size:11px;color:var(--hnt);margin-bottom:2px;}
+.tl-l{font-size:13px;font-weight:700;}
+.tl-s{font-size:12px;color:var(--mut);margin-top:2px;}
+
+.pay-block{background:var(--inf-bg);border-radius:var(--rad-lg);padding:16px;margin-bottom:14px;}
+.pay-t{font-size:11px;font-weight:700;color:var(--inf-tx);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;}
+.pay-a{font-size:28px;font-weight:700;color:var(--inf-tx);}
+.pay-n{font-size:11px;color:var(--inf-tx);margin-top:6px;opacity:.8;}
+
+.reason-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.ri{display:flex;align-items:center;gap:10px;font-size:13px;padding:10px 12px;border:0.5px solid var(--bdr2);border-radius:var(--rad);cursor:pointer;background:var(--surf2);transition:all .15s;}
+.ri.sel{border-color:var(--no-tx);background:var(--no-bg);color:var(--no-tx);}
+.rradio{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--bdr2);flex-shrink:0;}
+.ri.sel .rradio{background:var(--no-tx);border-color:var(--no-tx);}
+
+.upload-box{border:0.5px dashed var(--bdr2);border-radius:var(--rad);padding:18px;text-align:center;color:var(--hnt);font-size:13px;cursor:pointer;transition:all .15s;margin-bottom:10px;}
+.upload-box:hover{border-color:var(--hi);color:var(--hi);}
+
+.pbwrap{background:var(--surf2);border-radius:99px;height:6px;overflow:hidden;margin:8px 0 4px;}
+.pbfill{height:100%;background:var(--hi);border-radius:99px;}
+
+.nbadge{background:#edf5f1;color:var(--hi);border-radius:99px;font-size:11px;padding:2px 8px;font-weight:700;margin-left:6px;}
+
+.alert{padding:10px 14px;border-radius:var(--rad);font-size:13px;margin-bottom:12px;line-height:1.5;}
+.alert-ok{background:var(--ok-bg);color:var(--ok-tx);}
+.alert-wrn{background:var(--wrn-bg);color:var(--wrn-tx);}
+
+@media(max-width:440px){
+  #franchise-app{width:100%;border-left:none;border-right:none;}
+}
+
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+/* ── BACK BAR ── */
+.back-bar{display:flex;align-items:center;gap:8px;padding:7px 16px;border-bottom:0.5px solid var(--bdr);background:var(--surf2);flex-shrink:0;}
+.back-bar-btn{padding:4px 12px;font-size:12px;font-weight:600;border-radius:var(--rad);cursor:pointer;border:0.5px solid var(--bdr2);background:var(--surf);color:var(--mut);font-family:inherit;transition:all .15s;}
+.back-bar-btn:hover{background:var(--surf3);}
+.back-bar-label{font-size:11px;color:var(--hnt);}
+
+/* ── DESKTOP RESPONSIVE ── */
+@media(min-width:860px){
+  body{background:#E8E8E4;display:flex;justify-content:center;}
+  #franchise-app{
+    width:480px;min-height:100vh;
+    box-shadow:0 0 60px rgba(0,0,0,0.15);
+    border-left:0.5px solid var(--bdr2);border-right:0.5px solid var(--bdr2);
+  }
+  .sbody{padding:22px 26px 28px;}
+  .stitle{font-size:22px;}
+  .vmock{max-width:100%;}
+  .lang-grid{grid-template-columns:repeat(3,1fr);}
+}
+@media(min-width:1200px){
+  body{align-items:flex-start;}
+  #franchise-app{width:520px;}
+}
+</style>
+</head>
+<body>
+<div id="franchise-app">
+
+<!-- LOGIN -->
+<div id="s-login" class="fscreen active">
+  <div class="hdr">
+    <svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="130" height="32" rx="3" fill="#0D3B2E"/>
+      <rect x="0" y="18" width="130" height="14" rx="0" fill="#0D3B2E"/>
+      <rect x="0" y="16" width="130" height="3" fill="#F5D100"/>
+      <text x="65" y="14" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text>
+      <text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text>
+    </svg>
+    <div class="badge">Franchise Portal</div>
+    <a href="index.html" style="text-decoration:none;"><button class="back-btn" style="font-size:11px;padding:4px 10px;">🏠 Home</button></a>
+  </div>
+  <div class="fscreen-scroll"><div class="sbody">
+    <div style="text-align:center;padding:28px 0 20px;">
+      <div style="width:56px;height:56px;background:#edf5f1;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:26px;">✂</div>
+      <div class="stitle" style="margin-bottom:6px;">Welcome Back</div>
+      <div style="font-size:13px;color:var(--mut);">Sign in to your franchise account</div>
+    </div>
+    <div class="fr"><label class="fl">Phone Number</label><input type="tel" id="lp" placeholder="+91 98765 43210"/></div>
+    <div class="fr"><label class="fl">6-Digit PIN</label>
+      <div class="pin-grid" id="login-pin-grid">
+        <input class="pin-i" id="lpin1" maxlength="1" type="password" oninput="pinMove('login-pin-grid',this,0)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="lpin2" maxlength="1" type="password" oninput="pinMove('login-pin-grid',this,1)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="lpin3" maxlength="1" type="password" oninput="pinMove('login-pin-grid',this,2)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="lpin4" maxlength="1" type="password" oninput="pinMove('login-pin-grid',this,3)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="lpin5" maxlength="1" type="password" oninput="pinMove('login-pin-grid',this,4)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="lpin6" maxlength="1" type="password" oninput="pinMove('login-pin-grid',this,5)" onkeydown="pinBack(event,this)"/>
+      </div>
+    </div>
+    <div id="login-err" style="display:none;background:#FCEBEB;color:#A32D2D;border-radius:8px;padding:9px 12px;font-size:12px;margin-bottom:10px;">⚠️ Please enter all 6 digits of your PIN.</div>
+    <div style="background:#edf5f1;border-radius:8px;padding:10px 14px;font-size:12px;color:#1a5c44;margin-bottom:12px;"><strong>Demo Login:</strong> Any phone number · PIN: <strong>2 4 6 8 1 0</strong></div>
+    <button class="btn btn-p btn-f" style="margin-bottom:10px;" onclick="doLogin()">Sign In →</button>
+    <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--mut);">
+      New franchise lead? <button class="btn btn-sm" style="background:none;border:none;color:var(--hi);cursor:pointer;font-weight:700;" onclick="fs('s-register')">Register here →</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- REGISTER -->
+<div id="s-register" class="fscreen">
+  <div class="hdr"><button class="btn btn-sm" onclick="fs('s-login')">← Back</button>
+    <svg class="bb-logo-svg" width="100" height="28" viewBox="0 0 100 28" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100" height="28" rx="3" fill="#0D3B2E"/>
+      <rect y="15" width="100" height="13" fill="#0D3B2E"/>
+      <rect y="14" width="100" height="2" fill="#F5D100"/>
+      <text x="50" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text>
+      <text x="50" y="23" font-family="Arial Black,Arial" font-weight="900" font-size="9" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text>
+    </svg>
+    <div style="width:64px;"></div></div>
+  <div class="fscreen-scroll"><div class="sbody">
+    <div class="stitle" style="margin-bottom:4px;">Create Account</div>
+    <div class="ssub">Register as a Budget Barber franchise lead</div>
+    <div class="fr"><label class="fl">Full Name</label><input type="text" id="rn" placeholder="Rajesh Kumar"/></div>
+    <div class="fr"><label class="fl">Phone Number</label><input type="tel" id="rphone" placeholder="+91 98765 43210"/></div>
+    <div class="fr"><label class="fl">Email Address</label><input type="email" id="remail" placeholder="rajesh@email.com"/></div>
+    <div class="fr"><label class="fl">City</label><input type="text" id="rcity" placeholder="Hyderabad"/></div>
+    <div class="fr"><label class="fl">Set 6-Digit PIN</label>
+      <div class="pin-grid" id="reg-pin-grid">
+        <input class="pin-i" id="rpin1" maxlength="1" type="password" oninput="pinMove('reg-pin-grid',this,0)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="rpin2" maxlength="1" type="password" oninput="pinMove('reg-pin-grid',this,1)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="rpin3" maxlength="1" type="password" oninput="pinMove('reg-pin-grid',this,2)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="rpin4" maxlength="1" type="password" oninput="pinMove('reg-pin-grid',this,3)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="rpin5" maxlength="1" type="password" oninput="pinMove('reg-pin-grid',this,4)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="rpin6" maxlength="1" type="password" oninput="pinMove('reg-pin-grid',this,5)" onkeydown="pinBack(event,this)"/>
+      </div>
+    </div>
+    <button class="btn btn-p btn-f" onclick="doReg()">Create Account &amp; Continue →</button>
+  </div></div>
+</div>
+
+<!-- LANGUAGE -->
+<div id="s-lang" class="fscreen">
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);" data-i18n="step1">Step 1 of 10</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="step-bar" id="sb1"></div>
+  <div class="back-bar"><button class="back-btn" onclick="fs('s-login')">← Back</button><span class="back-bar-label" data-i18n="step1">Step 1 of 10</span></div>
+  <div class="fscreen-scroll"><div class="sbody">
+    <div class="stitle">Select Language</div>
+    <div class="ssub">Choose your preferred language for the franchise presentation</div>
+    <div class="lang-grid">
+      <div class="lang-btn" onclick="selLang(this,'English')"><span class="lang-em">🇬🇧</span>English</div>
+      <div class="lang-btn" onclick="selLang(this,'Telugu')"><span class="lang-em">🇮🇳</span>తెలుగు</div>
+      <div class="lang-btn" onclick="selLang(this,'Hindi')"><span class="lang-em">🇮🇳</span>हिन्दी</div>
+      <div class="lang-btn" onclick="selLang(this,'Tamil')"><span class="lang-em">🇮🇳</span>தமிழ்</div>
+      <div class="lang-btn" onclick="selLang(this,'Kannada')"><span class="lang-em">🇮🇳</span>ಕನ್ನಡ</div>
+      <div class="lang-btn" onclick="selLang(this,'Malayalam')"><span class="lang-em">🇮🇳</span>മലയാളം</div>
+    </div>
+    <button class="btn btn-p btn-f" id="lb" style="opacity:.4;pointer-events:none;" onclick="fstep('s-vision')">Continue →</button>
+  </div></div>
+</div>
+
+<!-- VISION VIDEO -->
+<div id="s-vision" class="fscreen">
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);" data-i18n="step2">Step 2 of 10</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="step-bar" id="sb2"></div>
+  <div class="back-bar"><button class="back-btn" onclick="fstep('s-lang')">← Back</button><span class="back-bar-label" data-i18n="step2">Step 2 of 10</span></div>
+  <div class="fscreen-scroll"><div class="sbody">
+    <div class="stitle">Founder's Vision</div>
+    <div class="ssub" id="vgreet">Hi Rajesh! A personal message from our Founder</div>
+    <div class="vmock" id="vm-vision">
+      <div class="vtag">Vision Video</div>
+      <div class="vplay" onclick="pv('vision')"><div class="vtri"></div></div>
+      <div class="vlbl" id="vs-vision">Tap to play</div>
+      <div class="vprog" id="vp-vision"></div>
+      <div class="vurl-badge" id="vub-vision" style="display:none;"></div>
+    </div>
+    <div class="card">
+      <div class="sec">In This Video</div>
+      <div class="sup-item"><div class="sup-icon">🎯</div><div><div style="font-size:13px;font-weight:700;">Vision of Budget Barber</div><div style="font-size:12px;color:var(--mut);">Mission to democratize quality grooming across India</div></div></div>
+      <div class="sup-item"><div class="sup-icon">💡</div><div><div style="font-size:13px;font-weight:700;">Why Budget Barber?</div><div style="font-size:12px;color:var(--mut);">Market opportunity, brand differentiation &amp; growth story</div></div></div>
+      <div class="sup-item" style="border:none;"><div class="sup-icon">⭐</div><div><div style="font-size:13px;font-weight:700;">Our USP</div><div style="font-size:12px;color:var(--mut);">Tech-enabled, affordable, standardized experience</div></div></div>
+    </div>
+    <button class="btn btn-p btn-f" id="vn-vision" style="opacity:.4;pointer-events:none;" onclick="fstep('s-salon360')">Continue to Salon Tour →</button>
+  </div></div>
+</div>
+
+<!-- SALON 360 -->
+<div id="s-salon360" class="fscreen">
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);" data-i18n="step3">Step 3 of 10</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="step-bar" id="sb3"></div>
+  <div class="back-bar"><button class="back-btn" onclick="fstep('s-vision')">← Back</button><span class="back-bar-label" data-i18n="step3">Step 3 of 10</span></div>
+  <div class="fscreen-scroll"><div class="sbody">
+    <div class="stitle">Salon 360° Tour</div>
+    <div class="ssub">Experience the complete Budget Barber salon — technology, design &amp; amenities</div>
+    <div class="vmock">
+      <div class="vtag">360° View</div>
+      <div class="vplay" onclick="pv('salon')"><div class="vtri"></div></div>
+      <div class="vlbl" id="vs-salon">360° Interactive Walkthrough</div>
+      <div class="vprog" id="vp-salon"></div>
+      <div class="vurl-badge" id="vub-salon" style="display:none;"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+      <div class="card" style="margin:0;text-align:center;padding:14px;"><div style="font-size:24px;margin-bottom:5px;">🪞</div><div style="font-size:13px;font-weight:700;">Digital Mirror</div><div style="font-size:11px;color:var(--mut);margin-top:3px;">Virtual try-on &amp; styling</div></div>
+      <div class="card" style="margin:0;text-align:center;padding:14px;"><div style="font-size:24px;margin-bottom:5px;">🤖</div><div style="font-size:13px;font-weight:700;">AI Skin Analysis</div><div style="font-size:11px;color:var(--mut);margin-top:3px;">Personalized treatment</div></div>
+      <div class="card" style="margin:0;text-align:center;padding:14px;"><div style="font-size:24px;margin-bottom:5px;">💇</div><div style="font-size:13px;font-weight:700;">AI Hair Analysis</div><div style="font-size:11px;color:var(--mut);margin-top:3px;">Custom recommendations</div></div>
+      <div class="card" style="margin:0;text-align:center;padding:14px;"><div style="font-size:24px;margin-bottom:5px;">📱</div><div style="font-size:13px;font-weight:700;">AI Hairstyle</div><div style="font-size:11px;color:var(--mut);margin-top:3px;">Preview before cutting</div></div>
+    </div>
+    <div class="card">
+      <div class="sec">Franchise Models</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+        <div class="ccard"><div class="cnum">3</div><div class="clbl">Chair</div><div class="cprc">₹8.5L</div><div class="carea">250 sq ft</div></div>
+        <div class="ccard"><div class="cnum">4</div><div class="clbl">Chair</div><div class="cprc">₹11L</div><div class="carea">350 sq ft</div></div>
+        <div class="ccard"><div class="cnum">5</div><div class="clbl">Chair</div><div class="cprc">₹14L</div><div class="carea">450 sq ft</div></div>
+      </div>
+    </div>
+    <button class="btn btn-p btn-f" id="vn-salon" style="opacity:.4;pointer-events:none;" onclick="fstep('s-invest')">Continue to Investment →</button>
+  </div></div>
+</div>
+
+<!-- INVESTMENT -->
+<div id="s-invest" class="fscreen">
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);" data-i18n="step4">Step 4 of 10</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="step-bar" id="sb4"></div>
+  <div class="back-bar"><button class="back-btn" onclick="fstep('s-salon360')">← Back</button><span class="back-bar-label" data-i18n="step4">Step 4 of 10</span></div>
+  <div class="fscreen-scroll"><div class="sbody">
+    <div class="stitle">Investment Details</div>
+    <div class="ssub">Complete breakdown per franchise model with all inclusions</div>
+    <div class="vmock"><div class="vtag">Investment Video</div><div class="vplay" onclick="pv('invest')"><div class="vtri"></div></div><div class="vlbl" id="vs-invest">Investment &amp; Requirements</div><div class="vprog" id="vp-invest"></div><div class="vurl-badge" id="vub-invest" style="display:none;"></div></div>
+    <div class="tabs">
+      <button class="tab active" onclick="stab(this,'i3')">3 Chair</button>
+      <button class="tab" onclick="stab(this,'i4')">4 Chair</button>
+      <button class="tab" onclick="stab(this,'i5')">5 Chair</button>
+    </div>
+    <div id="i3"><div class="card">
+      <div class="sec">3 Chair — 250 sq ft — ₹8.5 Lakhs</div>
+      <div class="irow"><span class="ilbl">Franchise Fee</span><span class="ival" id="i3-fee">₹2,50,000</span></div>
+      <div class="irow"><span class="ilbl">Interior Setup</span><span class="ival" id="i3-int">₹3,00,000</span></div>
+      <div class="irow"><span class="ilbl">Equipment &amp; Technology</span><span class="ival" id="i3-eq">₹2,00,000</span></div>
+      <div class="irow"><span class="ilbl">Initial Product Stock</span><span class="ival" id="i3-stk">₹50,000</span></div>
+      <div class="irow"><span class="ilbl">Working Capital</span><span class="ival" id="i3-wc">₹50,000</span></div>
+      <div class="divdr"></div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:8px;">Included:</div>
+      <div style="font-size:12px;color:var(--mut);line-height:2.1;" id="i3-inc">3 Marc Salon Chairs · Digital Mirror · POS System · AC Unit · Branding Kit · Uniforms ×6 · AI Tablet · 1-Year License</div>
+    </div></div>
+    <div id="i4" style="display:none;"><div class="card">
+      <div class="sec">4 Chair — 350 sq ft — ₹11 Lakhs</div>
+      <div class="irow"><span class="ilbl">Franchise Fee</span><span class="ival">₹3,00,000</span></div>
+      <div class="irow"><span class="ilbl">Interior Setup</span><span class="ival">₹4,50,000</span></div>
+      <div class="irow"><span class="ilbl">Equipment &amp; Technology</span><span class="ival">₹2,50,000</span></div>
+      <div class="irow"><span class="ilbl">Initial Product Stock</span><span class="ival">₹60,000</span></div>
+      <div class="irow"><span class="ilbl">Working Capital</span><span class="ival">₹40,000</span></div>
+      <div class="divdr"></div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:8px;">Included:</div>
+      <div style="font-size:12px;color:var(--mut);line-height:2.1;">4 Marc Chairs · 2 Digital Mirrors · POS · 2 ACs · Branding Kit · Uniforms ×8 · AI Tablets ×2 · Priority Support · 1-Year License</div>
+    </div></div>
+    <div id="i5" style="display:none;"><div class="card">
+      <div class="sec">5 Chair — 450 sq ft — ₹14 Lakhs</div>
+      <div class="irow"><span class="ilbl">Franchise Fee</span><span class="ival">₹4,00,000</span></div>
+      <div class="irow"><span class="ilbl">Interior Setup</span><span class="ival">₹6,00,000</span></div>
+      <div class="irow"><span class="ilbl">Equipment &amp; Technology</span><span class="ival">₹3,00,000</span></div>
+      <div class="irow"><span class="ilbl">Initial Product Stock</span><span class="ival">₹60,000</span></div>
+      <div class="irow"><span class="ilbl">Working Capital</span><span class="ival">₹40,000</span></div>
+      <div class="divdr"></div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:8px;">Included:</div>
+      <div style="font-size:12px;color:var(--mut);line-height:2.1;">5 Marc Chairs · 3 Digital Mirrors · 2 POS · 3 ACs · Premium Branding · Uniforms ×10 · AI Tablets ×3 · Account Manager · 1-Year License</div>
+    </div></div>
+    <button class="btn btn-p btn-f" onclick="fstep('s-roi')">Continue to ROI →</button>
+  </div></div>
+</div>
+
+<!-- ROI -->
+<div id="s-roi" class="fscreen">
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);" data-i18n="step5">Step 5 of 10</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="step-bar" id="sb5"></div>
+  <div class="back-bar"><button class="back-btn" onclick="fstep('s-invest')">← Back</button><span class="back-bar-label" data-i18n="step5">Step 5 of 10</span></div>
+  <div class="fscreen-scroll"><div class="sbody">
+    <div class="stitle">ROI &amp; Profitability</div>
+    <div class="ssub">Revenue projections, operational expenses, and monthly profit estimates</div>
+    <div class="vmock"><div class="vtag">ROI Video</div><div class="vplay" onclick="pv('roi')"><div class="vtri"></div></div><div class="vlbl">ROI &amp; Monthly Profit</div><div class="vprog" id="vp-roi"></div><div class="vurl-badge" id="vub-roi" style="display:none;"></div></div>
+    <div class="tabs">
+      <button class="tab active" onclick="stab(this,'r3')">3 Chair</button>
+      <button class="tab" onclick="stab(this,'r4')">4 Chair</button>
+      <button class="tab" onclick="stab(this,'r5')">5 Chair</button>
+    </div>
+    <div id="r3"><div class="card">
+      <div class="sec">Monthly Snapshot — 3 Chair</div>
+      <div class="rrow"><span>Avg Customers/Day</span><span class="rval" id="r3-cust">40</span></div>
+      <div class="rrow"><span>Avg Ticket Size</span><span class="rval" id="r3-tick">₹120</span></div>
+      <div class="rrow"><span style="font-weight:700;">Gross Revenue</span><span class="rval" style="color:var(--ok-tx);" id="r3-rev">₹1,44,000</span></div>
+      <div class="divdr"></div>
+      <div class="rrow"><span>Staff Salaries</span><span class="rval" style="color:var(--no-tx);" id="r3-sal">-₹54,000</span></div>
+      <div class="rrow"><span>Rent &amp; Utilities</span><span class="rval" style="color:var(--no-tx);" id="r3-rent">-₹25,000</span></div>
+      <div class="rrow"><span>Royalty (8%)</span><span class="rval" style="color:var(--no-tx);" id="r3-roy">-₹11,520</span></div>
+      <div class="rrow"><span>Products &amp; Misc</span><span class="rval" style="color:var(--no-tx);" id="r3-misc">-₹10,000</span></div>
+      <div style="background:var(--ok-bg);border-radius:var(--rad);padding:12px 14px;margin-top:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;color:var(--ok-tx);">Net Profit / Month</span><span style="font-size:20px;font-weight:700;color:var(--ok-tx);" id="r3-profit">₹43,480</span></div>
+        <div style="font-size:12px;color:var(--ok-tx);margin-top:4px;" id="r3-roi">ROI Period: 18–22 months</div>
+      </div>
+    </div></div>
+    <div id="r4" style="display:none;"><div class="card">
+      <div class="sec">Monthly Snapshot — 4 Chair</div>
+      <div class="rrow"><span>Avg Customers/Day</span><span class="rval">55</span></div>
+      <div class="rrow"><span>Avg Ticket Size</span><span class="rval">₹120</span></div>
+      <div class="rrow"><span style="font-weight:700;">Gross Revenue</span><span class="rval" style="color:var(--ok-tx);">₹1,98,000</span></div>
+      <div class="divdr"></div>
+      <div class="rrow"><span>Staff Salaries</span><span class="rval" style="color:var(--no-tx);">-₹72,000</span></div>
+      <div class="rrow"><span>Rent &amp; Utilities</span><span class="rval" style="color:var(--no-tx);">-₹32,000</span></div>
+      <div class="rrow"><span>Royalty (8%)</span><span class="rval" style="color:var(--no-tx);">-₹15,840</span></div>
+      <div class="rrow"><span>Products &amp; Misc</span><span class="rval" style="color:var(--no-tx);">-₹10,000</span></div>
+      <div style="background:var(--ok-bg);border-radius:var(--rad);padding:12px 14px;margin-top:12px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;color:var(--ok-tx);">Net Profit / Month</span><span style="font-size:20px;font-weight:700;color:var(--ok-tx);">₹68,160</span></div><div style="font-size:12px;color:var(--ok-tx);margin-top:4px;">ROI Period: 16–20 months</div></div>
+    </div></div>
+    <div id="r5" style="display:none;"><div class="card">
+      <div class="sec">Monthly Snapshot — 5 Chair</div>
+      <div class="rrow"><span>Avg Customers/Day</span><span class="rval">70</span></div>
+      <div class="rrow"><span>Avg Ticket Size</span><span class="rval">₹120</span></div>
+      <div class="rrow"><span style="font-weight:700;">Gross Revenue</span><span class="rval" style="color:var(--ok-tx);">₹2,52,000</span></div>
+      <div class="divdr"></div>
+      <div class="rrow"><span>Staff Salaries</span><span class="rval" style="color:var(--no-tx);">-₹90,000</span></div>
+      <div class="rrow"><span>Rent &amp; Utilities</span><span class="rval" style="color:var(--no-tx);">-₹42,000</span></div>
+      <div class="rrow"><span>Royalty (8%)</span><span class="rval" style="color:var(--no-tx);">-₹20,160</span></div>
+      <div class="rrow"><span>Products &amp; Misc</span><span class="rval" style="color:var(--no-tx);">-₹12,000</span></div>
+      <div style="background:var(--ok-bg);border-radius:var(--rad);padding:12px 14px;margin-top:12px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;color:var(--ok-tx);">Net Profit / Month</span><span style="font-size:20px;font-weight:700;color:var(--ok-tx);">₹87,840</span></div><div style="font-size:12px;color:var(--ok-tx);margin-top:4px;">ROI Period: 14–18 months</div></div>
+    </div></div>
+    <button class="btn btn-p btn-f" onclick="fstep('s-support')">Continue to Support →</button>
+  </div></div>
+</div>
+
+<!-- SUPPORT -->
+<div id="s-support" class="fscreen">
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);" data-i18n="step6">Step 6 of 10</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="step-bar" id="sb6"></div>
+  <div class="back-bar"><button class="back-btn" onclick="fstep('s-roi')">← Back</button><span class="back-bar-label" data-i18n="step6">Step 6 of 10</span></div>
+  <div class="fscreen-scroll"><div class="sbody">
+    <div class="stitle">Franchise Support System</div>
+    <div class="ssub">End-to-end support ensuring your success from day one</div>
+    <div class="vmock"><div class="vtag">Support Video</div><div class="vplay" onclick="pv('support')"><div class="vtri"></div></div><div class="vlbl">Full Support Ecosystem</div><div class="vprog" id="vp-support"></div><div class="vurl-badge" id="vub-support" style="display:none;"></div></div>
+    <div class="alert alert-wrn" id="support-highlight">⭐ Staff Support is our strongest pillar — recruitment, training &amp; replacement handled</div>
+    <div class="card">
+      <div class="sup-item"><div class="sup-icon">👨‍💼</div><div><div style="font-size:13px;font-weight:700;">Staff Recruitment &amp; Training</div><div style="font-size:12px;color:var(--mut);">Trained barbers deployed at launch. Replacement within 7 days guaranteed.</div></div></div>
+      <div class="sup-item"><div class="sup-icon">📣</div><div><div style="font-size:13px;font-weight:700;">Marketing Support</div><div style="font-size:12px;color:var(--mut);">Digital ads, local campaigns &amp; grand opening promotion included.</div></div></div>
+      <div class="sup-item"><div class="sup-icon">💻</div><div><div style="font-size:13px;font-weight:700;">Billing &amp; POS System</div><div style="font-size:12px;color:var(--mut);">Cloud POS with real-time reporting, inventory &amp; daily revenue dashboard.</div></div></div>
+      <div class="sup-item"><div class="sup-icon">📊</div><div><div style="font-size:13px;font-weight:700;">Monthly Performance Reviews</div><div style="font-size:12px;color:var(--mut);">Dedicated franchise manager reviews KPIs monthly with action plan.</div></div></div>
+      <div class="sup-item" style="border:none;"><div class="sup-icon">🛠</div><div><div style="font-size:13px;font-weight:700;">Technical &amp; Equipment Support</div><div style="font-size:12px;color:var(--mut);">48-hour response SLA for all equipment &amp; technology issues.</div></div></div>
+    </div>
+    <button class="btn btn-p btn-f" onclick="fstep('s-ops')">Continue to Operations →</button>
+  </div></div>
+</div>
+
+<!-- OPERATIONS -->
+<div id="s-ops" class="fscreen">
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);" data-i18n="step7">Step 7 of 10</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="step-bar" id="sb7"></div>
+  <div class="back-bar"><button class="back-btn" onclick="fstep('s-support')">← Back</button><span class="back-bar-label" data-i18n="step7">Step 7 of 10</span></div>
+  <div class="fscreen-scroll"><div class="sbody">
+    <div class="stitle">Salon Operations</div>
+    <div class="ssub">Standard operating procedures, timings, and service culture</div>
+    <div class="vmock"><div class="vtag">Operations Video</div><div class="vplay" onclick="pv('ops')"><div class="vtri"></div></div><div class="vlbl">Operations SOP</div><div class="vprog" id="vp-ops"></div><div class="vurl-badge" id="vub-ops" style="display:none;"></div></div>
+    <div class="card">
+      <div class="sec">Daily Operations</div>
+      <div class="irow"><span class="ilbl">Salon Hours</span><span class="ival" id="op-hrs">8:00 AM – 9:00 PM</span></div>
+      <div class="irow"><span class="ilbl">Operating Days</span><span class="ival" id="op-days">7 Days / Week</span></div>
+      <div class="irow"><span class="ilbl">Breaks</span><span class="ival" id="op-breaks">Staggered — no closure</span></div>
+      <div class="irow"><span class="ilbl">OT Allowance</span><span class="ival" id="op-ot">₹80 / hr post 9 PM</span></div>
+      <div class="irow" style="border:none;"><span class="ilbl">Max Customer Wait</span><span class="ival" id="op-wait">15 minutes</span></div>
+    </div>
+    <div class="card">
+      <div class="sec">Service &amp; Staff Standards</div>
+      <div style="font-size:12px;color:var(--mut);line-height:2.2;" id="op-standards">✓ Greet every customer within 30 seconds · ✓ No phone usage during service · ✓ Uniform dress code enforced · ✓ Zero tolerance for rude behavior · ✓ Feedback collected after every visit</div>
+    </div>
+    <button class="btn btn-p btn-f" onclick="fstep('s-staff')">Continue to Staff Details →</button>
+  </div></div>
+</div>
+
+<!-- STAFF -->
+<div id="s-staff" class="fscreen">
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);" data-i18n="step8">Step 8 of 10</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="step-bar" id="sb8"></div>
+  <div class="back-bar"><button class="back-btn" onclick="fstep('s-ops')">← Back</button><span class="back-bar-label" data-i18n="step8">Step 8 of 10</span></div>
+  <div class="fscreen-scroll"><div class="sbody">
+    <div class="stitle">Staff Setup &amp; Welfare</div>
+    <div class="ssub">Provided at initial setup and ongoing franchisee obligations</div>
+    <div class="vmock"><div class="vtag">Staff Video</div><div class="vplay" onclick="pv('staff')"><div class="vtri"></div></div><div class="vlbl">Staff Welfare Guidelines</div><div class="vprog" id="vp-staff"></div><div class="vurl-badge" id="vub-staff" style="display:none;"></div></div>
+    <div class="card">
+      <div class="sec">Initial Setup — By Budget Barber</div>
+      <div style="font-size:12px;color:var(--mut);line-height:2.2;" id="staff-initial">✓ Uniforms (2 sets/staff) · ✓ 5-day bootcamp training · ✓ Tool &amp; grooming kit · ✓ Product training · ✓ SOP manual · ✓ ID cards · ✓ AI system training</div>
+    </div>
+    <div class="card">
+      <div class="sec">Ongoing — By Franchisee</div>
+      <div style="font-size:12px;color:var(--mut);line-height:2.2;" id="staff-ongoing">✓ Monthly salary by 5th · ✓ 1 day off/week · ✓ Accommodation support · ✓ Festival bonus · ✓ Refresher training (quarterly) · ✓ Meals during shift</div>
+    </div>
+    <button class="btn btn-p btn-f" onclick="fstep('s-royalty')">Continue to Royalty →</button>
+  </div></div>
+</div>
+
+<!-- ROYALTY -->
+<div id="s-royalty" class="fscreen">
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);" data-i18n="step9">Step 9 of 10</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="step-bar" id="sb9"></div>
+  <div class="back-bar"><button class="back-btn" onclick="fstep('s-staff')">← Back</button><span class="back-bar-label" data-i18n="step9">Step 9 of 10</span></div>
+  <div class="fscreen-scroll"><div class="sbody">
+    <div class="stitle">Royalty &amp; Payment Timeline</div>
+    <div class="ssub">Royalty structure, incentives, and full project payment schedule</div>
+    <div class="vmock"><div class="vtag">Royalty Video</div><div class="vplay" onclick="pv('royalty')"><div class="vtri"></div></div><div class="vlbl">Royalty &amp; Timelines</div><div class="vprog" id="vp-royalty"></div><div class="vurl-badge" id="vub-royalty" style="display:none;"></div></div>
+    <div class="card">
+      <div class="sec">Royalty Structure</div>
+      <div class="irow"><span class="ilbl">Monthly Royalty Rate</span><span class="ival" id="roy-rate">8% of Revenue</span></div>
+      <div class="irow"><span class="ilbl">Due Date</span><span class="ival" id="roy-due">5th of every month</span></div>
+      <div class="irow"><span class="ilbl" style="color:var(--ok-tx);">On-Time Benefit</span><span class="ival" style="color:var(--ok-tx);" id="roy-benefit">Priority Staff Replacement</span></div>
+      <div class="irow"><span class="ilbl" style="color:var(--wrn-tx);">Late 1–7 Days</span><span class="ival" style="color:var(--wrn-tx);" id="roy-late1">₹500 penalty / day</span></div>
+      <div class="irow" style="border:none;"><span class="ilbl" style="color:var(--no-tx);">Non-payment &gt;30 Days</span><span class="ival" style="color:var(--no-tx);" id="roy-late2">Franchise Review + Termination</span></div>
+    </div>
+    <div class="card">
+      <div class="sec">Payment Schedule</div>
+      <div class="cli"><div class="cbox chk"><div class="cico">✓</div></div><div class="ctxt"><strong id="pay1-name">Token Amount — ₹20,000</strong><div style="color:var(--mut);font-size:12px;" id="pay1-note">UPI / Bank Transfer · Location blocking</div></div></div>
+      <div class="cli"><div class="cbox chk"><div class="cico">✓</div></div><div class="ctxt"><strong id="pay2-name">Cheque — ₹2,50,000</strong><div style="color:var(--mut);font-size:12px;" id="pay2-note">At franchise agreement signing</div></div></div>
+      <div class="cli"><div class="cbox chk"><div class="cico">✓</div></div><div class="ctxt"><strong id="pay3-name">Cash — ₹6,00,000</strong><div style="color:var(--mut);font-size:12px;" id="pay3-note">On commencement of interior setup</div></div></div>
+      <div class="cli" style="border:none;"><div class="cbox chk"><div class="cico">✓</div></div><div class="ctxt"><strong id="pay4-name">Marc Salon Chairs — ₹1,50,000</strong><div style="color:var(--mut);font-size:12px;" id="pay4-note">Direct payment to supplier</div></div></div>
+    </div>
+    <button class="btn btn-p btn-f" onclick="fstep('s-interest')">Continue →</button>
+  </div></div>
+</div>
+
+<!-- INTEREST CHECK -->
+<div id="s-interest" class="fscreen">
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);" data-i18n="step10">Step 10 of 10</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="step-bar" id="sb10"></div>
+  <div class="back-bar"><button class="back-btn" onclick="fstep('s-royalty')">← Back</button><span class="back-bar-label" data-i18n="step10">Step 10 of 10</span></div>
+  <div class="fscreen-scroll"><div class="sbody">
+    <div class="stitle">Are You Interested?</div>
+    <div class="ssub">You've seen everything — investment, ROI, support, operations. What's your decision?</div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:40px;margin-bottom:14px;padding-top:6px;">🤔</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:8px;">Ready to join Budget Barber Franchise?</div>
+      <div style="font-size:13px;color:var(--mut);margin-bottom:20px;line-height:1.6;">After reviewing all details on investment, ROI, support and operations — what would you like to do?</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button class="btn btn-s btn-f" style="padding:14px;" onclick="fstep('s-guidelines')">Yes, I'm Interested 🚀</button>
+        <button class="btn btn-d btn-f" style="padding:14px;" onclick="fs('s-notinterested')">Not Interested</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- NOT INTERESTED -->
+<div id="s-notinterested" class="fscreen">
+  <div class="back-bar"><button class="back-btn" onclick="fstep('s-interest')">← Back</button></div>
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><div class="pill p-no">Closing Lead</div><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="fscreen-scroll"><div class="sbody">
+    <div class="stitle">We're Sorry to Hear That</div>
+    <div class="ssub">Please share your reason(s) so we can improve.</div>
+    <div class="reason-list">
+      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div>Investment amount is too high</div>
+      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div>Location not available / suitable</div>
+      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div>Not convinced about ROI</div>
+      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div>Exploring other franchise options</div>
+      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div>Personal / family reasons</div>
+      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div>Timing is not right</div>
+      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div>Other reason</div>
+    </div>
+    <div class="fr"><label class="fl">Additional Comments</label><textarea placeholder="Tell us more..."></textarea></div>
+    <button class="btn btn-d btn-f" onclick="fs('s-closed')">Submit &amp; Close Lead</button>
+    <button class="btn btn-f" style="margin-top:8px;" onclick="fstep('s-interest')">← Reconsider</button>
+  </div></div>
+</div>
+
+<!-- GUIDELINES -->
+<div id="s-guidelines" class="fscreen">
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);">Guidelines</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="back-bar"><button class="back-btn" onclick="fstep('s-interest')">← Back</button></div>
+  <div class="fscreen-scroll"><div class="sbody">
+    <div class="stitle">Franchise Guidelines</div>
+    <div class="ssub">Read and accept each guideline. All must be checked to proceed.</div>
+    <div class="card"><div class="sec">All Guidelines <span id="glc" class="nbadge">0/12</span></div><div id="gllist"></div></div>
+    <button class="btn btn-p btn-f" id="glbtn" style="opacity:.4;pointer-events:none;" onclick="fstep('s-confirm')">Accept All &amp; Continue →</button>
+  </div></div>
+</div>
+
+<!-- CONFIRM -->
+<div id="s-confirm" class="fscreen">
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);">Confirmation</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="back-bar"><button class="back-btn" onclick="fstep('s-guidelines')">← Back</button></div>
+  <div class="fscreen-scroll"><div class="sbody">
+    <div class="stitle">Final Confirmation</div>
+    <div class="ssub">Review all selections and confirm your franchise application</div>
+    <div style="background:var(--surf2);border-radius:var(--rad-lg);padding:14px;margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">Selected Model <span class="pill p-inf">3 Chair</span></div>
+      <div class="irow"><span class="ilbl">Total Investment</span><span class="ival">₹8,50,000</span></div>
+      <div class="irow"><span class="ilbl">Area Required</span><span class="ival">250 sq ft</span></div>
+      <div class="irow" style="border:none;"><span class="ilbl">Est. Net Profit/Month</span><span class="ival" style="color:var(--ok-tx);">₹43,480</span></div>
+    </div>
+    <div class="card"><div class="sec">Final Confirmation Checklist</div><div id="cflist"></div></div>
+    <button class="btn btn-p btn-f" id="cfbtn" style="opacity:.4;pointer-events:none;" onclick="fstep('s-payment')">Confirm &amp; Proceed to Token Payment →</button>
+  </div></div>
+</div>
+
+<!-- TOKEN PAYMENT -->
+<div id="s-payment" class="fscreen">
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);">Token Payment</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="back-bar"><button class="back-btn" onclick="fstep('s-confirm')">← Back</button></div>
+  <div class="fscreen-scroll"><div class="sbody">
+    <div class="stitle">Token Amount</div>
+    <div class="ssub">Pay ₹20,000 to block your preferred location. Project dashboard activates after payment.</div>
+    <div class="pay-block"><div class="pay-t">Token Amount — Location Blocking</div><div class="pay-a">₹20,000</div><div class="pay-n">Refundable only if Budget Barber cannot assign a suitable location</div></div>
+    <div class="card">
+      <div class="sec">Preferred Location</div>
+      <div class="fr"><label class="fl">City</label><input type="text" placeholder="Hyderabad"/></div>
+      <div class="fr"><label class="fl">Area / Locality</label><input type="text" placeholder="Madhapur, Kukatpally…"/></div>
+      <div class="fr"><label class="fl">PIN Code</label><input type="text" placeholder="500081"/></div>
+      <div class="fr"><label class="fl">Shop Status</label><select><option>No — Looking for a location</option><option>Yes — Space ready</option><option>Yes — Shortlisted 2–3 options</option></select></div>
+    </div>
+    <div class="card">
+      <div class="sec">Pay To — Budget Barber</div>
+      <div style="text-align:center;padding:12px 0 6px;">
+        <div style="width:140px;height:140px;background:var(--surf2);border:0.5px solid var(--bdr2);border-radius:12px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:10px;">
+          <div style="font-size:40px;">📱</div>
+          <div style="font-size:10px;color:var(--hnt);margin-top:4px;">Scan QR to Pay</div>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:var(--txt);margin-bottom:3px;">UPI ID</div>
+        <div id="disp-upi" style="font-size:16px;font-weight:800;color:var(--hi);letter-spacing:0.01em;margin-bottom:3px;">budgetbarber@paytm</div>
+        <div style="font-size:11px;color:var(--mut);margin-bottom:8px;">Budget Barber Pvt Ltd</div>
+        <button onclick="copyUPI()" style="padding:5px 16px;font-size:11px;font-weight:700;border-radius:99px;border:0.5px solid var(--hi);background:#edf5f1;color:var(--hi);cursor:pointer;font-family:inherit;" id="copy-upi-btn">📋 Copy UPI ID</button>
+      </div>
+      <div style="height:0.5px;background:var(--bdr);margin:12px 0;"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;">Bank Transfer (NEFT / RTGS)</div>
+      <div class="irow"><span class="ilbl">Account Name</span><span class="ival" style="font-size:12px;">Budget Barber Pvt Ltd</span></div>
+      <div class="irow"><span class="ilbl">Account No.</span><span class="ival" style="font-size:12px;" id="disp-bank-acc">Contact Admin</span></div>
+      <div class="irow" style="border:none;"><span class="ilbl">IFSC</span><span class="ival" style="font-size:12px;" id="disp-bank-ifsc">Contact Admin</span></div>
+    </div>
+    <div class="card">
+      <div class="sec">Upload Payment Screenshot</div>
+      <div style="font-size:12px;color:var(--mut);margin-bottom:10px;line-height:1.6;">After paying, upload your screenshot for verification. Our team confirms within 2–4 hours.</div>
+      <div id="scr-upload-box" class="upload-box" onclick="document.getElementById('pay-screenshot').click()">📷 Tap to upload payment screenshot</div>
+      <input type="file" id="pay-screenshot" accept="image/*" style="display:none;" onchange="handleScreenshot(this)"/>
+      <div id="scr-preview" style="display:none;text-align:center;margin-top:8px;">
+        <img id="scr-img" src="" alt="" style="max-width:100%;border-radius:8px;border:0.5px solid var(--bdr2);"/>
+        <div style="font-size:12px;color:var(--ok-tx);margin-top:6px;font-weight:700;">✓ Screenshot uploaded</div>
+      </div>
+    </div>
+    <button class="btn btn-p btn-f" style="padding:14px;font-size:15px;" onclick="doPay()">Confirm &amp; Activate Project →</button>
+  </div></div>
+</div>
+
+<!-- PROJECT DASHBOARD -->
+<div id="s-project" class="fscreen">
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><div class="badge">Project Active ✓</div><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div style="display:flex;align-items:center;gap:8px;padding:8px 16px;border-bottom:0.5px solid var(--bdr);background:var(--surf);flex-shrink:0;">
+    <button class="back-btn" onclick="fs('s-interest')">← Main Menu</button>
+    <span style="font-size:11px;color:var(--hnt);">Project Dashboard</span>
+  </div>
+  <div class="mnav">
+    <button class="mnbtn active" onclick="smtab(this,'pj-loc')">📍 Location</button>
+    <button class="mnbtn" onclick="smtab(this,'pj-pay')">💰 Payments</button>
+    <button class="mnbtn" onclick="smtab(this,'pj-tl')">📅 Timeline</button>
+    <button class="mnbtn" onclick="smtab(this,'pj-gl')">📋 Guidelines</button>
+  </div>
+  <div class="fscreen-scroll">
+    <div id="pj-loc" class="sbody">
+      <div class="alert alert-ok">✓ Token paid — Location search in progress</div>
+      <div class="card"><div class="sec">Location Details</div><div class="irow"><span class="ilbl">City</span><span class="ival">Hyderabad</span></div><div class="irow"><span class="ilbl">Locality</span><span class="ival">Madhapur</span></div><div class="irow" style="border:none;"><span class="ilbl">Status</span><span><span class="pill p-wrn">Searching</span></span></div></div>
+      <div class="card"><div class="sec">Shop Photos</div><div class="upload-box">+ Upload exterior photos</div><div class="upload-box" style="margin-bottom:0;">+ Upload interior / floor plan</div></div>
+      <div class="card"><div class="sec">Location Pin</div><div class="upload-box" style="margin-bottom:10px;">+ Drop Google Maps pin</div><div class="fr" style="margin:0;"><label class="fl">Google Maps Link</label><input type="text" placeholder="https://maps.google.com/..."/></div></div>
+      <button class="btn btn-p btn-f">Save Location Details</button>
+    </div>
+    <div id="pj-pay" class="sbody" style="display:none;">
+      <div class="card"><div class="sec">Payment Overview — ₹8,50,000</div><div style="font-size:13px;color:var(--mut);margin-bottom:4px;">₹20,000 paid of ₹8,50,000</div><div class="pbwrap"><div class="pbfill" style="width:2.4%;"></div></div><div style="font-size:11px;color:var(--hnt);margin-bottom:14px;margin-top:4px;">2.4% complete</div>
+        <div class="cli"><div class="cbox chk"><div class="cico">✓</div></div><div class="ctxt"><div style="font-weight:700;">Token — ₹20,000</div><div style="color:var(--ok-tx);font-size:12px;">Paid · Apr 8, 2026 · UPI</div></div></div>
+        <div class="cli"><div class="cbox" style="border-color:var(--hi);"></div><div class="ctxt"><div style="font-weight:700;">Cheque — ₹2,50,000</div><div style="color:var(--wrn-tx);font-size:12px;">Pending · Due Apr 20, 2026</div></div></div>
+        <div class="cli"><div class="cbox"></div><div class="ctxt"><div style="font-weight:700;">Cash — ₹6,00,000</div><div style="color:var(--mut);font-size:12px;">Pending · On setup start</div></div></div>
+        <div class="cli" style="border:none;"><div class="cbox"></div><div class="ctxt"><div style="font-weight:700;">Marc Chairs — ₹1,50,000</div><div style="color:var(--mut);font-size:12px;">Pending · Direct to supplier</div></div></div>
+      </div>
+    </div>
+    <div id="pj-tl" class="sbody" style="display:none;">
+      <div class="card"><div class="sec">Project Timeline</div>
+        <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--ok-tx);"></div><div class="tl-conn"></div></div><div class="tl-ct"><div class="tl-d">Apr 8, 2026 · Done ✓</div><div class="tl-l">Token Payment</div><div class="tl-s">Location search started</div></div></div>
+        <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--hi);"></div><div class="tl-conn"></div></div><div class="tl-ct"><div class="tl-d">Apr 20, 2026</div><div class="tl-l">Agreement Signing</div><div class="tl-s">₹2.5L cheque payment</div></div></div>
+        <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--bdr2);"></div><div class="tl-conn"></div></div><div class="tl-ct"><div class="tl-d">May 5, 2026</div><div class="tl-l">Interior Work Begins</div><div class="tl-s">₹6L cash + 30-day setup</div></div></div>
+        <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--bdr2);"></div><div class="tl-conn"></div></div><div class="tl-ct"><div class="tl-d">May 25, 2026</div><div class="tl-l">Staff Training Week</div><div class="tl-s">5-day HQ bootcamp</div></div></div>
+        <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--bdr2);"></div></div><div class="tl-ct"><div class="tl-d">Jun 1, 2026</div><div class="tl-l">Grand Opening 🎉</div><div class="tl-s">Marketing + BB launch team</div></div></div>
+      </div>
+    </div>
+    <div id="pj-gl" class="sbody" style="display:none;">
+      <div class="card"><div class="sec">Staff Guidelines</div><div style="font-size:12px;color:var(--mut);line-height:2.2;">✓ Salary paid by 5th · ✓ 1 weekly off · ✓ No abuse · ✓ Uniforms maintained · ✓ Meals provided · ✓ Grievance channel</div></div>
+      <div class="card"><div class="sec">Operational Guidelines</div><div style="font-size:12px;color:var(--mut);line-height:2.2;">✓ Open 7 days · ✓ Pricing per rate card · ✓ No unapproved products · ✓ Authorized POS only · ✓ Royalty by 5th · ✓ Monthly audit · ✓ Feedback in 48 hrs</div></div>
+      <div class="card"><div class="sec">Compliance Status</div><div class="irow"><span class="ilbl">Accepted On</span><span class="ival">Apr 8, 2026</span></div><div class="irow" style="border:none;"><span class="ilbl">Status</span><span><span class="pill p-ok">Accepted ✓</span></span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- LEAD CLOSED -->
+<div id="s-closed" class="fscreen">
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><div class="pill p-no">Lead Closed</div><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="fscreen-scroll"><div class="sbody" style="text-align:center;padding-top:40px;">
+    <div style="font-size:52px;margin-bottom:16px;">🙏</div>
+    <div class="stitle" style="margin-bottom:6px;">Thank You, Rajesh</div>
+    <div class="ssub">Your feedback has been recorded and your lead status updated to Closed.</div>
+    <div class="card" style="text-align:left;margin-top:20px;">
+      <div class="irow"><span class="ilbl">Status</span><span><span class="pill p-no">Closed — Not Interested</span></span></div>
+      <div class="irow" style="border:none;"><span class="ilbl">Feedback</span><span class="ival" style="color:var(--ok-tx);">Recorded ✓</span></div>
+    </div>
+    <button class="btn btn-f" style="margin-top:12px;" onclick="fs('s-login')">← Back to Login</button>
+  </div></div>
+</div>
+
+</div><!-- end franchise-app -->
+
+<script>
+// ── SUPABASE CONFIG ──
+const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ── LEAD SESSION ──
+let leadSession = null; // {id, name, current_step, status}
+
+const TOTAL_STEPS=10;
+const STEPS=['lang','vision','salon360','invest','roi','support','ops','staff','royalty','interest'];
+let glChecked=0,cfChecked=0,selLangV=null;
+
+// GUIDELINES loaded from Supabase — see loadDBGuidelines()
+let GUIDELINES = [];
+const CONFIRM_ITEMS=[
+  'I confirm my selected franchise model: 3 Chair — ₹8,50,000 total investment.',
+  'I have reviewed and understood the ROI projections and profit estimates.',
+  'I accept the payment schedule: ₹2.5L cheque + ₹6L cash + ₹1.5L Marc Chairs.',
+  'I understand the royalty structure of 8% monthly, due by the 5th.',
+  'I have viewed all presentation videos and fully understood the onboarding.',
+  'I agree to provide staff welfare, OT, and working conditions as described.'
+];
+
+function fs(id){
+  document.querySelectorAll('.fscreen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el){el.classList.add('active');el.scrollTop=0;}
+}
+function fstep(screenId){
+  fs(screenId);
+  var idx=STEPS.indexOf(screenId.replace('s-',''));
+  if(idx>=0){
+    for(var i=1;i<=10;i++){var sp=document.getElementById('sb'+i);if(sp)rp(sp,idx+1);}
+    // Save progress to DB
+    saveLeadStep(idx+1);
+  }
+  if(screenId==='s-guidelines'){
+    // Reload guidelines with current language from DB
+    loadDBGuidelines().then(function(gl){
+      GUIDELINES=gl;
+      var list=document.getElementById('gllist');
+      if(list)list.innerHTML='';
+      glChecked=0;
+      buildGL();
+    });
+  }
+  if(screenId==='s-confirm')buildCF();
+}
+function rp(c,cur){
+  c.innerHTML='';
+  for(let i=0;i<TOTAL_STEPS;i++){const d=document.createElement('div');d.className='sdot'+(i<cur?' done':'')+(i===cur-1?' active':'');c.appendChild(d);}
+}
+// PIN auto-advance: gridId = parent div id, el = current input, idx = 0-based index
+function pinMove(gridId, el, idx){
+  if(el.value.length===1){
+    var grid=document.getElementById(gridId);
+    if(grid){var pins=grid.querySelectorAll('.pin-i');if(pins[idx+1])pins[idx+1].focus();}
+  }
+}
+// Backspace goes to previous box
+function pinBack(e, el){
+  if(e.key==='Backspace'&&el.value===''){
+    var grid=el.closest('.pin-grid');
+    if(grid){var pins=grid.querySelectorAll('.pin-i');var arr=Array.from(pins);var i=arr.indexOf(el);if(i>0)pins[i-1].focus();}
+  }
+}
+// Legacy pm kept for safety
+function pm(el,idx){if(el.value.length===1&&idx<6){const p=el.parentElement.querySelectorAll('.pin-i');if(p[idx])p[idx].focus();}}
+
+// ════════════════════════════════════════════
+// ── FRANCHISE APP SUPABASE FUNCTIONS ──
+// ════════════════════════════════════════════
+
+async function loadDBGuidelines(){
+  const langCol = selLangV && selLangV!=='English'
+    ? 'text_'+selLangV.toLowerCase()
+    : 'text';
+  const {data,error}=await sb.from('guidelines')
+    .select('id,text,text_telugu,text_hindi,text_tamil,text_kannada,text_malayalam')
+    .eq('is_active',true).order('sort_order');
+  if(error){console.error('loadDBGuidelines:',error);return[];}
+  return (data||[]).map(g=>{
+    const translated=g['text_'+((selLangV||'English').toLowerCase())]||g.text;
+    return translated||g.text;
+  });
+}
+
+async function loadPaymentSettings(){
+  const {data,error}=await sb.from('payment_settings').select('*').limit(1).single();
+  if(error){console.error('loadPaymentSettings:',error);return null;}
+  return data;
+}
+
+async function loadInvestmentModel(modelName){
+  const {data,error}=await sb.from('investment_models')
+    .select('*').eq('model_name',modelName).single();
+  if(error){console.error('loadInvestmentModel:',error);return null;}
+  return data;
+}
+
+async function loadVideosForLang(language){
+  const {data,error}=await sb.from('videos')
+    .select('step_key,video_url,title')
+    .eq('language', language)
+    .eq('is_active',true);
+  if(error){console.error('loadVideosForLang:',error);return{};}
+  const map={};
+  (data||[]).forEach(v=>{map[v.step_key]=v.video_url;});
+  return map;
+}
+
+async function saveLeadStep(stepNumber){
+  if(!leadSession?.id)return;
+  // Upsert progress row
+  await sb.from('lead_progress').upsert({
+    lead_id:leadSession.id,
+    step_number:stepNumber,
+    step_name:STEPS[stepNumber-1]||'',
+    completed:true,
+    completed_at:new Date().toISOString()
+  },{onConflict:'lead_id,step_number'});
+  // Update lead current_step if advancing
+  if(stepNumber > (leadSession.current_step||0)){
+    leadSession.current_step=stepNumber;
+    await sb.from('leads').update({
+      current_step:stepNumber,
+      updated_at:new Date().toISOString()
+    }).eq('id',leadSession.id);
+  }
+}
+
+async function submitPayment(screenshotDataUrl){
+  if(!leadSession?.id)return false;
+  let screenshotUrl='';
+  // Upload screenshot to Supabase Storage
+  if(screenshotDataUrl){
+    const blob=dataURLtoBlob(screenshotDataUrl);
+    const fileName=leadSession.id+'/token_'+Date.now()+'.jpg';
+    const {data:upData,error:upError}=await sb.storage
+      .from('payment-screenshots').upload(fileName,blob,{contentType:'image/jpeg',upsert:true});
+    if(!upError&&upData){
+      const {data:urlData}=sb.storage.from('payment-screenshots').getPublicUrl(fileName);
+      screenshotUrl=urlData?.publicUrl||'';
+    }
+  }
+  // Insert payment record
+  const {error}=await sb.from('payments').insert({
+    lead_id:leadSession.id,
+    step_name:'Token',
+    amount:20000,
+    mode:'UPI',
+    screenshot_url:screenshotUrl,
+    status:'pending',
+    recorded_by_type:'lead'
+  });
+  if(error){console.error('submitPayment:',error);return false;}
+  // Update lead status to project
+  await sb.from('leads').update({
+    status:'project',
+    current_step:12,
+    updated_at:new Date().toISOString()
+  }).eq('id',leadSession.id);
+  leadSession.status='project';
+  leadSession.current_step=12;
+  return true;
+}
+
+function dataURLtoBlob(dataURL){
+  const arr=dataURL.split(',');
+  const mime=arr[0].match(/:(.*?);/)[1];
+  const bstr=atob(arr[1]);
+  let n=bstr.length;
+  const u8arr=new Uint8Array(n);
+  while(n--){u8arr[n]=bstr.charCodeAt(n);}
+  return new Blob([u8arr],{type:mime});
+}
+
+// ── LOGIN — Supabase version ──
+function doLogin(){
+  var phone=(document.getElementById('lp')||{}).value||'';
+  var pin='';
+  document.querySelectorAll('#login-pin-grid .pin-i').forEach(function(p){pin+=p.value;});
+  var errEl=document.getElementById('login-err');
+  if(!phone.trim()||pin.length<6){
+    if(errEl)errEl.style.display='block';
+    var grid=document.getElementById('login-pin-grid');
+    if(grid){grid.style.animation='none';setTimeout(function(){grid.style.animation='shake 0.3s ease';},10);}
+    return;
+  }
+  if(errEl)errEl.style.display='none';
+  sb.from('leads')
+    .select('id,name,phone,current_step,status,pin_hash,language,model_interest')
+    .eq('phone', phone.trim())
+    .single()
+    .then(function({data,error}){
+      if(error||!data){
+        if(errEl)errEl.style.display='block';return;
+      }
+      // NOTE: In production compare pin_hash with bcrypt
+      // For dev: pin_hash stores plain PIN
+      if(data.pin_hash===pin){
+        leadSession={id:data.id,name:data.name,current_step:data.current_step||0,status:data.status};
+        if(errEl)errEl.style.display='none';
+        // Restore language if set
+        if(data.language){selLangV=data.language;}
+        // Jump to saved step or start from lang
+        var targetStep=data.current_step>0?STEPS[Math.min(data.current_step,STEPS.length-1)]:'lang';
+        fstep('s-'+targetStep);
+        // Update greeting
+        var g=document.getElementById('vgreet');
+        if(g)g.textContent='Hi '+data.name+'! A personal message from our Founder';
+        // Load payment settings
+        loadPaymentSettings().then(function(ps){
+          if(ps){
+            var upiEl=document.getElementById('disp-upi');if(upiEl)upiEl.textContent=ps.primary_upi_id||'budgetbarber@paytm';
+            var bankAccEl=document.getElementById('disp-bank-acc');if(bankAccEl)bankAccEl.textContent=ps.bank_account_no||'Contact Admin';
+            var bankIfscEl=document.getElementById('disp-bank-ifsc');if(bankIfscEl)bankIfscEl.textContent=ps.bank_ifsc||'Contact Admin';
+          }
+        });
+      } else {
+        if(errEl)errEl.style.display='block';
+      }
+    });
+}
+
+// ── REGISTER — Supabase version ──
+function doReg(){
+  var n=document.getElementById('rn');
+  var ph=document.getElementById('rphone');
+  var em=document.getElementById('remail');
+  var city=document.getElementById('rcity');
+  var pin='';
+  document.querySelectorAll('#reg-pin-grid .pin-i').forEach(function(p){pin+=p.value;});
+  if(!n||!n.value.trim()){alert('Please enter your full name.');return;}
+  if(!ph||!ph.value.trim()){alert('Please enter your phone number.');return;}
+  if(pin.length<6){alert('Please set a 6-digit PIN to continue.');return;}
+  var nameVal=n.value.trim();
+  var phoneVal=ph.value.trim();
+  sb.from('leads').insert({
+    name:nameVal,
+    phone:phoneVal,
+    email:em?em.value.trim()||null:null,
+    city:city?city.value.trim()||'':'' ,
+    pin_hash:pin,
+    status:'new',
+    current_step:0,
+    created_by_type:'self'
+  }).then(function({data,error}){
+    if(error){
+      if(error.code==='23505'){alert('This phone number is already registered. Please login.');}
+      else{alert('Registration failed: '+error.message);}
+      return;
+    }
+    // Fetch the new lead to get the ID
+    sb.from('leads').select('id,name,current_step,status')
+      .eq('phone',phoneVal).single()
+      .then(function({data:lead}){
+        if(lead){leadSession={id:lead.id,name:lead.name,current_step:0,status:'new'};}
+        var g=document.getElementById('vgreet');
+        if(g)g.textContent='Hi '+nameVal+'! A personal message from our Founder';
+        fstep('s-lang');
+      });
+  });
+}
+
+// ── PAY & SUBMIT — Supabase version ──
+function doPay(){
+  var imgEl=document.getElementById('scr-img');
+  var screenshotData=imgEl&&imgEl.src&&imgEl.src.startsWith('data:')?imgEl.src:null;
+  submitPayment(screenshotData).then(function(ok){
+    if(ok){fs('s-project');}
+    else{
+      // Still navigate even if DB write failed — show project screen
+      fs('s-project');
+    }
+}
+function selLang(el,lang){
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');selLangV=lang;
+  const lb=document.getElementById('lb');if(lb){lb.style.opacity='1';lb.style.pointerEvents='auto';}
+  applyTranslations(lang);
+  // Save language preference to DB
+  if(leadSession?.id){
+    sb.from('leads').update({language:lang,updated_at:new Date().toISOString()}).eq('id',leadSession.id).then(()=>{});
+  }
+  // Load videos for this language from DB
+  loadVideosForLang(lang).then(function(vidMap){
+    Object.entries(vidMap).forEach(function([key,url]){
+      const badgeEl=document.getElementById('vub-'+key);
+      if(badgeEl&&url){badgeEl.textContent=url;badgeEl.style.display='block';}
+    });
+  });
+}
+function pv(type){
+  const bar=document.getElementById('vp-'+type);
+  const st=document.getElementById('vs-'+type);
+  if(bar){bar.style.width='0%';setTimeout(()=>{bar.style.width='100%';},80);}
+  if(st)st.textContent='Playing...';
+  setTimeout(()=>{
+    if(st)st.textContent='✓ Video complete';
+    if(type==='vision'){const n=document.getElementById('vn-vision');if(n){n.style.opacity='1';n.style.pointerEvents='auto';}}
+    if(type==='salon'){const n=document.getElementById('vn-salon');if(n){n.style.opacity='1';n.style.pointerEvents='auto';}}
+  },2300);
+}
+function stab(btn,tabId){
+  const body=btn.closest('.fscreen-scroll')||btn.closest('.sbody')||btn.closest('.adm-card');
+  if(!body)return;
+  body.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  ['i3','i4','i5','r3','r4','r5'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});
+  const t=document.getElementById(tabId);if(t)t.style.display='block';
+}
+function smtab(btn,tabId){
+  document.querySelectorAll('.mnbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  document.querySelectorAll('#s-project .sbody,[id^=pj-]').forEach(t=>{if(t.id&&t.id.startsWith('pj-'))t.style.display='none';});
+  const el=document.getElementById(tabId);if(el)el.style.display='block';
+}
+function selPay(el){document.querySelectorAll('.ccard').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+function buildGL(){
+  const list=document.getElementById('gllist');if(!list||list.children.length>0)return;
+  glChecked=0;
+  GUIDELINES.forEach(g=>{
+    const item=document.createElement('div');item.className='cli';
+    item.innerHTML=`<div class="cbox" onclick="tck(this,'gl')"><div class="cico"></div></div><div class="ctxt">${g}</div>`;
+    list.appendChild(item);
+  });ugc();
+}
+function buildCF(){
+  const list=document.getElementById('cflist');if(!list||list.children.length>0)return;
+  cfChecked=0;
+  CONFIRM_ITEMS.forEach(c=>{
+    const item=document.createElement('div');item.className='cli';
+    item.innerHTML=`<div class="cbox" onclick="tck(this,'cf')"><div class="cico"></div></div><div class="ctxt">${c}</div>`;
+    list.appendChild(item);
+  });
+}
+function tck(el,grp){
+  el.classList.toggle('chk');el.querySelector('.cico').textContent=el.classList.contains('chk')?'✓':'';
+  if(grp==='gl'){glChecked=document.querySelectorAll('#gllist .cbox.chk').length;ugc();const btn=document.getElementById('glbtn');if(btn){const ok=glChecked===GUIDELINES.length;btn.style.opacity=ok?'1':'0.4';btn.style.pointerEvents=ok?'auto':'none';}}
+  if(grp==='cf'){cfChecked=document.querySelectorAll('#cflist .cbox.chk').length;const btn=document.getElementById('cfbtn');if(btn){const ok=cfChecked===CONFIRM_ITEMS.length;btn.style.opacity=ok?'1':'0.4';btn.style.pointerEvents=ok?'auto':'none';}}
+}
+function ugc(){const e=document.getElementById('glc');if(e)e.textContent=glChecked+'/'+GUIDELINES.length;}
+
+// ── LOGOUT ──
+function doLogout(){if(confirm('Logout from Franchise Portal?'))window.location='index.html';}
+
+// ── COPY UPI ID ──
+function copyUPI(){
+  var upi=document.getElementById('disp-upi');
+  if(!upi)return;
+  var txt=upi.textContent.trim();
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(txt).then(function(){flashCopyBtn();}).catch(function(){fallbackCopy(txt);});
+  } else { fallbackCopy(txt); }
+}
+function fallbackCopy(txt){
+  var ta=document.createElement('textarea');ta.value=txt;
+  document.body.appendChild(ta);ta.select();document.execCommand('copy');
+  document.body.removeChild(ta);flashCopyBtn();
+}
+function flashCopyBtn(){
+  var btn=document.getElementById('copy-upi-btn');
+  if(!btn)return;
+  var orig=btn.textContent;btn.textContent='✓ Copied!';
+  setTimeout(function(){btn.textContent=orig;},2000);
+}
+
+// ── SCREENSHOT UPLOAD ──
+function handleScreenshot(input){
+  var file=input.files[0];if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var img=document.getElementById('scr-img');
+    var prev=document.getElementById('scr-preview');
+    var box=document.getElementById('scr-upload-box');
+    if(img)img.src=e.target.result;
+    if(prev)prev.style.display='block';
+    if(box)box.style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── MULTILINGUAL TRANSLATIONS ──
+var TRANSLATIONS={
+  English:{
+    step1:'Step 1 of 10',step2:'Step 2 of 10',step3:'Step 3 of 10',step4:'Step 4 of 10',
+    step5:'Step 5 of 10',step6:'Step 6 of 10',step7:'Step 7 of 10',step8:'Step 8 of 10',
+    step9:'Step 9 of 10',step10:'Step 10 of 10',
+    lang_title:'Select Language',lang_sub:'Choose your preferred language for the franchise presentation',
+    vision_title:"Founder's Vision",vision_sub:'A personal message from our Founder',
+    salon_title:'Salon 360° Tour',salon_sub:'Take a complete walkthrough of a live Budget Barber outlet',
+    invest_title:'Investment Details',invest_sub:'Complete investment breakdown for each franchise model',
+    roi_title:'ROI Calculator',roi_sub:'See realistic profit projections based on your selected model',
+    support_title:'Support System',support_sub:'Everything Budget Barber provides to help you succeed',
+    ops_title:'Operations',ops_sub:'Day-to-day operations, timings, and salon management',
+    staff_title:'Staff & Hiring',staff_sub:'Staff recruitment, training, welfare, and management details',
+    royalty_title:'Royalty & Payment Timeline',royalty_sub:'Royalty structure, incentives, and full payment schedule',
+    interest_title:'Are You Interested?',interest_sub:"You've seen everything — investment, ROI, support. What's your decision?",
+    yes_btn:"Yes, I'm Interested 🚀",no_btn:'Not Interested',
+    guidelines_title:'Franchise Guidelines',guidelines_sub:'Read and accept each guideline. All must be checked to proceed.',
+    confirm_title:'Final Confirmation',confirm_sub:'Review all selections and confirm your franchise application',
+    payment_title:'Token Amount',payment_sub:'Pay ₹20,000 to block your preferred location.',
+    logout_lbl:'⎋ Logout',continue_lbl:'Continue →'
+  },
+  Telugu:{
+    step1:'దశ 1 / 10',step2:'దశ 2 / 10',step3:'దశ 3 / 10',step4:'దశ 4 / 10',
+    step5:'దశ 5 / 10',step6:'దశ 6 / 10',step7:'దశ 7 / 10',step8:'దశ 8 / 10',
+    step9:'దశ 9 / 10',step10:'దశ 10 / 10',
+    lang_title:'భాష ఎంచుకోండి',lang_sub:'ఫ్రాంచైజ్ ప్రెజెంటేషన్ కోసం మీ భాషను ఎంచుకోండి',
+    vision_title:'వ్యవస్థాపకుని దార్శనికత',vision_sub:'మా వ్యవస్థాపకుని నుండి వ్యక్తిగత సందేశం',
+    salon_title:'సెలూన్ 360° టూర్',salon_sub:'బడ్జెట్ బార్బర్ సెలూన్ పూర్తి వాకింగ్ టూర్',
+    invest_title:'పెట్టుబడి వివరాలు',invest_sub:'ప్రతి ఫ్రాంచైజ్ మోడల్‌కు పూర్తి పెట్టుబడి వివరణ',
+    roi_title:'ROI కాలిక్యులేటర్',roi_sub:'మీ ఎంచుకున్న మోడల్ ఆధారంగా లాభ అంచనాలు చూడండి',
+    support_title:'మద్దతు వ్యవస్థ',support_sub:'మీ విజయం కోసం బడ్జెట్ బార్బర్ అందించే అన్నీ',
+    ops_title:'కార్యకలాపాలు',ops_sub:'రోజువారీ కార్యకలాపాలు, వేళలు మరియు సెలూన్ నిర్వహణ',
+    staff_title:'సిబ్బంది & నియామకం',staff_sub:'సిబ్బంది నియామకం, శిక్షణ, సంక్షేమం వివరాలు',
+    royalty_title:'రాయల్టీ & చెల్లింపు సమయపట్టిక',royalty_sub:'రాయల్టీ నిర్మాణం, ప్రోత్సాహకాలు మరియు పూర్తి చెల్లింపు షెడ్యూల్',
+    interest_title:'మీకు ఆసక్తి ఉందా?',interest_sub:'మీరు అన్నీ చూశారు — పెట్టుబడి, ROI, మద్దతు. మీ నిర్ణయం?',
+    yes_btn:'అవును, నాకు ఆసక్తి ఉంది 🚀',no_btn:'ఆసక్తి లేదు',
+    guidelines_title:'ఫ్రాంచైజ్ మార్గదర్శకాలు',guidelines_sub:'ప్రతి మార్గదర్శకాన్ని చదివి అంగీకరించండి.',
+    confirm_title:'చివరి నిర్ధారణ',confirm_sub:'అన్ని ఎంపికలు సమీక్షించి మీ దరఖాస్తు నిర్ధారించండి',
+    payment_title:'టోకెన్ మొత్తం',payment_sub:'మీ ప్రాంతాన్ని బ్లాక్ చేయడానికి ₹20,000 చెల్లించండి.',
+    logout_lbl:'⎋ లాగ్ అవుట్',continue_lbl:'కొనసాగించు →'
+  },
+  Hindi:{
+    step1:'चरण 1/10',step2:'चरण 2/10',step3:'चरण 3/10',step4:'चरण 4/10',
+    step5:'चरण 5/10',step6:'चरण 6/10',step7:'चरण 7/10',step8:'चरण 8/10',
+    step9:'चरण 9/10',step10:'चरण 10/10',
+    lang_title:'भाषा चुनें',lang_sub:'फ्रेंचाइज़ प्रेजेंटेशन के लिए अपनी पसंदीदा भाषा चुनें',
+    vision_title:'संस्थापक की दृष्टि',vision_sub:'हमारे संस्थापक का व्यक्तिगत संदेश',
+    salon_title:'सैलून 360° टूर',salon_sub:'बजट बार्बर सैलून का पूरा वॉकथ्रू देखें',
+    invest_title:'निवेश विवरण',invest_sub:'प्रत्येक फ्रेंचाइज़ मॉडल के लिए पूर्ण निवेश विवरण',
+    roi_title:'ROI कैलकुलेटर',roi_sub:'अपने चयनित मॉडल के आधार पर लाभ अनुमान देखें',
+    support_title:'सहायता प्रणाली',support_sub:'आपकी सफलता के लिए बजट बार्बर द्वारा प्रदान की जाने वाली सेवाएं',
+    ops_title:'संचालन',ops_sub:'दैनिक संचालन, समय और सैलून प्रबंधन',
+    staff_title:'कर्मचारी और भर्ती',staff_sub:'कर्मचारी भर्ती, प्रशिक्षण और कल्याण विवरण',
+    royalty_title:'रॉयल्टी और भुगतान',royalty_sub:'रॉयल्टी संरचना, प्रोत्साहन और पूर्ण भुगतान अनुसूची',
+    interest_title:'क्या आप रुचि रखते हैं?',interest_sub:'आपने सब देखा — निवेश, ROI, समर्थन। आपका निर्णय?',
+    yes_btn:'हाँ, मुझे रुचि है 🚀',no_btn:'रुचि नहीं है',
+    guidelines_title:'फ्रेंचाइज़ दिशानिर्देश',guidelines_sub:'प्रत्येक दिशानिर्देश पढ़ें और स्वीकार करें।',
+    confirm_title:'अंतिम पुष्टि',confirm_sub:'सभी चयन समीक्षा करें और अपना आवेदन पुष्टि करें',
+    payment_title:'टोकन राशि',payment_sub:'अपना पसंदीदा स्थान ब्लॉक करने के लिए ₹20,000 का भुगतान करें।',
+    logout_lbl:'⎋ लॉगआउट',continue_lbl:'जारी रखें →'
+  },
+  Tamil:{
+    step1:'படி 1/10',step2:'படி 2/10',step3:'படி 3/10',step4:'படி 4/10',
+    step5:'படி 5/10',step6:'படி 6/10',step7:'படி 7/10',step8:'படி 8/10',
+    step9:'படி 9/10',step10:'படி 10/10',
+    lang_title:'மொழி தேர்ந்தெடுக்கவும்',lang_sub:'உங்கள் விருப்பமான மொழியை தேர்ந்தெடுக்கவும்',
+    vision_title:'நிறுவனரின் தொலைநோக்கு',vision_sub:'எங்கள் நிறுவனரிடமிருந்து தனிப்பட்ட செய்தி',
+    salon_title:'சலூன் 360° சுற்றுப்பயணம்',salon_sub:'பட்ஜெட் பார்பர் சலூனின் முழு வழிகாட்டி சுற்றுப்பயணம்',
+    invest_title:'முதலீட்டு விவரங்கள்',invest_sub:'ஒவ்வொரு மாடலுக்கும் முழுமையான முதலீட்டு விவரம்',
+    roi_title:'ROI கால்குலேட்டர்',roi_sub:'உங்கள் மாடல் அடிப்படையில் லாப மதிப்பீட்டைப் பாருங்கள்',
+    support_title:'ஆதரவு அமைப்பு',support_sub:'உங்கள் வெற்றிக்கு பட்ஜெட் பார்பர் வழங்குவதெல்லாம்',
+    ops_title:'செயல்பாடுகள்',ops_sub:'அன்றாட செயல்பாடுகள், நேரங்கள் மற்றும் சலூன் மேலாண்மை',
+    staff_title:'பணியாளர்கள்',staff_sub:'பணியாளர் ஆட்சேர்ப்பு, பயிற்சி மற்றும் நலன் விவரங்கள்',
+    royalty_title:'ராயல்டி & கட்டண காலவரிசை',royalty_sub:'ராயல்டி கட்டமைப்பு மற்றும் முழு கட்டண அட்டவணை',
+    interest_title:'உங்களுக்கு ஆர்வம் உள்ளதா?',interest_sub:'எல்லாவற்றையும் பார்த்தீர்கள் — முதலீடு, ROI, ஆதரவு. உங்கள் முடிவு?',
+    yes_btn:'ஆம், எனக்கு ஆர்வம் உள்ளது 🚀',no_btn:'ஆர்வம் இல்லை',
+    guidelines_title:'ஃப்ரான்சைஸ் வழிகாட்டுதல்கள்',guidelines_sub:'ஒவ்வொரு வழிகாட்டுதலையும் படித்து ஒப்புக்கொள்ளுங்கள்.',
+    confirm_title:'இறுதி உறுதிப்படுத்தல்',confirm_sub:'அனைத்து தேர்வுகளையும் மதிப்பாய்வு செய்து உறுதிப்படுத்துங்கள்',
+    payment_title:'டோக்கன் தொகை',payment_sub:'உங்கள் இடத்தை தடுக்க ₹20,000 செலுத்தவும்.',
+    logout_lbl:'⎋ வெளியேறு',continue_lbl:'தொடரவும் →'
+  },
+  Kannada:{
+    step1:'ಹಂತ 1/10',step2:'ಹಂತ 2/10',step3:'ಹಂತ 3/10',step4:'ಹಂತ 4/10',
+    step5:'ಹಂತ 5/10',step6:'ಹಂತ 6/10',step7:'ಹಂತ 7/10',step8:'ಹಂತ 8/10',
+    step9:'ಹಂತ 9/10',step10:'ಹಂತ 10/10',
+    lang_title:'ಭಾಷೆ ಆಯ್ಕೆ ಮಾಡಿ',lang_sub:'ಫ್ರ್ಯಾಂಚೈಸ್ ಪ್ರಸ್ತುತಿಗಾಗಿ ನಿಮ್ಮ ಭಾಷೆ ಆಯ್ಕೆ ಮಾಡಿ',
+    vision_title:'ಸಂಸ್ಥಾಪಕರ ದೃಷ್ಟಿ',vision_sub:'ನಮ್ಮ ಸಂಸ್ಥಾಪಕರಿಂದ ವೈಯಕ್ತಿಕ ಸಂದೇಶ',
+    salon_title:'ಸಲೂನ್ 360° ಟೂರ್',salon_sub:'ಬಜೆಟ್ ಬಾರ್ಬರ್ ಸಲೂನ್‌ನ ಸಂಪೂರ್ಣ ವಾಕ್‌ಥ್ರೂ',
+    invest_title:'ಹೂಡಿಕೆ ವಿವರಗಳು',invest_sub:'ಪ್ರತಿ ಮಾದರಿಗೆ ಸಂಪೂರ್ಣ ಹೂಡಿಕೆ ವಿವರ',
+    roi_title:'ROI ಕ್ಯಾಲ್ಕುಲೇಟರ್',roi_sub:'ನಿಮ್ಮ ಆಯ್ದ ಮಾದರಿ ಆಧರಿಸಿ ಲಾಭ ಅಂದಾಜು ನೋಡಿ',
+    support_title:'ಬೆಂಬಲ ವ್ಯವಸ್ಥೆ',support_sub:'ನಿಮ್ಮ ಯಶಸ್ಸಿಗೆ ಬಜೆಟ್ ಬಾರ್ಬರ್ ಒದಗಿಸುವ ಎಲ್ಲವೂ',
+    ops_title:'ಕಾರ್ಯಾಚರಣೆಗಳು',ops_sub:'ದೈನಂದಿನ ಕಾರ್ಯಾಚರಣೆಗಳು ಮತ್ತು ಸಲೂನ್ ನಿರ್ವಹಣೆ',
+    staff_title:'ಸಿಬ್ಬಂದಿ & ನೇಮಕಾತಿ',staff_sub:'ಸಿಬ್ಬಂದಿ ನೇಮಕ, ತರಬೇತಿ ಮತ್ತು ಕಲ್ಯಾಣ ವಿವರಗಳು',
+    royalty_title:'ರಾಯಲ್ಟಿ & ಪಾವತಿ ವೇಳಾಪಟ್ಟಿ',royalty_sub:'ರಾಯಲ್ಟಿ ರಚನೆ ಮತ್ತು ಸಂಪೂರ್ಣ ಪಾವತಿ ವೇಳಾಪಟ್ಟಿ',
+    interest_title:'ನಿಮಗೆ ಆಸಕ್ತಿ ಇದೆಯೇ?',interest_sub:'ನೀವು ಎಲ್ಲವನ್ನೂ ನೋಡಿದ್ದೀರಿ — ಹೂಡಿಕೆ, ROI, ಬೆಂಬಲ. ನಿಮ್ಮ ನಿರ್ಧಾರ?',
+    yes_btn:'ಹೌದು, ನನಗೆ ಆಸಕ್ತಿ ಇದೆ 🚀',no_btn:'ಆಸಕ್ತಿ ಇಲ್ಲ',
+    guidelines_title:'ಫ್ರ್ಯಾಂಚೈಸ್ ಮಾರ್ಗಸೂಚಿಗಳು',guidelines_sub:'ಪ್ರತಿ ಮಾರ್ಗಸೂಚಿ ಓದಿ ಒಪ್ಪಿಕೊಳ್ಳಿ.',
+    confirm_title:'ಅಂತಿಮ ದೃಢೀಕರಣ',confirm_sub:'ಎಲ್ಲಾ ಆಯ್ಕೆಗಳನ್ನು ಪರಿಶೀಲಿಸಿ ನಿಮ್ಮ ಅರ್ಜಿಯನ್ನು ದೃಢೀಕರಿಸಿ',
+    payment_title:'ಟೋಕನ್ ಮೊತ್ತ',payment_sub:'ನಿಮ್ಮ ಸ್ಥಳವನ್ನು ಬ್ಲಾಕ್ ಮಾಡಲು ₹20,000 ಪಾವತಿಸಿ.',
+    logout_lbl:'⎋ ಲಾಗ್ ಔಟ್',continue_lbl:'ಮುಂದುವರಿಸಿ →'
+  },
+  Malayalam:{
+    step1:'ഘട്ടം 1/10',step2:'ഘട്ടം 2/10',step3:'ഘട്ടം 3/10',step4:'ഘട്ടം 4/10',
+    step5:'ഘട്ടം 5/10',step6:'ഘട്ടം 6/10',step7:'ഘട്ടം 7/10',step8:'ഘട്ടം 8/10',
+    step9:'ഘട്ടം 9/10',step10:'ഘട്ടം 10/10',
+    lang_title:'ഭാഷ തിരഞ്ഞെടുക്കുക',lang_sub:'ഫ്രാഞ്ചൈസ് പ്രസ്തുതിക്കായി നിങ്ങളുടെ ഭാഷ തിരഞ്ഞെടുക്കുക',
+    vision_title:'സ്ഥാപകന്റെ ദർശനം',vision_sub:'ഞങ്ങളുടെ സ്ഥാപകനിൽ നിന്നുള്ള വ്യക്തിഗത സന്ദേശം',
+    salon_title:'സലൂൺ 360° ടൂർ',salon_sub:'ബജറ്റ് ബാർബർ സലൂണിന്റെ പൂർണ്ണ വാക്ക്ത്രൂ',
+    invest_title:'നിക്ഷേപ വിശദാംശങ്ങൾ',invest_sub:'ഓരോ മോഡലിനും പൂർണ്ണ നിക്ഷേപ വിവരണം',
+    roi_title:'ROI കാൽക്കുലേറ്റർ',roi_sub:'നിങ്ങളുടെ മോഡൽ അടിസ്ഥാനമാക്കി ലാഭ പ്രവചനങ്ങൾ കാണുക',
+    support_title:'പിന്തുണ സംവിധാനം',support_sub:'നിങ്ങളുടെ വിജയത്തിനായി ബജറ്റ് ബാർബർ നൽകുന്നതെല്ലാം',
+    ops_title:'പ്രവർത്തനങ്ങൾ',ops_sub:'ദൈനംദിന പ്രവർത്തനങ്ങൾ, സമയം, സലൂൺ മാനേജ്മെന്റ്',
+    staff_title:'ജീവനക്കാർ & റിക്രൂട്ട്മെന്റ്',staff_sub:'ജീവനക്കാർ, പരിശീലനം, ക്ഷേമ വിശദാംശങ്ങൾ',
+    royalty_title:'റോയൽറ്റി & പേമെന്റ് ടൈംലൈൻ',royalty_sub:'റോയൽറ്റി ഘടന, ആനുകൂല്യങ്ങൾ, പൂർണ്ണ ഷെഡ്യൂൾ',
+    interest_title:'നിങ്ങൾക്ക് താൽപ്പര്യമുണ്ടോ?',interest_sub:'നിങ്ങൾ എല്ലാം കണ്ടു — നിക്ഷേപം, ROI, പിന്തുണ. നിങ്ങളുടെ തീരുമാനം?',
+    yes_btn:'അതെ, എനിക്ക് താൽപ്പര്യമുണ്ട് 🚀',no_btn:'താൽപ്പര്യമില്ല',
+    guidelines_title:'ഫ്രാഞ്ചൈസ് മാർഗ്ഗനിർദ്ദേശങ്ങൾ',guidelines_sub:'ഓരോ മാർഗ്ഗനിർദ്ദേശവും വായിച്ച് സ്വീകരിക്കുക.',
+    confirm_title:'അന്തിമ സ്ഥിരീകരണം',confirm_sub:'എല്ലാ തിരഞ്ഞെടുപ്പുകളും അവലോകനം ചെയ്ത് അപേക്ഷ സ്ഥിരീകരിക്കുക',
+    payment_title:'ടോക്കൻ തുക',payment_sub:'നിങ്ങളുടെ ഇഷ്ടപ്പെട്ട ലൊക്കേഷൻ ബ്ലോക്ക് ചെയ്യാൻ ₹20,000 അടയ്ക്കുക.',
+    logout_lbl:'⎋ ലോഗ്ഔട്ട്',continue_lbl:'തുടരുക →'
+  }
+};
+
+// Screen → translation key map
+var SCREEN_KEYS={
+  's-lang':   {title:'lang_title',   sub:'lang_sub',   step:'step1'},
+  's-vision': {title:'vision_title', sub:'vision_sub', step:'step2'},
+  's-salon360':{title:'salon_title', sub:'salon_sub',  step:'step3'},
+  's-invest': {title:'invest_title', sub:'invest_sub', step:'step4'},
+  's-roi':    {title:'roi_title',    sub:'roi_sub',    step:'step5'},
+  's-support':{title:'support_title',sub:'support_sub',step:'step6'},
+  's-ops':    {title:'ops_title',    sub:'ops_sub',    step:'step7'},
+  's-staff':  {title:'staff_title',  sub:'staff_sub',  step:'step8'},
+  's-royalty':{title:'royalty_title',sub:'royalty_sub',step:'step9'},
+  's-interest':{title:'interest_title',sub:'interest_sub',step:'step10'},
+  's-guidelines':{title:'guidelines_title',sub:'guidelines_sub'},
+  's-confirm':{title:'confirm_title',sub:'confirm_sub'},
+  's-payment':{title:'payment_title',sub:'payment_sub'}
+};
+
+function applyTranslations(lang){
+  var T=TRANSLATIONS[lang]||TRANSLATIONS['English'];
+  // titles + subs
+  for(var sid in SCREEN_KEYS){
+    var scr=document.getElementById(sid);if(!scr)continue;
+    var k=SCREEN_KEYS[sid];
+    var titleEl=scr.querySelector('.stitle');
+    var subEl=scr.querySelector('.ssub');
+    if(titleEl&&k.title&&T[k.title])titleEl.textContent=T[k.title];
+    if(subEl&&k.sub&&T[k.sub])subEl.textContent=T[k.sub];
+    // step labels (span with data-i18n)
+    if(k.step){
+      var stepEl=scr.querySelector('[data-i18n]');
+      if(stepEl&&T[k.step])stepEl.textContent=T[k.step];
+    }
+  }
+  // interest screen yes/no buttons
+  var yesBtn=document.querySelector('#s-interest .btn-s');
+  var noBtn=document.querySelector('#s-interest .btn-d');
+  if(yesBtn&&T.yes_btn)yesBtn.textContent=T.yes_btn;
+  if(noBtn&&T.no_btn)noBtn.textContent=T.no_btn;
+  // all logout buttons
+  var logouts=document.querySelectorAll('.logout-btn');
+  logouts.forEach(function(b){if(T.logout_lbl)b.textContent=T.logout_lbl;});
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+</body>
+</html>
