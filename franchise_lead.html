@@ -228,16 +228,9 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     </div>
     <div class="fr"><label class="fl">Phone Number</label><input type="tel" id="lp" placeholder="+91 98765 43210"/></div>
     <div class="fr"><label class="fl">6-Digit PIN</label>
-      <div class="pin-grid" id="login-pin-grid">
-        <input class="pin-i" id="lpin1" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" oninput="pinMove('login-pin-grid',this,0)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="lpin2" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('login-pin-grid',this,1)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="lpin3" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('login-pin-grid',this,2)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="lpin4" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('login-pin-grid',this,3)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="lpin5" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('login-pin-grid',this,4)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="lpin6" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('login-pin-grid',this,5)" onkeydown="pinBack(event,this)"/>
-      </div>
+      <input type="password" id="login-pin" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Enter your 6-digit PIN" autocomplete="current-password" style="font-size:20px;letter-spacing:6px;text-align:center;" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
-    <div id="login-err" style="display:none;background:#FCEBEB;color:#A32D2D;border-radius:8px;padding:9px 12px;font-size:12px;margin-bottom:10px;">⚠️ Please enter all 6 digits of your PIN.</div>
+    <div id="login-err" style="display:none;background:#FCEBEB;color:#A32D2D;border-radius:8px;padding:9px 12px;font-size:12px;margin-bottom:10px;">⚠️ Phone not found or incorrect PIN.</div>
     <div style="background:#edf5f1;border-radius:8px;padding:10px 14px;font-size:12px;color:#1a5c44;margin-bottom:12px;"><strong>Demo Login:</strong> Any phone number · PIN: <strong>2 4 6 8 1 0</strong></div>
     <button class="btn btn-p btn-f" style="margin-bottom:10px;" onclick="doLogin()">Sign In →</button>
     <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--mut);">
@@ -265,14 +258,8 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     <div class="fr"><label class="fl">Email Address</label><input type="email" id="remail" placeholder="rajesh@email.com"/></div>
     <div class="fr"><label class="fl">City</label><input type="text" id="rcity" placeholder="Hyderabad"/></div>
     <div class="fr"><label class="fl">Set 6-Digit PIN</label>
-      <div class="pin-grid" id="reg-pin-grid">
-        <input class="pin-i" id="rpin1" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('reg-pin-grid',this,0)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="rpin2" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('reg-pin-grid',this,1)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="rpin3" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('reg-pin-grid',this,2)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="rpin4" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('reg-pin-grid',this,3)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="rpin5" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('reg-pin-grid',this,4)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="rpin6" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('reg-pin-grid',this,5)" onkeydown="pinBack(event,this)"/>
-      </div>
+      <input type="password" id="reg-pin" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Choose a 6-digit PIN" autocomplete="new-password" style="font-size:20px;letter-spacing:6px;text-align:center;"/>
+    </div>
     </div>
     <button class="btn btn-p btn-f" onclick="doReg()">Create Account &amp; Continue →</button>
   </div></div>
@@ -797,32 +784,6 @@ function rp(c,cur){
   for(let i=0;i<TOTAL_STEPS;i++){const d=document.createElement('div');d.className='sdot'+(i<cur?' done':'')+(i===cur-1?' active':'');c.appendChild(d);}
 }
 // PIN auto-advance: gridId = parent div id, el = current input, idx = 0-based index
-function pinMove(gridId, el, idx){
-  // Take only the last character typed (handles paste/autofill)
-  if(el.value.length>1) el.value=el.value.slice(-1);
-  if(el.value.length===1){
-    var grid=document.getElementById(gridId);
-    if(grid){
-      var pins=grid.querySelectorAll('.pin-i');
-      if(pins[idx+1]) pins[idx+1].focus();
-      // Auto-submit login when last PIN box filled
-      if(idx===5 && gridId==='login-pin-grid'){
-        var allFilled=Array.from(pins).every(function(p){return p.value.length===1;});
-        if(allFilled) setTimeout(doLogin, 120);
-      }
-    }
-  }
-}
-// Backspace goes to previous box
-function pinBack(e, el){
-  if(e.key==='Backspace'&&el.value===''){
-    var grid=el.closest('.pin-grid');
-    if(grid){var pins=grid.querySelectorAll('.pin-i');var arr=Array.from(pins);var i=arr.indexOf(el);if(i>0){pins[i-1].focus();pins[i-1].value='';}}
-  }
-}
-// Legacy pm kept for safety
-function pm(el,idx){if(el.value.length===1&&idx<6){const p=el.parentElement.querySelectorAll('.pin-i');if(p[idx])p[idx].focus();}}
-
 // ════════════════════════════════════════════
 // ── FRANCHISE APP SUPABASE FUNCTIONS ──
 // ════════════════════════════════════════════
@@ -934,8 +895,7 @@ function dataURLtoBlob(dataURL){
 // ── LOGIN — Supabase version ──
 function doLogin(){
   var rawPhone=(document.getElementById('lp')||{}).value||'';
-  var pin='';
-  document.querySelectorAll('#login-pin-grid .pin-i').forEach(function(p){pin+=p.value;});
+  var pin=(document.getElementById('login-pin')||{}).value||'';
   var errEl=document.getElementById('login-err');
 
   // Normalize phone: strip all spaces, ensure starts with +91
@@ -944,29 +904,23 @@ function doLogin(){
   else if(phone.startsWith('91')&&phone.length===12) phone='+'+phone;
 
   if(!phone||pin.length<6){
-    if(errEl){errEl.style.display='block';errEl.textContent='⚠️ Enter your phone number and all 6 PIN digits.';}
-    var grid=document.getElementById('login-pin-grid');
-    if(grid){grid.style.animation='none';setTimeout(function(){grid.style.animation='shake 0.3s ease';},10);}
+    if(errEl){errEl.style.display='block';errEl.textContent='⚠️ Enter your phone number and 6-digit PIN.';}
     return;
   }
   if(errEl)errEl.style.display='none';
 
-  // Show loading state on button
   var btn=document.querySelector('#s-login .btn-p');
   if(btn){btn.textContent='Signing in…';btn.disabled=true;}
-
   function resetBtn(){if(btn){btn.textContent='Sign In →';btn.disabled=false;}}
 
-  // Try exact phone match first, then normalized
   sb.from('leads')
     .select('id,name,phone,current_step,status,pin_hash,language,model_interest')
     .or('phone.eq.'+phone+',phone.eq.'+rawPhone.trim())
     .limit(1)
     .then(function(res){
       var data=res.data&&res.data.length?res.data[0]:null;
-      var error=res.error;
       resetBtn();
-      if(error||!data){
+      if(!data){
         if(errEl){errEl.style.display='block';errEl.textContent='⚠️ Phone number not found. Please check and try again.';}
         return;
       }
@@ -989,7 +943,7 @@ function doLogin(){
         if(errEl){errEl.style.display='block';errEl.textContent='⚠️ Incorrect PIN. Please try again.';}
       }
     })
-    .catch(function(e){
+    .catch(function(){
       resetBtn();
       if(errEl){errEl.style.display='block';errEl.textContent='⚠️ Connection error. Please try again.';}
     });
@@ -1001,18 +955,20 @@ function doReg(){
   var ph=document.getElementById('rphone');
   var em=document.getElementById('remail');
   var city=document.getElementById('rcity');
-  var pin='';
-  document.querySelectorAll('#reg-pin-grid .pin-i').forEach(function(p){pin+=p.value;});
+  var pin=(document.getElementById('reg-pin')||{}).value||'';
   if(!n||!n.value.trim()){alert('Please enter your full name.');return;}
   if(!ph||!ph.value.trim()){alert('Please enter your phone number.');return;}
   if(pin.length<6){alert('Please set a 6-digit PIN to continue.');return;}
   var nameVal=n.value.trim();
-  var phoneVal=ph.value.trim();
+  // Normalize phone
+  var phoneVal=ph.value.trim().replace(/\s+/g,'');
+  if(phoneVal.length===10) phoneVal='+91'+phoneVal;
+  else if(phoneVal.startsWith('91')&&phoneVal.length===12) phoneVal='+'+phoneVal;
   sb.from('leads').insert({
     name:nameVal,
     phone:phoneVal,
     email:em?em.value.trim()||null:null,
-    city:city?city.value.trim()||'':'' ,
+    city:city?city.value.trim()||'':'',
     pin_hash:pin,
     status:'new',
     current_step:0,
@@ -1023,7 +979,6 @@ function doReg(){
       else{alert('Registration failed: '+error.message);}
       return;
     }
-    // Fetch the new lead to get the ID
     sb.from('leads').select('id,name,current_step,status')
       .eq('phone',phoneVal).single()
       .then(function({data:lead}){
