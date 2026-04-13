@@ -223,18 +223,18 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
   <div class="fscreen-scroll"><div class="sbody">
     <div style="text-align:center;padding:28px 0 20px;">
       <div style="width:56px;height:56px;background:#edf5f1;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:26px;">✂</div>
-      <div class="stitle" style="margin-bottom:6px;">Welcome Back</div>
-      <div style="font-size:13px;color:var(--mut);">Sign in to your franchise account</div>
+      <div class="stitle" style="margin-bottom:6px;" data-t="login_title">Welcome Back</div>
+      <div style="font-size:13px;color:var(--mut);" data-t="login_sub">Sign in to your franchise account</div>
     </div>
-    <div class="fr"><label class="fl">Phone Number</label><input type="tel" id="lp" placeholder="+91 98765 43210"/></div>
-    <div class="fr"><label class="fl">6-Digit PIN</label>
+    <div class="fr"><label class="fl" data-t="lbl_phone">Phone Number</label><input type="tel" id="lp" placeholder="+91 98765 43210"/></div>
+    <div class="fr"><label class="fl" data-t="lbl_pin">6-Digit PIN</label>
       <input type="password" id="login-pin" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Enter 6-digit PIN" autocomplete="current-password" style="font-size:22px;letter-spacing:8px;text-align:center;" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
-    <div id="login-err" style="display:none;background:#FCEBEB;color:#A32D2D;border-radius:8px;padding:9px 12px;font-size:12px;margin-bottom:10px;">⚠️ Phone not found or incorrect PIN.</div>
-    <div style="background:#edf5f1;border-radius:8px;padding:10px 14px;font-size:12px;color:#1a5c44;margin-bottom:12px;"><strong>Demo Login:</strong> Any phone number · PIN: <strong>2 4 6 8 1 0</strong></div>
-    <button class="btn btn-p btn-f" style="margin-bottom:10px;" onclick="doLogin()">Sign In →</button>
+    <div id="login-err" style="display:none;background:#FCEBEB;color:#A32D2D;border-radius:8px;padding:9px 12px;font-size:12px;margin-bottom:10px;"><span data-t="err_login">⚠️ Phone not found or incorrect PIN.</span></div>
+    <div style="background:#edf5f1;border-radius:8px;padding:10px 14px;font-size:12px;color:#1a5c44;margin-bottom:12px;"><strong data-t="demo_login_label">Demo Login:</strong> <span data-t="demo_login_text">Any phone number · PIN: </span><strong>2 4 6 8 1 0</strong></div>
+    <button class="btn btn-p btn-f" style="margin-bottom:10px;" onclick="doLogin()" data-t="btn_signin">Sign In →</button>
     <div style="text-align:center;margin-top:14px;font-size:13px;color:var(--mut);">
-      New franchise lead? <button class="btn btn-sm" style="background:none;border:none;color:var(--hi);cursor:pointer;font-weight:700;" onclick="fs('s-register')">Register here →</button>
+      <span data-t="lbl_new_lead">New franchise lead?</span> <button class="btn btn-sm" style="background:none;border:none;color:var(--hi);cursor:pointer;font-weight:700;" onclick="fs('s-register')" data-t="btn_register_link">Register here →</button>
     </div>
   </div></div>
 </div>
@@ -252,15 +252,15 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     <div style="width:64px;"></div></div>
   <div class="fscreen-scroll"><div class="sbody">
     <div class="stitle" style="margin-bottom:4px;">Create Account</div>
-    <div class="ssub">Register as a Budget Barber franchise lead</div>
-    <div class="fr"><label class="fl">Full Name</label><input type="text" id="rn" placeholder="Rajesh Kumar"/></div>
-    <div class="fr"><label class="fl">Phone Number</label><input type="tel" id="rphone" placeholder="+91 98765 43210"/></div>
-    <div class="fr"><label class="fl">Email Address</label><input type="email" id="remail" placeholder="rajesh@email.com"/></div>
-    <div class="fr"><label class="fl">City</label><input type="text" id="rcity" placeholder="Hyderabad"/></div>
-    <div class="fr"><label class="fl">Set 6-Digit PIN</label>
+    <div class="ssub" data-t="register_sub">Register as a Budget Barber franchise lead</div>
+    <div class="fr"><label class="fl" data-t="lbl_fullname">Full Name</label><input type="text" id="rn" placeholder="Rajesh Kumar"/></div>
+    <div class="fr"><label class="fl" data-t="lbl_phone">Phone Number</label><input type="tel" id="rphone" placeholder="+91 98765 43210"/></div>
+    <div class="fr"><label class="fl" data-t="lbl_email">Email Address</label><input type="email" id="remail" placeholder="rajesh@email.com"/></div>
+    <div class="fr"><label class="fl" data-t="lbl_city">City</label><input type="text" id="rcity" placeholder="Hyderabad"/></div>
+    <div class="fr"><label class="fl" data-t="lbl_set_pin">Set 6-Digit PIN</label>
       <input type="password" id="reg-pin" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Choose a 6-digit PIN" autocomplete="new-password" style="font-size:22px;letter-spacing:8px;text-align:center;"/>
     </div>
-    <button class="btn btn-p btn-f" onclick="doReg()">Create Account &amp; Continue →</button>
+    <button class="btn btn-p btn-f" onclick="doReg()" data-t="btn_create_account">Create Account &amp; Continue →</button>
   </div></div>
 </div>
 
@@ -293,15 +293,15 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     <div class="vmock" id="vm-vision">
       <div class="vtag">Vision Video</div>
       <div class="vplay" onclick="pv('vision')"><div class="vtri"></div></div>
-      <div class="vlbl" id="vs-vision">Tap to play</div>
+      <div class="vlbl" id="vs-vision" data-t="tap_to_play">Tap to play</div>
       <div class="vprog" id="vp-vision"></div>
       <div class="vurl-badge" id="vub-vision" style="display:none;"></div>
     </div>
     <div class="card">
       <div class="sec">In This Video</div>
-      <div class="sup-item"><div class="sup-icon">🎯</div><div><div style="font-size:13px;font-weight:700;">Vision of Budget Barber</div><div style="font-size:12px;color:var(--mut);">Mission to democratize quality grooming across India</div></div></div>
-      <div class="sup-item"><div class="sup-icon">💡</div><div><div style="font-size:13px;font-weight:700;">Why Budget Barber?</div><div style="font-size:12px;color:var(--mut);">Market opportunity, brand differentiation &amp; growth story</div></div></div>
-      <div class="sup-item" style="border:none;"><div class="sup-icon">⭐</div><div><div style="font-size:13px;font-weight:700;">Our USP</div><div style="font-size:12px;color:var(--mut);">Tech-enabled, affordable, standardized experience</div></div></div>
+      <div class="sup-item"><div class="sup-icon">🎯</div><div><div style="font-size:13px;font-weight:700;" data-t="vision_item1_title">Vision of Budget Barber</div><div style="font-size:12px;color:var(--mut);" data-t="vision_item1_desc">Mission to democratize quality grooming across India</div></div></div>
+      <div class="sup-item"><div class="sup-icon">💡</div><div><div style="font-size:13px;font-weight:700;" data-t="vision_item2_title">Why Budget Barber?</div><div style="font-size:12px;color:var(--mut);" data-t="vision_item2_desc">Market opportunity, brand differentiation &amp; growth story</div></div></div>
+      <div class="sup-item" style="border:none;"><div class="sup-icon">⭐</div><div><div style="font-size:13px;font-weight:700;" data-t="vision_item3_title">Our USP</div><div style="font-size:12px;color:var(--mut);" data-t="vision_item3_desc">Tech-enabled, affordable, standardized experience</div></div></div>
     </div>
     <button class="btn btn-p btn-f" id="vn-vision" style="opacity:.4;pointer-events:none;" onclick="fstep('s-salon360')">Continue to Salon Tour →</button>
   </div></div>
@@ -323,17 +323,17 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
       <div class="vurl-badge" id="vub-salon" style="display:none;"></div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
-      <div class="card" style="margin:0;text-align:center;padding:14px;"><div style="font-size:24px;margin-bottom:5px;">🪞</div><div style="font-size:13px;font-weight:700;">Digital Mirror</div><div style="font-size:11px;color:var(--mut);margin-top:3px;">Virtual try-on &amp; styling</div></div>
-      <div class="card" style="margin:0;text-align:center;padding:14px;"><div style="font-size:24px;margin-bottom:5px;">🤖</div><div style="font-size:13px;font-weight:700;">AI Skin Analysis</div><div style="font-size:11px;color:var(--mut);margin-top:3px;">Personalized treatment</div></div>
-      <div class="card" style="margin:0;text-align:center;padding:14px;"><div style="font-size:24px;margin-bottom:5px;">💇</div><div style="font-size:13px;font-weight:700;">AI Hair Analysis</div><div style="font-size:11px;color:var(--mut);margin-top:3px;">Custom recommendations</div></div>
-      <div class="card" style="margin:0;text-align:center;padding:14px;"><div style="font-size:24px;margin-bottom:5px;">📱</div><div style="font-size:13px;font-weight:700;">AI Hairstyle</div><div style="font-size:11px;color:var(--mut);margin-top:3px;">Preview before cutting</div></div>
+      <div class="card" style="margin:0;text-align:center;padding:14px;"><div style="font-size:24px;margin-bottom:5px;">🪞</div><div style="font-size:13px;font-weight:700;" data-t="salon_feat1_title">Digital Mirror</div><div style="font-size:11px;color:var(--mut);margin-top:3px;" data-t="salon_feat1_desc">Virtual try-on &amp; styling</div></div>
+      <div class="card" style="margin:0;text-align:center;padding:14px;"><div style="font-size:24px;margin-bottom:5px;">🤖</div><div style="font-size:13px;font-weight:700;" data-t="salon_feat2_title">AI Skin Analysis</div><div style="font-size:11px;color:var(--mut);margin-top:3px;" data-t="salon_feat2_desc">Personalized treatment</div></div>
+      <div class="card" style="margin:0;text-align:center;padding:14px;"><div style="font-size:24px;margin-bottom:5px;">💇</div><div style="font-size:13px;font-weight:700;" data-t="salon_feat3_title">AI Hair Analysis</div><div style="font-size:11px;color:var(--mut);margin-top:3px;" data-t="salon_feat3_desc">Custom recommendations</div></div>
+      <div class="card" style="margin:0;text-align:center;padding:14px;"><div style="font-size:24px;margin-bottom:5px;">📱</div><div style="font-size:13px;font-weight:700;" data-t="salon_feat4_title">AI Hairstyle</div><div style="font-size:11px;color:var(--mut);margin-top:3px;" data-t="salon_feat4_desc">Preview before cutting</div></div>
     </div>
     <div class="card">
       <div class="sec">Franchise Models</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
-        <div class="ccard"><div class="cnum">3</div><div class="clbl">Chair</div><div class="cprc">₹8.5L</div><div class="carea">250 sq ft</div></div>
-        <div class="ccard"><div class="cnum">4</div><div class="clbl">Chair</div><div class="cprc">₹11L</div><div class="carea">350 sq ft</div></div>
-        <div class="ccard"><div class="cnum">5</div><div class="clbl">Chair</div><div class="cprc">₹14L</div><div class="carea">450 sq ft</div></div>
+        <div class="ccard"><div class="cnum">3</div><div class="clbl" data-t="lbl_chair">Chair</div><div class="cprc">₹8.5L</div><div class="carea">250 sq ft</div></div>
+        <div class="ccard"><div class="cnum">4</div><div class="clbl" data-t="lbl_chair">Chair</div><div class="cprc">₹11L</div><div class="carea">350 sq ft</div></div>
+        <div class="ccard"><div class="cnum">5</div><div class="clbl" data-t="lbl_chair">Chair</div><div class="cprc">₹14L</div><div class="carea">450 sq ft</div></div>
       </div>
     </div>
     <button class="btn btn-p btn-f" id="vn-salon" style="opacity:.4;pointer-events:none;" onclick="fstep('s-invest')">Continue to Investment →</button>
@@ -362,7 +362,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
       <div class="irow"><span class="ilbl" data-i18n="lbl_product_stock">Initial Product Stock</span><span class="ival" id="i3-stk">₹50,000</span></div>
       <div class="irow"><span class="ilbl" data-i18n="lbl_working_capital">Working Capital</span><span class="ival" id="i3-wc">₹50,000</span></div>
       <div class="divdr"></div>
-      <div style="font-size:12px;font-weight:700;margin-bottom:8px;">Included:</div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:8px;" data-t="lbl_included">Included:</div>
       <div style="font-size:12px;color:var(--mut);line-height:2.1;" id="i3-inc">3 Marc Salon Chairs · Digital Mirror · POS System · AC Unit · Branding Kit · Uniforms ×6 · AI Tablet · 1-Year License</div>
     </div></div>
     <div id="i4" style="display:none;"><div class="card">
@@ -373,7 +373,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
       <div class="irow"><span class="ilbl" data-i18n="lbl_product_stock">Initial Product Stock</span><span class="ival">₹60,000</span></div>
       <div class="irow"><span class="ilbl" data-i18n="lbl_working_capital">Working Capital</span><span class="ival">₹40,000</span></div>
       <div class="divdr"></div>
-      <div style="font-size:12px;font-weight:700;margin-bottom:8px;">Included:</div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:8px;" data-t="lbl_included">Included:</div>
       <div style="font-size:12px;color:var(--mut);line-height:2.1;">4 Marc Chairs · 2 Digital Mirrors · POS · 2 ACs · Branding Kit · Uniforms ×8 · AI Tablets ×2 · Priority Support · 1-Year License</div>
     </div></div>
     <div id="i5" style="display:none;"><div class="card">
@@ -384,7 +384,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
       <div class="irow"><span class="ilbl" data-i18n="lbl_product_stock">Initial Product Stock</span><span class="ival">₹60,000</span></div>
       <div class="irow"><span class="ilbl" data-i18n="lbl_working_capital">Working Capital</span><span class="ival">₹40,000</span></div>
       <div class="divdr"></div>
-      <div style="font-size:12px;font-weight:700;margin-bottom:8px;">Included:</div>
+      <div style="font-size:12px;font-weight:700;margin-bottom:8px;" data-t="lbl_included">Included:</div>
       <div style="font-size:12px;color:var(--mut);line-height:2.1;">5 Marc Chairs · 3 Digital Mirrors · 2 POS · 3 ACs · Premium Branding · Uniforms ×10 · AI Tablets ×3 · Account Manager · 1-Year License</div>
     </div></div>
     <button class="btn btn-p btn-f" onclick="fstep('s-roi')">Continue to ROI →</button>
@@ -417,7 +417,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
       <div class="rrow"><span data-i18n="lbl_products">Products &amp; Misc</span><span class="rval" style="color:var(--no-tx);" id="r3-misc">-₹10,000</span></div>
       <div style="background:var(--ok-bg);border-radius:var(--rad);padding:12px 14px;margin-top:12px;">
         <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;color:var(--ok-tx);" data-i18n="lbl_net_profit">Net Profit / Month</span><span style="font-size:20px;font-weight:700;color:var(--ok-tx);" id="r3-profit">₹43,480</span></div>
-        <div style="font-size:12px;color:var(--ok-tx);margin-top:4px;" id="r3-roi" data-i18n-roi-prefix="roi_period_prefix">ROI Period: 18–22 months</div>
+        <div style="font-size:12px;color:var(--ok-tx);margin-top:4px;" id="r3-roi" data-t="roi_period_prefix">ROI Period: 18–22 months</div>
       </div>
     </div></div>
     <div id="r4" style="display:none;"><div class="card">
@@ -555,8 +555,8 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     <div class="ssub">You've seen everything — investment, ROI, support, operations. What's your decision?</div>
     <div class="card" style="text-align:center;">
       <div style="font-size:40px;margin-bottom:14px;padding-top:6px;">🤔</div>
-      <div style="font-size:15px;font-weight:700;margin-bottom:8px;">Ready to join Budget Barber Franchise?</div>
-      <div style="font-size:13px;color:var(--mut);margin-bottom:20px;line-height:1.6;">After reviewing all details on investment, ROI, support and operations — what would you like to do?</div>
+      <div style="font-size:15px;font-weight:700;margin-bottom:8px;" data-t="interest_cta_title">Ready to join Budget Barber Franchise?</div>
+      <div style="font-size:13px;color:var(--mut);margin-bottom:20px;line-height:1.6;" data-t="interest_cta_sub">After reviewing all details on investment, ROI, support and operations — what would you like to do?</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
         <button class="btn btn-s btn-f" style="padding:14px;" onclick="fstep('s-guidelines')">Yes, I'm Interested 🚀</button>
         <button class="btn btn-d btn-f" style="padding:14px;" onclick="fs('s-notinterested')">Not Interested</button>
@@ -571,25 +571,25 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
   <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><div class="pill p-no">Closing Lead</div><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
   <div class="fscreen-scroll"><div class="sbody">
     <div class="stitle">We're Sorry to Hear That</div>
-    <div class="ssub">Please share your reason(s) so we can improve.</div>
+    <div class="ssub" data-t="notint_ask_sub">Please share your reason(s) so we can improve.</div>
     <div class="reason-list">
-      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div>Investment amount is too high</div>
-      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div>Location not available / suitable</div>
-      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div>Not convinced about ROI</div>
-      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div>Exploring other franchise options</div>
-      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div>Personal / family reasons</div>
-      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div>Timing is not right</div>
-      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div>Other reason</div>
+      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div><span data-t="reason1">Investment amount is too high</span></div>
+      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div><span data-t="reason2">Location not available / suitable</span></div>
+      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div><span data-t="reason3">Not convinced about ROI</span></div>
+      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div><span data-t="reason4">Exploring other franchise options</span></div>
+      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div><span data-t="reason5">Personal / family reasons</span></div>
+      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div><span data-t="reason6">Timing is not right</span></div>
+      <div class="ri" onclick="this.classList.toggle('sel')"><div class="rradio"></div><span data-t="reason7">Other reason</span></div>
     </div>
-    <div class="fr"><label class="fl">Additional Comments</label><textarea placeholder="Tell us more..."></textarea></div>
-    <button class="btn btn-d btn-f" onclick="fs('s-closed')">Submit &amp; Close Lead</button>
-    <button class="btn btn-f" style="margin-top:8px;" onclick="fstep('s-interest')">← Reconsider</button>
+    <div class="fr"><label class="fl" data-t="lbl_additional_comments">Additional Comments</label><textarea placeholder="Tell us more..."></textarea></div>
+    <button class="btn btn-d btn-f" onclick="fs('s-closed')" data-t="btn_submit_close">Submit &amp; Close Lead</button>
+    <button class="btn btn-f" style="margin-top:8px;" onclick="fstep('s-interest')" data-t="btn_reconsider">← Reconsider</button>
   </div></div>
 </div>
 
 <!-- GUIDELINES -->
 <div id="s-guidelines" class="fscreen">
-  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);">Guidelines</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);" data-t="lbl_guidelines_badge">Guidelines</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
   <div class="back-bar"><button class="back-btn" onclick="fstep('s-interest')">← Back</button></div>
   <div class="fscreen-scroll"><div class="sbody">
     <div class="stitle">Franchise Guidelines</div>
@@ -601,66 +601,66 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
 
 <!-- CONFIRM -->
 <div id="s-confirm" class="fscreen">
-  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);">Confirmation</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);" data-t="lbl_confirmation_badge">Confirmation</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
   <div class="back-bar"><button class="back-btn" onclick="fstep('s-guidelines')">← Back</button></div>
   <div class="fscreen-scroll"><div class="sbody">
     <div class="stitle">Final Confirmation</div>
     <div class="ssub">Review all selections and confirm your franchise application</div>
     <div style="background:var(--surf2);border-radius:var(--rad-lg);padding:14px;margin-bottom:12px;">
-      <div style="font-size:13px;font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">Selected Model <span class="pill p-inf">3 Chair</span></div>
-      <div class="irow"><span class="ilbl">Total Investment</span><span class="ival">₹8,50,000</span></div>
-      <div class="irow"><span class="ilbl">Area Required</span><span class="ival">250 sq ft</span></div>
-      <div class="irow" style="border:none;"><span class="ilbl">Est. Net Profit/Month</span><span class="ival" style="color:var(--ok-tx);">₹43,480</span></div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;"><span data-t="lbl_selected_model">Selected Model</span> <span class="pill p-inf">3 Chair</span></div>
+      <div class="irow"><span class="ilbl" data-t="lbl_total_investment">Total Investment</span><span class="ival">₹8,50,000</span></div>
+      <div class="irow"><span class="ilbl" data-t="lbl_area_required">Area Required</span><span class="ival">250 sq ft</span></div>
+      <div class="irow" style="border:none;"><span class="ilbl" data-t="lbl_est_profit">Est. Net Profit/Month</span><span class="ival" style="color:var(--ok-tx);">₹43,480</span></div>
     </div>
-    <div class="card"><div class="sec">Final Confirmation Checklist</div><div id="cflist"></div></div>
+    <div class="card"><div class="sec" data-t="sec_final_checklist">Final Confirmation Checklist</div><div id="cflist"></div></div>
     <button class="btn btn-p btn-f" id="cfbtn" style="opacity:.4;pointer-events:none;" onclick="fstep('s-payment')">Confirm &amp; Proceed to Token Payment →</button>
   </div></div>
 </div>
 
 <!-- TOKEN PAYMENT -->
 <div id="s-payment" class="fscreen">
-  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);">Token Payment</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
+  <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><span style="font-size:12px;color:var(--mut);" data-t="lbl_token_payment_badge">Token Payment</span><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
   <div class="back-bar"><button class="back-btn" onclick="fstep('s-confirm')">← Back</button></div>
   <div class="fscreen-scroll"><div class="sbody">
     <div class="stitle">Token Amount</div>
     <div class="ssub">Pay ₹20,000 to block your preferred location. Project dashboard activates after payment.</div>
-    <div class="pay-block"><div class="pay-t">Token Amount — Location Blocking</div><div class="pay-a">₹20,000</div><div class="pay-n">Refundable only if Budget Barber cannot assign a suitable location</div></div>
+    <div class="pay-block"><div class="pay-t" data-t="pay_block_title">Token Amount — Location Blocking</div><div class="pay-a">₹20,000</div><div class="pay-n" data-t="pay_refund_note">Refundable only if Budget Barber cannot assign a suitable location</div></div>
     <div class="card">
-      <div class="sec">Preferred Location</div>
-      <div class="fr"><label class="fl">City</label><input type="text" placeholder="Hyderabad"/></div>
-      <div class="fr"><label class="fl">Area / Locality</label><input type="text" placeholder="Madhapur, Kukatpally…"/></div>
-      <div class="fr"><label class="fl">PIN Code</label><input type="text" placeholder="500081"/></div>
-      <div class="fr"><label class="fl">Shop Status</label><select><option>No — Looking for a location</option><option>Yes — Space ready</option><option>Yes — Shortlisted 2–3 options</option></select></div>
+      <div class="sec" data-t="sec_preferred_location">Preferred Location</div>
+      <div class="fr"><label class="fl" data-t="lbl_city">City</label><input type="text" placeholder="Hyderabad"/></div>
+      <div class="fr"><label class="fl" data-t="lbl_area_locality">Area / Locality</label><input type="text" placeholder="Madhapur, Kukatpally…"/></div>
+      <div class="fr"><label class="fl" data-t="lbl_pin_code">PIN Code</label><input type="text" placeholder="500081"/></div>
+      <div class="fr"><label class="fl" data-t="lbl_shop_status">Shop Status</label><select><option data-t="shop_opt1">No — Looking for a location</option><option data-t="shop_opt2">Yes — Space ready</option><option data-t="shop_opt3">Yes — Shortlisted 2–3 options</option></select></div>
     </div>
     <div class="card">
-      <div class="sec">Pay To — Budget Barber</div>
+      <div class="sec" data-t="sec_pay_to">Pay To — Budget Barber</div>
       <div style="text-align:center;padding:12px 0 6px;">
         <div style="width:140px;height:140px;background:var(--surf2);border:0.5px solid var(--bdr2);border-radius:12px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:10px;">
           <div style="font-size:40px;">📱</div>
-          <div style="font-size:10px;color:var(--hnt);margin-top:4px;">Scan QR to Pay</div>
+          <div style="font-size:10px;color:var(--hnt);margin-top:4px;" data-t="lbl_scan_qr">Scan QR to Pay</div>
         </div>
-        <div style="font-size:12px;font-weight:700;color:var(--txt);margin-bottom:3px;">UPI ID</div>
+        <div style="font-size:12px;font-weight:700;color:var(--txt);margin-bottom:3px;" data-t="lbl_upi_id">UPI ID</div>
         <div id="disp-upi" style="font-size:16px;font-weight:800;color:var(--hi);letter-spacing:0.01em;margin-bottom:3px;">budgetbarber@paytm</div>
         <div style="font-size:11px;color:var(--mut);margin-bottom:8px;">Budget Barber Pvt Ltd</div>
-        <button onclick="copyUPI()" style="padding:5px 16px;font-size:11px;font-weight:700;border-radius:99px;border:0.5px solid var(--hi);background:#edf5f1;color:var(--hi);cursor:pointer;font-family:inherit;" id="copy-upi-btn">📋 Copy UPI ID</button>
+        <button onclick="copyUPI()" style="padding:5px 16px;font-size:11px;font-weight:700;border-radius:99px;border:0.5px solid var(--hi);background:#edf5f1;color:var(--hi);cursor:pointer;font-family:inherit;" id="copy-upi-btn" data-t="btn_copy_upi">📋 Copy UPI ID</button>
       </div>
       <div style="height:0.5px;background:var(--bdr);margin:12px 0;"></div>
-      <div style="font-size:11px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;">Bank Transfer (NEFT / RTGS)</div>
-      <div class="irow"><span class="ilbl">Account Name</span><span class="ival" style="font-size:12px;">Budget Barber Pvt Ltd</span></div>
-      <div class="irow"><span class="ilbl">Account No.</span><span class="ival" style="font-size:12px;" id="disp-bank-acc">Contact Admin</span></div>
-      <div class="irow" style="border:none;"><span class="ilbl">IFSC</span><span class="ival" style="font-size:12px;" id="disp-bank-ifsc">Contact Admin</span></div>
+      <div style="font-size:11px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;" data-t="lbl_bank_transfer">Bank Transfer (NEFT / RTGS)</div>
+      <div class="irow"><span class="ilbl" data-t="lbl_account_name">Account Name</span><span class="ival" style="font-size:12px;">Budget Barber Pvt Ltd</span></div>
+      <div class="irow"><span class="ilbl" data-t="lbl_account_no">Account No.</span><span class="ival" style="font-size:12px;" id="disp-bank-acc">Contact Admin</span></div>
+      <div class="irow" style="border:none;"><span class="ilbl" data-t="lbl_ifsc">IFSC</span><span class="ival" style="font-size:12px;" id="disp-bank-ifsc">Contact Admin</span></div>
     </div>
     <div class="card">
-      <div class="sec">Upload Payment Screenshot</div>
-      <div style="font-size:12px;color:var(--mut);margin-bottom:10px;line-height:1.6;">After paying, upload your screenshot for verification. Our team confirms within 2–4 hours.</div>
-      <div id="scr-upload-box" class="upload-box" onclick="document.getElementById('pay-screenshot').click()">📷 Tap to upload payment screenshot</div>
+      <div class="sec" data-t="sec_upload_screenshot">Upload Payment Screenshot</div>
+      <div style="font-size:12px;color:var(--mut);margin-bottom:10px;line-height:1.6;" data-t="pay_upload_note">After paying, upload your screenshot for verification. Our team confirms within 2–4 hours.</div>
+      <div id="scr-upload-box" class="upload-box" onclick="document.getElementById('pay-screenshot').click()" data-t="btn_upload_screenshot">📷 Tap to upload payment screenshot</div>
       <input type="file" id="pay-screenshot" accept="image/*" style="display:none;" onchange="handleScreenshot(this)"/>
       <div id="scr-preview" style="display:none;text-align:center;margin-top:8px;">
         <img id="scr-img" src="" alt="" style="max-width:100%;border-radius:8px;border:0.5px solid var(--bdr2);"/>
-        <div style="font-size:12px;color:var(--ok-tx);margin-top:6px;font-weight:700;">✓ Screenshot uploaded</div>
+        <div style="font-size:12px;color:var(--ok-tx);margin-top:6px;font-weight:700;" data-t="lbl_screenshot_done">✓ Screenshot uploaded</div>
       </div>
     </div>
-    <button class="btn btn-p btn-f" style="padding:14px;font-size:15px;" onclick="doPay()">Confirm &amp; Activate Project →</button>
+    <button class="btn btn-p btn-f" style="padding:14px;font-size:15px;" onclick="doPay()" data-t="btn_confirm_activate">Confirm &amp; Activate Project →</button>
   </div></div>
 </div>
 
@@ -669,24 +669,24 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
   <div class="hdr"><svg class="bb-logo-svg" width="130" height="32" viewBox="0 0 130 32" xmlns="http://www.w3.org/2000/svg"><rect width="130" height="32" rx="3" fill="#0D3B2E"/><rect y="18" width="130" height="14" fill="#0D3B2E"/><rect y="16" width="130" height="3" fill="#F5D100"/><text x="65" y="12" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BUDGET</text><text x="65" y="26" font-family="Arial Black,Arial" font-weight="900" font-size="11" fill="#F5D100" text-anchor="middle" dominant-baseline="middle">BARBER</text></svg><div class="badge">Project Active ✓</div><button class="logout-btn" onclick="doLogout()">⎋ Logout</button></div>
   <div style="display:flex;align-items:center;gap:8px;padding:8px 16px;border-bottom:0.5px solid var(--bdr);background:var(--surf);flex-shrink:0;">
     <button class="back-btn" onclick="fs('s-interest')">← Main Menu</button>
-    <span style="font-size:11px;color:var(--hnt);">Project Dashboard</span>
+    <span style="font-size:11px;color:var(--hnt);" data-t="lbl_project_dashboard">Project Dashboard</span>
   </div>
   <div class="mnav">
-    <button class="mnbtn active" onclick="smtab(this,'pj-loc')">📍 Location</button>
-    <button class="mnbtn" onclick="smtab(this,'pj-pay')">💰 Payments</button>
-    <button class="mnbtn" onclick="smtab(this,'pj-tl')">📅 Timeline</button>
-    <button class="mnbtn" onclick="smtab(this,'pj-gl')">📋 Guidelines</button>
+    <button class="mnbtn active" onclick="smtab(this,'pj-loc')" data-t="tab_location">📍 Location</button>
+    <button class="mnbtn" onclick="smtab(this,'pj-pay')" data-t="tab_payments">💰 Payments</button>
+    <button class="mnbtn" onclick="smtab(this,'pj-tl')" data-t="tab_timeline">📅 Timeline</button>
+    <button class="mnbtn" onclick="smtab(this,'pj-gl')" data-t="tab_guidelines">📋 Guidelines</button>
   </div>
   <div class="fscreen-scroll">
     <div id="pj-loc" class="sbody">
-      <div class="alert alert-ok">✓ Token paid — Location search in progress</div>
-      <div class="card"><div class="sec">Location Details</div><div class="irow"><span class="ilbl">City</span><span class="ival">Hyderabad</span></div><div class="irow"><span class="ilbl">Locality</span><span class="ival">Madhapur</span></div><div class="irow" style="border:none;"><span class="ilbl">Status</span><span><span class="pill p-wrn">Searching</span></span></div></div>
-      <div class="card"><div class="sec">Shop Photos</div><div class="upload-box">+ Upload exterior photos</div><div class="upload-box" style="margin-bottom:0;">+ Upload interior / floor plan</div></div>
-      <div class="card"><div class="sec">Location Pin</div><div class="upload-box" style="margin-bottom:10px;">+ Drop Google Maps pin</div><div class="fr" style="margin:0;"><label class="fl">Google Maps Link</label><input type="text" placeholder="https://maps.google.com/..."/></div></div>
-      <button class="btn btn-p btn-f">Save Location Details</button>
+      <div class="alert alert-ok" data-t="lbl_token_paid_status">✓ Token paid — Location search in progress</div>
+      <div class="card"><div class="sec" data-t="sec_location_details">Location Details</div><div class="irow"><span class="ilbl" data-t="lbl_city">City</span><span class="ival">Hyderabad</span></div><div class="irow"><span class="ilbl">Locality</span><span class="ival">Madhapur</span></div><div class="irow" style="border:none;"><span class="ilbl" data-t="lbl_status">Status</span><span><span class="pill p-wrn">Searching</span></span></div></div>
+      <div class="card"><div class="sec" data-t="sec_shop_photos">Shop Photos</div><div class="upload-box" data-t="btn_upload_exterior">+ Upload exterior photos</div><div class="upload-box" style="margin-bottom:0;" data-t="btn_upload_interior">+ Upload interior / floor plan</div></div>
+      <div class="card"><div class="sec" data-t="sec_location_pin">Location Pin</div><div class="upload-box" style="margin-bottom:10px;" data-t="btn_drop_pin">+ Drop Google Maps pin</div><div class="fr" style="margin:0;"><label class="fl" data-t="lbl_google_maps_link">Google Maps Link</label><input type="text" placeholder="https://maps.google.com/..."/></div></div>
+      <button class="btn btn-p btn-f" data-t="btn_save_location">Save Location Details</button>
     </div>
     <div id="pj-pay" class="sbody" style="display:none;">
-      <div class="card"><div class="sec">Payment Overview — ₹8,50,000</div><div style="font-size:13px;color:var(--mut);margin-bottom:4px;">₹20,000 paid of ₹8,50,000</div><div class="pbwrap"><div class="pbfill" style="width:2.4%;"></div></div><div style="font-size:11px;color:var(--hnt);margin-bottom:14px;margin-top:4px;">2.4% complete</div>
+      <div class="card"><div class="sec">Payment Overview — ₹8,50,000</div><div style="font-size:13px;color:var(--mut);margin-bottom:4px;" data-t="lbl_payment_progress">₹20,000 paid of ₹8,50,000</div><div class="pbwrap"><div class="pbfill" style="width:2.4%;"></div></div><div style="font-size:11px;color:var(--hnt);margin-bottom:14px;margin-top:4px;">2.4% complete</div>
         <div class="cli"><div class="cbox chk"><div class="cico">✓</div></div><div class="ctxt"><div style="font-weight:700;">Token — ₹20,000</div><div style="color:var(--ok-tx);font-size:12px;">Paid · Apr 8, 2026 · UPI</div></div></div>
         <div class="cli"><div class="cbox" style="border-color:var(--hi);"></div><div class="ctxt"><div style="font-weight:700;">Cheque — ₹2,50,000</div><div style="color:var(--wrn-tx);font-size:12px;">Pending · Due Apr 20, 2026</div></div></div>
         <div class="cli"><div class="cbox"></div><div class="ctxt"><div style="font-weight:700;">Cash — ₹6,00,000</div><div style="color:var(--mut);font-size:12px;">Pending · On setup start</div></div></div>
@@ -695,17 +695,17 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     </div>
     <div id="pj-tl" class="sbody" style="display:none;">
       <div class="card"><div class="sec">Project Timeline</div>
-        <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--ok-tx);"></div><div class="tl-conn"></div></div><div class="tl-ct"><div class="tl-d">Apr 8, 2026 · Done ✓</div><div class="tl-l">Token Payment</div><div class="tl-s">Location search started</div></div></div>
-        <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--hi);"></div><div class="tl-conn"></div></div><div class="tl-ct"><div class="tl-d">Apr 20, 2026</div><div class="tl-l">Agreement Signing</div><div class="tl-s">₹2.5L cheque payment</div></div></div>
-        <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--bdr2);"></div><div class="tl-conn"></div></div><div class="tl-ct"><div class="tl-d">May 5, 2026</div><div class="tl-l">Interior Work Begins</div><div class="tl-s">₹6L cash + 30-day setup</div></div></div>
-        <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--bdr2);"></div><div class="tl-conn"></div></div><div class="tl-ct"><div class="tl-d">May 25, 2026</div><div class="tl-l">Staff Training Week</div><div class="tl-s">5-day HQ bootcamp</div></div></div>
-        <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--bdr2);"></div></div><div class="tl-ct"><div class="tl-d">Jun 1, 2026</div><div class="tl-l">Grand Opening 🎉</div><div class="tl-s">Marketing + BB launch team</div></div></div>
+        <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--ok-tx);"></div><div class="tl-conn"></div></div><div class="tl-ct"><div class="tl-d">Apr 8, 2026 · Done ✓</div><div class="tl-l" data-t="tl_token_payment">Token Payment</div><div class="tl-s" data-t="tl_token_sub">Location search started</div></div></div>
+        <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--hi);"></div><div class="tl-conn"></div></div><div class="tl-ct"><div class="tl-d">Apr 20, 2026</div><div class="tl-l" data-t="tl_agreement">Agreement Signing</div><div class="tl-s" data-t="tl_agreement_sub">₹2.5L cheque payment</div></div></div>
+        <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--bdr2);"></div><div class="tl-conn"></div></div><div class="tl-ct"><div class="tl-d">May 5, 2026</div><div class="tl-l" data-t="tl_interior">Interior Work Begins</div><div class="tl-s" data-t="tl_interior_sub">₹6L cash + 30-day setup</div></div></div>
+        <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--bdr2);"></div><div class="tl-conn"></div></div><div class="tl-ct"><div class="tl-d">May 25, 2026</div><div class="tl-l" data-t="tl_staff_training">Staff Training Week</div><div class="tl-s" data-t="tl_staff_training_sub">5-day HQ bootcamp</div></div></div>
+        <div class="tl-item"><div class="tl-line"><div class="tl-dot" style="background:var(--bdr2);"></div></div><div class="tl-ct"><div class="tl-d">Jun 1, 2026</div><div class="tl-l" data-t="tl_grand_opening">Grand Opening 🎉</div><div class="tl-s" data-t="tl_grand_opening_sub">Marketing + BB launch team</div></div></div>
       </div>
     </div>
     <div id="pj-gl" class="sbody" style="display:none;">
-      <div class="card"><div class="sec">Staff Guidelines</div><div style="font-size:12px;color:var(--mut);line-height:2.2;">✓ Salary paid by 5th · ✓ 1 weekly off · ✓ No abuse · ✓ Uniforms maintained · ✓ Meals provided · ✓ Grievance channel</div></div>
-      <div class="card"><div class="sec">Operational Guidelines</div><div style="font-size:12px;color:var(--mut);line-height:2.2;">✓ Open 7 days · ✓ Pricing per rate card · ✓ No unapproved products · ✓ Authorized POS only · ✓ Royalty by 5th · ✓ Monthly audit · ✓ Feedback in 48 hrs</div></div>
-      <div class="card"><div class="sec">Compliance Status</div><div class="irow"><span class="ilbl">Accepted On</span><span class="ival">Apr 8, 2026</span></div><div class="irow" style="border:none;"><span class="ilbl">Status</span><span><span class="pill p-ok">Accepted ✓</span></span></div></div>
+      <div class="card"><div class="sec" data-t="sec_staff_guidelines">Staff Guidelines</div><div style="font-size:12px;color:var(--mut);line-height:2.2;">✓ Salary paid by 5th · ✓ 1 weekly off · ✓ No abuse · ✓ Uniforms maintained · ✓ Meals provided · ✓ Grievance channel</div></div>
+      <div class="card"><div class="sec" data-t="sec_operational_guidelines">Operational Guidelines</div><div style="font-size:12px;color:var(--mut);line-height:2.2;">✓ Open 7 days · ✓ Pricing per rate card · ✓ No unapproved products · ✓ Authorized POS only · ✓ Royalty by 5th · ✓ Monthly audit · ✓ Feedback in 48 hrs</div></div>
+      <div class="card"><div class="sec" data-t="sec_compliance_status">Compliance Status</div><div class="irow"><span class="ilbl" data-t="lbl_accepted_on">Accepted On</span><span class="ival">Apr 8, 2026</span></div><div class="irow" style="border:none;"><span class="ilbl" data-t="lbl_status">Status</span><span><span class="pill p-ok" data-t="lbl_accepted_status">Accepted ✓</span></span></div></div>
     </div>
   </div>
 </div>
@@ -716,12 +716,12 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
   <div class="fscreen-scroll"><div class="sbody" style="text-align:center;padding-top:40px;">
     <div style="font-size:52px;margin-bottom:16px;">🙏</div>
     <div class="stitle" style="margin-bottom:6px;">Thank You, Rajesh</div>
-    <div class="ssub">Your feedback has been recorded and your lead status updated to Closed.</div>
+    <div class="ssub" data-t="closed_sub">Your feedback has been recorded and your lead status updated to Closed.</div>
     <div class="card" style="text-align:left;margin-top:20px;">
-      <div class="irow"><span class="ilbl">Status</span><span><span class="pill p-no">Closed — Not Interested</span></span></div>
-      <div class="irow" style="border:none;"><span class="ilbl">Feedback</span><span class="ival" style="color:var(--ok-tx);">Recorded ✓</span></div>
+      <div class="irow"><span class="ilbl" data-t="lbl_status">Status</span><span><span class="pill p-no" data-t="lbl_closed_status">Closed — Not Interested</span></span></div>
+      <div class="irow" style="border:none;"><span class="ilbl" data-t="lbl_feedback">Feedback</span><span class="ival" style="color:var(--ok-tx);" data-t="lbl_recorded">Recorded ✓</span></div>
     </div>
-    <button class="btn btn-f" style="margin-top:12px;" onclick="fs('s-login')">← Back to Login</button>
+    <button class="btn btn-f" style="margin-top:12px;" onclick="fs('s-login')" data-t="btn_back_to_login">← Back to Login</button>
   </div></div>
 </div>
 
@@ -1421,7 +1421,64 @@ var TRANSLATIONS={
     confirm_item3:'చెల్లింపు షెడ్యూల్ అంగీకరిస్తున్నాను మరియు నాలుగు చెల్లింపు దశలు అర్థం చేసుకున్నాను.',
     confirm_item4:'నెలవారీ 8% రాయల్టీ నిర్మాణం అర్థం చేసుకున్నాను, ప్రతి 5వ తేదీ చెల్లించాలి.',
     confirm_item5:'అన్ని ప్రెజెంటేషన్ వీడియోలు చూసి ఆన్‌బోర్డింగ్ పూర్తిగా అర్థం చేసుకున్నాను.',
-    confirm_item6:'వివరించిన విధంగా సిబ్బంది సంక్షేమం, OT మరియు పని పరిస్థితులు అందించడానికి అంగీకరిస్తున్నాను.'
+    confirm_item6:'వివరించిన విధంగా సిబ్బంది సంక్షేమం, OT మరియు పని పరిస్థితులు అందించడానికి అంగీకరిస్తున్నాను.',
+    login_title:'తిరిగి స్వాగతం',login_sub:'మీ ఫ్రాంచైజ్ ఖాతాలో సైన్ ఇన్ చేయండి',
+    lbl_phone:'ఫోన్ నంబర్',lbl_pin:'6 అంకెల PIN',lbl_set_pin:'6 అంకెల PIN సెట్ చేయండి',
+    err_login:'⚠️ ఫోన్ నంబర్ కనుగొనబడలేదు లేదా PIN తప్పు.',
+    demo_login_label:'డెమో లాగిన్:',demo_login_text:'ఏదైనా ఫోన్ నంబర్ · PIN: ',
+    btn_signin:'సైన్ ఇన్ →',lbl_new_lead:'కొత్త ఫ్రాంచైజ్ లీడ్?',btn_register_link:'ఇక్కడ నమోదు చేయండి →',
+    register_sub:'Budget Barber ఫ్రాంచైజ్ లీడ్‌గా నమోదు చేయండి',
+    lbl_fullname:'పూర్తి పేరు',lbl_email:'ఇమెయిల్ చిరునామా',lbl_city:'నగరం',
+    btn_create_account:'ఖాతా సృష్టించి కొనసాగించు →',
+    vision_item1_title:'Budget Barber దార్శనికత',vision_item1_desc:'భారతదేశమంతటా నాణ్యమైన గ్రూమింగ్‌ను అందుబాటులోకి తీసుకురావాలన్న లక్ష్యం',
+    vision_item2_title:'Budget Barber ఎందుకు?',vision_item2_desc:'మార్కెట్ అవకాశం, బ్రాండ్ విభేదన & వృద్ధి కథ',
+    vision_item3_title:'మా USP',vision_item3_desc:'సాంకేతికత-ఆధారిత, సాశ్రయ, ప్రమాణీకృత అనుభవం',
+    tap_to_play:'ప్లే చేయడానికి నొక్కండి',
+    salon_feat1_title:'డిజిటల్ మిర్రర్',salon_feat1_desc:'వర్చువల్ ట్రై-ఆన్ & స్టైలింగ్',
+    salon_feat2_title:'AI స్కిన్ అనాలిసిస్',salon_feat2_desc:'వ్యక్తిగతీకరించిన చికిత్స',
+    salon_feat3_title:'AI హేర్ అనాలిసిస్',salon_feat3_desc:'అనుకూల సిఫార్సులు',
+    salon_feat4_title:'AI హేర్‌స్టైల్',salon_feat4_desc:'కత్తిరించే ముందు ప్రివ్యూ',
+    lbl_chair:'కుర్చీ',lbl_included:'చేర్చబడింది:',
+    interest_cta_title:'Budget Barber ఫ్రాంచైజ్‌లో చేరడానికి సిద్ధంగా ఉన్నారా?',
+    interest_cta_sub:'పెట్టుబడి, ROI, మద్దతు మరియు కార్యకలాపాలన్నీ సమీక్షించిన తర్వాత — మీరు ఏమి చేయాలనుకుంటున్నారు?',
+    notint_ask_sub:'మేము మెరుగుపరచుకోవడానికి దయచేసి మీ కారణాన్ని పంచుకోండి.',
+    reason1:'పెట్టుబడి మొత్తం చాలా ఎక్కువగా ఉంది',reason2:'స్థానం అందుబాటులో లేదు / అనుకూలంగా లేదు',
+    reason3:'ROI గురించి నమ్మకం కలగలేదు',reason4:'ఇతర ఫ్రాంచైజ్ ఎంపికలు అన్వేషిస్తున్నాను',
+    reason5:'వ్యక్తిగత / కుటుంబ కారణాలు',reason6:'సమయం సరిగ్గా లేదు',reason7:'ఇతర కారణం',
+    lbl_additional_comments:'అదనపు వ్యాఖ్యలు',
+    btn_submit_close:'సమర్పించి లీడ్ మూసివేయండి',btn_reconsider:'← పునరాలోచించండి',
+    lbl_selected_model:'ఎంచుకున్న మోడల్',lbl_total_investment:'మొత్తం పెట్టుబడి',
+    lbl_area_required:'అవసరమైన విస్తీర్ణం',lbl_est_profit:'అంచనా నికర లాభం/నెల',
+    sec_final_checklist:'చివరి నిర్ధారణ చెక్‌లిస్ట్',
+    pay_block_title:'టోకెన్ మొత్తం — స్థాన అవరోధం',
+    pay_refund_note:'Budget Barber అనుకూలమైన స్థానాన్ని కేటాయించలేకపోతే మాత్రమే వాపసు',
+    sec_preferred_location:'ప్రాధాన్య స్థానం',lbl_area_locality:'ప్రాంతం / లొకాలిటీ',
+    lbl_pin_code:'పిన్ కోడ్',lbl_shop_status:'షాప్ స్థితి',
+    shop_opt1:'లేదు — స్థానం వెతుకుతున్నాను',shop_opt2:'అవును — స్థలం సిద్ధంగా ఉంది',shop_opt3:'అవును — 2–3 ఎంపికలు ఎంచుకున్నాను',
+    sec_pay_to:'చెల్లించండి — Budget Barberకి',lbl_scan_qr:'చెల్లించడానికి QR స్కాన్ చేయండి',
+    btn_copy_upi:'📋 UPI ID కాపీ చేయండి',lbl_account_name:'ఖాతా పేరు',lbl_account_no:'ఖాతా నంబర్',lbl_ifsc:'IFSC',
+    sec_upload_screenshot:'చెల్లింపు స్క్రీన్‌షాట్ అప్‌లోడ్ చేయండి',
+    pay_upload_note:'చెల్లించిన తర్వాత స్క్రీన్‌షాట్ అప్‌లోడ్ చేయండి. మా బృందం 2–4 గంటల్లో నిర్ధారిస్తుంది.',
+    btn_upload_screenshot:'📷 స్క్రీన్‌షాట్ అప్‌లోడ్ చేయడానికి నొక్కండి',
+    lbl_screenshot_done:'✓ స్క్రీన్‌షాట్ అప్‌లోడ్ అయింది',btn_confirm_activate:'నిర్ధారించి ప్రాజెక్ట్ సక్రియం చేయండి →',
+    lbl_project_dashboard:'ప్రాజెక్ట్ డ్యాష్‌బోర్డ్',
+    tab_location:'📍 స్థానం',tab_payments:'💰 చెల్లింపులు',tab_timeline:'📅 సమయపట్టిక',tab_guidelines:'📋 మార్గదర్శకాలు',
+    lbl_token_paid_status:'✓ టోకెన్ చెల్లించారు — స్థాన వెతుకులాట జరుగుతోంది',
+    sec_location_details:'స్థాన వివరాలు',lbl_status:'స్థితి',
+    sec_shop_photos:'షాప్ ఫోటోలు',btn_upload_exterior:'+ బయటి ఫోటోలు అప్‌లోడ్ చేయండి',btn_upload_interior:'+ లోపలి / ఫ్లోర్ ప్లాన్ అప్‌లోడ్ చేయండి',
+    sec_location_pin:'స్థాన పిన్',btn_drop_pin:'+ Google Maps పిన్ వేయండి',lbl_google_maps_link:'Google Maps లింక్',
+    btn_save_location:'స్థాన వివరాలు సేవ్ చేయండి',lbl_payment_progress:'₹8,50,000 లో ₹20,000 చెల్లించారు',
+    tl_token_payment:'టోకెన్ చెల్లింపు',tl_token_sub:'స్థాన వెతుకులాట ప్రారంభమైంది',
+    tl_agreement:'అగ్రిమెంట్ సంతకం',tl_agreement_sub:'₹2.5L చెక్కు చెల్లింపు',
+    tl_interior:'ఇంటీరియర్ పని ప్రారంభం',tl_interior_sub:'₹6L నగదు + 30 రోజుల సెటప్',
+    tl_staff_training:'సిబ్బంది శిక్షణ వారం',tl_staff_training_sub:'5 రోజుల HQ బూట్‌క్యాంప్',
+    tl_grand_opening:'గ్రాండ్ ఓపెనింగ్ 🎉',tl_grand_opening_sub:'మార్కెటింగ్ + BB లాంచ్ టీమ్',
+    sec_staff_guidelines:'సిబ్బంది మార్గదర్శకాలు',sec_operational_guidelines:'కార్యకలాపాల మార్గదర్శకాలు',
+    sec_compliance_status:'సమ్మతి స్థితి',lbl_accepted_on:'అంగీకరించిన తేదీ',
+    lbl_accepted_status:'అంగీకరించబడింది ✓',closed_sub:'మీ అభిప్రాయం నమోదు చేయబడింది.',
+    lbl_feedback:'అభిప్రాయం',lbl_recorded:'నమోదు ✓',lbl_closed_status:'మూసివేయబడింది — ఆసక్తి లేదు',
+    btn_back_to_login:'← లాగిన్‌కు తిరిగి వెళ్ళు',
+    lbl_guidelines_badge:'మార్గదర్శకాలు',lbl_confirmation_badge:'నిర్ధారణ',lbl_token_payment_badge:'టోకెన్ చెల్లింపు'
   },
   Hindi:{
     step1:'चरण 1/10',step2:'चरण 2/10',step3:'चरण 3/10',step4:'चरण 4/10',
@@ -1464,7 +1521,64 @@ var TRANSLATIONS={
     confirm_item3:'मैं भुगतान कार्यक्रम स्वीकार करता/करती हूं और चारों भुगतान चरणों को समझता/समझती हूं।',
     confirm_item4:'मैं 8% मासिक रॉयल्टी संरचना को समझता/समझती हूं, 5 तारीख तक देय।',
     confirm_item5:'मैंने सभी प्रेजेंटेशन वीडियो देखे हैं और ऑनबोर्डिंग पूरी तरह समझी है।',
-    confirm_item6:'मैं वर्णित कर्मचारी कल्याण, ओटी और कार्य स्थितियां प्रदान करने के लिए सहमत हूं।'
+    confirm_item6:'मैं वर्णित कर्मचारी कल्याण, ओटी और कार्य स्थितियां प्रदान करने के लिए सहमत हूं।',
+    login_title:'वापस स्वागत है',login_sub:'अपने फ्रेंचाइज़ खाते में साइन इन करें',
+    lbl_phone:'फ़ोन नंबर',lbl_pin:'6 अंकों का PIN',lbl_set_pin:'6 अंकों का PIN सेट करें',
+    err_login:'⚠️ फ़ोन नंबर नहीं मिला या गलत PIN।',
+    demo_login_label:'डेमो लॉगिन:',demo_login_text:'कोई भी फ़ोन नंबर · PIN: ',
+    btn_signin:'साइन इन →',lbl_new_lead:'नए फ्रेंचाइज़ लीड?',btn_register_link:'यहाँ रजिस्टर करें →',
+    register_sub:'Budget Barber फ्रेंचाइज़ लीड के रूप में रजिस्टर करें',
+    lbl_fullname:'पूरा नाम',lbl_email:'ईमेल पता',lbl_city:'शहर',
+    btn_create_account:'खाता बनाएं और जारी रखें →',
+    vision_item1_title:'Budget Barber की दृष्टि',vision_item1_desc:'पूरे भारत में गुणवत्तापूर्ण ग्रूमिंग को सुलभ बनाने का मिशन',
+    vision_item2_title:'Budget Barber क्यों?',vision_item2_desc:'बाजार अवसर, ब्रांड भेदभाव और विकास की कहानी',
+    vision_item3_title:'हमारी USP',vision_item3_desc:'तकनीक-सक्षम, किफायती, मानकीकृत अनुभव',
+    tap_to_play:'चलाने के लिए टैप करें',
+    salon_feat1_title:'डिजिटल मिरर',salon_feat1_desc:'वर्चुअल ट्राई-ऑन और स्टाइलिंग',
+    salon_feat2_title:'AI स्किन एनालिसिस',salon_feat2_desc:'व्यक्तिगत उपचार',
+    salon_feat3_title:'AI हेयर एनालिसिस',salon_feat3_desc:'कस्टम सुझाव',
+    salon_feat4_title:'AI हेयरस्टाइल',salon_feat4_desc:'कटने से पहले प्रीव्यू',
+    lbl_chair:'कुर्सी',lbl_included:'शामिल:',
+    interest_cta_title:'Budget Barber फ्रेंचाइज़ में शामिल होने के लिए तैयार हैं?',
+    interest_cta_sub:'निवेश, ROI, सहायता और संचालन के सभी विवरणों की समीक्षा के बाद — आप क्या करना चाहेंगे?',
+    notint_ask_sub:'कृपया अपना कारण साझा करें ताकि हम सुधार कर सकें।',
+    reason1:'निवेश राशि बहुत अधिक है',reason2:'स्थान उपलब्ध / उपयुक्त नहीं है',
+    reason3:'ROI के बारे में आश्वस्त नहीं',reason4:'अन्य फ्रेंचाइज़ विकल्पों की खोज',
+    reason5:'व्यक्तिगत / पारिवारिक कारण',reason6:'समय सही नहीं है',reason7:'अन्य कारण',
+    lbl_additional_comments:'अतिरिक्त टिप्पणियाँ',
+    btn_submit_close:'सबमिट करें और लीड बंद करें',btn_reconsider:'← पुनर्विचार करें',
+    lbl_selected_model:'चयनित मॉडल',lbl_total_investment:'कुल निवेश',
+    lbl_area_required:'आवश्यक क्षेत्र',lbl_est_profit:'अनुमानित शुद्ध लाभ/माह',
+    sec_final_checklist:'अंतिम पुष्टि चेकलिस्ट',
+    pay_block_title:'टोकन राशि — स्थान अवरोधन',
+    pay_refund_note:'वापसी योग्य केवल तभी जब Budget Barber उपयुक्त स्थान नहीं दे सके',
+    sec_preferred_location:'पसंदीदा स्थान',lbl_area_locality:'क्षेत्र / मोहल्ला',
+    lbl_pin_code:'पिन कोड',lbl_shop_status:'दुकान की स्थिति',
+    shop_opt1:'नहीं — स्थान ढूंढ रहे हैं',shop_opt2:'हाँ — जगह तैयार है',shop_opt3:'हाँ — 2–3 विकल्प चुने हैं',
+    sec_pay_to:'भुगतान करें — Budget Barber को',lbl_scan_qr:'QR स्कैन करके भुगतान करें',
+    btn_copy_upi:'📋 UPI ID कॉपी करें',lbl_account_name:'खाता नाम',lbl_account_no:'खाता नंबर',lbl_ifsc:'IFSC',
+    sec_upload_screenshot:'भुगतान स्क्रीनशॉट अपलोड करें',
+    pay_upload_note:'भुगतान के बाद स्क्रीनशॉट अपलोड करें। हमारी टीम 2–4 घंटे में पुष्टि करती है।',
+    btn_upload_screenshot:'📷 स्क्रीनशॉट अपलोड करने के लिए टैप करें',
+    lbl_screenshot_done:'✓ स्क्रीनशॉट अपलोड हो गया',btn_confirm_activate:'पुष्टि करें और प्रोजेक्ट सक्रिय करें →',
+    lbl_project_dashboard:'प्रोजेक्ट डैशबोर्ड',
+    tab_location:'📍 स्थान',tab_payments:'💰 भुगतान',tab_timeline:'📅 टाइमलाइन',tab_guidelines:'📋 दिशानिर्देश',
+    lbl_token_paid_status:'✓ टोकन भुगतान — स्थान खोज जारी है',
+    sec_location_details:'स्थान विवरण',lbl_status:'स्थिति',
+    sec_shop_photos:'दुकान की फोटो',btn_upload_exterior:'+ बाहरी फोटो अपलोड करें',btn_upload_interior:'+ अंदरूनी / फ्लोर प्लान अपलोड करें',
+    sec_location_pin:'स्थान पिन',btn_drop_pin:'+ Google Maps पिन डालें',lbl_google_maps_link:'Google Maps लिंक',
+    btn_save_location:'स्थान विवरण सहेजें',lbl_payment_progress:'₹8,50,000 में से ₹20,000 भुगतान',
+    tl_token_payment:'टोकन भुगतान',tl_token_sub:'स्थान खोज शुरू हुई',
+    tl_agreement:'समझौता हस्ताक्षर',tl_agreement_sub:'₹2.5L चेक भुगतान',
+    tl_interior:'आंतरिक कार्य शुरू',tl_interior_sub:'₹6L नकद + 30 दिन सेटअप',
+    tl_staff_training:'स्टाफ प्रशिक्षण सप्ताह',tl_staff_training_sub:'5 दिन HQ बूटकैंप',
+    tl_grand_opening:'भव्य उद्घाटन 🎉',tl_grand_opening_sub:'मार्केटिंग + BB लॉन्च टीम',
+    sec_staff_guidelines:'कर्मचारी दिशानिर्देश',sec_operational_guidelines:'परिचालन दिशानिर्देश',
+    sec_compliance_status:'अनुपालन स्थिति',lbl_accepted_on:'स्वीकृत तिथि',
+    lbl_accepted_status:'स्वीकृत ✓',closed_sub:'आपकी प्रतिक्रिया दर्ज की गई और लीड बंद हो गई।',
+    lbl_feedback:'प्रतिक्रिया',lbl_recorded:'दर्ज ✓',lbl_closed_status:'बंद — रुचि नहीं',
+    btn_back_to_login:'← लॉगिन पर वापस जाएं',
+    lbl_guidelines_badge:'दिशानिर्देश',lbl_confirmation_badge:'पुष्टि',lbl_token_payment_badge:'टोकन भुगतान'
   },
   Punjabi:{
     step1:'ਕਦਮ 1 / 10',step2:'ਕਦਮ 2 / 10',step3:'ਕਦਮ 3 / 10',step4:'ਕਦਮ 4 / 10',
@@ -1545,7 +1659,64 @@ var TRANSLATIONS={
     confirm_item3:'ਮੈਂ ਭੁਗਤਾਨ ਕਾਰਜਕ੍ਰਮ ਸਵੀਕਾਰ ਕਰਦਾ/ਕਰਦੀ ਹਾਂ ਅਤੇ ਚਾਰੇ ਭੁਗਤਾਨ ਕਦਮ ਸਮਝਦਾ/ਸਮਝਦੀ ਹਾਂ।',
     confirm_item4:'ਮੈਂ 8% ਮਹੀਨਾਵਾਰ ਰਾਇਲਟੀ ਢਾਂਚਾ ਸਮਝਦਾ/ਸਮਝਦੀ ਹਾਂ, 5 ਤਾਰੀਖ਼ ਤੱਕ ਦੇਣਾ ਹੈ।',
     confirm_item5:'ਮੈਂ ਸਾਰੇ ਪੇਸ਼ਕਾਰੀ ਵੀਡੀਓ ਦੇਖੇ ਹਨ ਅਤੇ ਔਨਬੋਰਡਿੰਗ ਪੂਰੀ ਤਰ੍ਹਾਂ ਸਮਝੀ ਹੈ।',
-    confirm_item6:'ਮੈਂ ਦੱਸੇ ਅਨੁਸਾਰ ਸਟਾਫ਼ ਭਲਾਈ, OT ਅਤੇ ਕੰਮ ਦੀਆਂ ਸ਼ਰਤਾਂ ਪ੍ਰਦਾਨ ਕਰਨ ਲਈ ਸਹਿਮਤ ਹਾਂ।'
+    confirm_item6:'ਮੈਂ ਦੱਸੇ ਅਨੁਸਾਰ ਸਟਾਫ਼ ਭਲਾਈ, OT ਅਤੇ ਕੰਮ ਦੀਆਂ ਸ਼ਰਤਾਂ ਪ੍ਰਦਾਨ ਕਰਨ ਲਈ ਸਹਿਮਤ ਹਾਂ।',
+    login_title:'ਵਾਪਸ ਸੁਆਗਤ ਹੈ',login_sub:'ਆਪਣੇ ਫ੍ਰੈਂਚਾਈਜ਼ ਖਾਤੇ ਵਿੱਚ ਸਾਈਨ ਇਨ ਕਰੋ',
+    lbl_phone:'ਫ਼ੋਨ ਨੰਬਰ',lbl_pin:'6 ਅੰਕਾਂ ਦਾ PIN',lbl_set_pin:'6 ਅੰਕਾਂ ਦਾ PIN ਸੈੱਟ ਕਰੋ',
+    err_login:'⚠️ ਫ਼ੋਨ ਨੰਬਰ ਨਹੀਂ ਮਿਲਿਆ ਜਾਂ PIN ਗਲਤ ਹੈ।',
+    demo_login_label:'ਡੈਮੋ ਲੌਗਿਨ:',demo_login_text:'ਕੋਈ ਵੀ ਫ਼ੋਨ ਨੰਬਰ · PIN: ',
+    btn_signin:'ਸਾਈਨ ਇਨ →',lbl_new_lead:'ਨਵੇਂ ਫ੍ਰੈਂਚਾਈਜ਼ ਲੀਡ?',btn_register_link:'ਇੱਥੇ ਰਜਿਸਟਰ ਕਰੋ →',
+    register_sub:'Budget Barber ਫ੍ਰੈਂਚਾਈਜ਼ ਲੀਡ ਵਜੋਂ ਰਜਿਸਟਰ ਕਰੋ',
+    lbl_fullname:'ਪੂਰਾ ਨਾਮ',lbl_email:'ਈਮੇਲ ਪਤਾ',lbl_city:'ਸ਼ਹਿਰ',
+    btn_create_account:'ਖਾਤਾ ਬਣਾਓ ਅਤੇ ਜਾਰੀ ਰੱਖੋ →',
+    vision_item1_title:'Budget Barber ਦਾ ਵਿਜ਼ਨ',vision_item1_desc:'ਪੂਰੇ ਭਾਰਤ ਵਿੱਚ ਵਧੀਆ ਗਰੂਮਿੰਗ ਨੂੰ ਸਸਤਾ ਬਣਾਉਣ ਦਾ ਮਿਸ਼ਨ',
+    vision_item2_title:'Budget Barber ਕਿਉਂ?',vision_item2_desc:'ਮਾਰਕੀਟ ਮੌਕਾ, ਬ੍ਰਾਂਡ ਵੱਖਰਾਪਣ ਅਤੇ ਵਿਕਾਸ ਦੀ ਕਹਾਣੀ',
+    vision_item3_title:'ਸਾਡੀ USP',vision_item3_desc:'ਤਕਨੀਕ-ਅਧਾਰਿਤ, ਕਿਫ਼ਾਇਤੀ, ਮਿਆਰੀ ਤਜਰਬਾ',
+    tap_to_play:'ਚਲਾਉਣ ਲਈ ਟੈਪ ਕਰੋ',
+    salon_feat1_title:'ਡਿਜੀਟਲ ਮਿਰਰ',salon_feat1_desc:'ਵਰਚੁਅਲ ਟਰਾਈ-ਆਨ ਅਤੇ ਸਟਾਈਲਿੰਗ',
+    salon_feat2_title:'AI ਸਕਿਨ ਐਨਾਲਿਸਿਸ',salon_feat2_desc:'ਵਿਅਕਤੀਗਤ ਇਲਾਜ',
+    salon_feat3_title:'AI ਵਾਲ ਵਿਸ਼ਲੇਸ਼ਣ',salon_feat3_desc:'ਕਸਟਮ ਸੁਝਾਅ',
+    salon_feat4_title:'AI ਹੇਅਰਸਟਾਈਲ',salon_feat4_desc:'ਕੱਟਣ ਤੋਂ ਪਹਿਲਾਂ ਪ੍ਰੀਵਿਊ',
+    lbl_chair:'ਕੁਰਸੀ',lbl_included:'ਸ਼ਾਮਲ:',
+    interest_cta_title:'Budget Barber ਫ੍ਰੈਂਚਾਈਜ਼ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਣ ਲਈ ਤਿਆਰ ਹੋ?',
+    interest_cta_sub:'ਨਿਵੇਸ਼, ROI, ਸਹਾਇਤਾ ਅਤੇ ਕਾਰਜਾਂ ਦੇ ਸਾਰੇ ਵੇਰਵੇ ਦੇਖਣ ਤੋਂ ਬਾਅਦ — ਤੁਸੀਂ ਕੀ ਕਰਨਾ ਚਾਹੋਗੇ?',
+    notint_ask_sub:'ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਕਾਰਨ ਸਾਂਝਾ ਕਰੋ ਤਾਂ ਜੋ ਅਸੀਂ ਸੁਧਾਰ ਕਰ ਸਕੀਏ।',
+    reason1:'ਨਿਵੇਸ਼ ਰਕਮ ਬਹੁਤ ਜ਼ਿਆਦਾ ਹੈ',reason2:'ਥਾਂ ਉਪਲਬਧ / ਢੁਕਵੀਂ ਨਹੀਂ ਹੈ',
+    reason3:'ROI ਬਾਰੇ ਭਰੋਸਾ ਨਹੀਂ',reason4:'ਹੋਰ ਫ੍ਰੈਂਚਾਈਜ਼ ਵਿਕਲਪ ਖੋਜ ਰਿਹਾ/ਰਹੀ ਹਾਂ',
+    reason5:'ਨਿੱਜੀ / ਪਰਿਵਾਰਕ ਕਾਰਨ',reason6:'ਸਮਾਂ ਸਹੀ ਨਹੀਂ ਹੈ',reason7:'ਹੋਰ ਕਾਰਨ',
+    lbl_additional_comments:'ਵਾਧੂ ਟਿੱਪਣੀਆਂ',
+    btn_submit_close:'ਸਬਮਿਟ ਕਰੋ ਅਤੇ ਲੀਡ ਬੰਦ ਕਰੋ',btn_reconsider:'← ਮੁੜ ਵਿਚਾਰ ਕਰੋ',
+    lbl_selected_model:'ਚੁਣਿਆ ਮਾਡਲ',lbl_total_investment:'ਕੁੱਲ ਨਿਵੇਸ਼',
+    lbl_area_required:'ਲੋੜੀਂਦਾ ਖੇਤਰ',lbl_est_profit:'ਅਨੁਮਾਨਿਤ ਸ਼ੁੱਧ ਲਾਭ/ਮਹੀਨਾ',
+    sec_final_checklist:'ਅੰਤਿਮ ਪੁਸ਼ਟੀ ਚੈੱਕਲਿਸਟ',
+    pay_block_title:'ਟੋਕਨ ਰਕਮ — ਥਾਂ ਬੁਕਿੰਗ',
+    pay_refund_note:'ਵਾਪਸੀ ਕੇਵਲ ਉਦੋਂ ਜਦੋਂ Budget Barber ਢੁਕਵੀਂ ਥਾਂ ਨਾ ਦੇ ਸਕੇ',
+    sec_preferred_location:'ਪਸੰਦੀਦਾ ਥਾਂ',lbl_area_locality:'ਖੇਤਰ / ਮੁਹੱਲਾ',
+    lbl_pin_code:'ਪਿਨ ਕੋਡ',lbl_shop_status:'ਦੁਕਾਨ ਦੀ ਸਥਿਤੀ',
+    shop_opt1:'ਨਹੀਂ — ਥਾਂ ਲੱਭ ਰਿਹਾ/ਰਹੀ ਹਾਂ',shop_opt2:'ਹਾਂ — ਜਗ੍ਹਾ ਤਿਆਰ ਹੈ',shop_opt3:'ਹਾਂ — 2–3 ਵਿਕਲਪ ਚੁਣੇ ਹਨ',
+    sec_pay_to:'ਭੁਗਤਾਨ ਕਰੋ — Budget Barber ਨੂੰ',lbl_scan_qr:'QR ਸਕੈਨ ਕਰਕੇ ਭੁਗਤਾਨ ਕਰੋ',
+    btn_copy_upi:'📋 UPI ID ਕਾਪੀ ਕਰੋ',lbl_account_name:'ਖਾਤੇ ਦਾ ਨਾਮ',lbl_account_no:'ਖਾਤਾ ਨੰ.',lbl_ifsc:'IFSC',
+    sec_upload_screenshot:'ਭੁਗਤਾਨ ਸਕਰੀਨਸ਼ਾਟ ਅੱਪਲੋਡ ਕਰੋ',
+    pay_upload_note:'ਭੁਗਤਾਨ ਤੋਂ ਬਾਅਦ ਸਕਰੀਨਸ਼ਾਟ ਅੱਪਲੋਡ ਕਰੋ। ਸਾਡੀ ਟੀਮ 2–4 ਘੰਟਿਆਂ ਵਿੱਚ ਪੁਸ਼ਟੀ ਕਰਦੀ ਹੈ।',
+    btn_upload_screenshot:'📷 ਸਕਰੀਨਸ਼ਾਟ ਅੱਪਲੋਡ ਕਰਨ ਲਈ ਟੈਪ ਕਰੋ',
+    lbl_screenshot_done:'✓ ਸਕਰੀਨਸ਼ਾਟ ਅੱਪਲੋਡ ਹੋ ਗਿਆ',btn_confirm_activate:'ਪੁਸ਼ਟੀ ਕਰੋ ਅਤੇ ਪ੍ਰੋਜੈਕਟ ਸ਼ੁਰੂ ਕਰੋ →',
+    lbl_project_dashboard:'ਪ੍ਰੋਜੈਕਟ ਡੈਸ਼ਬੋਰਡ',
+    tab_location:'📍 ਥਾਂ',tab_payments:'💰 ਭੁਗਤਾਨ',tab_timeline:'📅 ਸਮਾਂ-ਰੇਖਾ',tab_guidelines:'📋 ਦਿਸ਼ਾ-ਨਿਰਦੇਸ਼',
+    lbl_token_paid_status:'✓ ਟੋਕਨ ਭੁਗਤਾਨ — ਥਾਂ ਦੀ ਖੋਜ ਜਾਰੀ ਹੈ',
+    sec_location_details:'ਥਾਂ ਦੇ ਵੇਰਵੇ',lbl_status:'ਸਥਿਤੀ',
+    sec_shop_photos:'ਦੁਕਾਨ ਦੀਆਂ ਫੋਟੋਆਂ',btn_upload_exterior:'+ ਬਾਹਰੀ ਫੋਟੋਆਂ ਅੱਪਲੋਡ ਕਰੋ',btn_upload_interior:'+ ਅੰਦਰੂਨੀ / ਫ਼ਲੋਰ ਪਲੈਨ ਅੱਪਲੋਡ ਕਰੋ',
+    sec_location_pin:'ਥਾਂ ਪਿੰਨ',btn_drop_pin:'+ Google Maps ਪਿੰਨ ਪਾਓ',lbl_google_maps_link:'Google Maps ਲਿੰਕ',
+    btn_save_location:'ਥਾਂ ਦੇ ਵੇਰਵੇ ਸੰਭਾਲੋ',lbl_payment_progress:'₹8,50,000 ਵਿੱਚੋਂ ₹20,000 ਅਦਾ ਕੀਤੇ',
+    tl_token_payment:'ਟੋਕਨ ਭੁਗਤਾਨ',tl_token_sub:'ਥਾਂ ਦੀ ਖੋਜ ਸ਼ੁਰੂ ਹੋਈ',
+    tl_agreement:'ਸਮਝੌਤਾ ਦਸਤਖਤ',tl_agreement_sub:'₹2.5L ਚੈੱਕ ਭੁਗਤਾਨ',
+    tl_interior:'ਅੰਦਰੂਨੀ ਕੰਮ ਸ਼ੁਰੂ',tl_interior_sub:'₹6L ਨਕਦ + 30 ਦਿਨ ਸੈੱਟਅੱਪ',
+    tl_staff_training:'ਸਟਾਫ਼ ਸਿਖਲਾਈ ਹਫ਼ਤਾ',tl_staff_training_sub:'5 ਦਿਨ HQ ਬੂਟਕੈਂਪ',
+    tl_grand_opening:'ਗ੍ਰੈਂਡ ਓਪਨਿੰਗ 🎉',tl_grand_opening_sub:'ਮਾਰਕੀਟਿੰਗ + BB ਲਾਂਚ ਟੀਮ',
+    sec_staff_guidelines:'ਸਟਾਫ਼ ਦਿਸ਼ਾ-ਨਿਰਦੇਸ਼',sec_operational_guidelines:'ਕਾਰਜਕਾਰੀ ਦਿਸ਼ਾ-ਨਿਰਦੇਸ਼',
+    sec_compliance_status:'ਪਾਲਣਾ ਸਥਿਤੀ',lbl_accepted_on:'ਸਵੀਕਾਰ ਤਾਰੀਖ਼',
+    lbl_accepted_status:'ਸਵੀਕਾਰ ✓',closed_sub:'ਤੁਹਾਡੀ ਪ੍ਰਤੀਕਿਰਿਆ ਦਰਜ ਹੋ ਗਈ ਅਤੇ ਲੀਡ ਸਥਿਤੀ ਬੰਦ ਹੋ ਗਈ।',
+    lbl_feedback:'ਪ੍ਰਤੀਕਿਰਿਆ',lbl_recorded:'ਦਰਜ ✓',lbl_closed_status:'ਬੰਦ — ਦਿਲਚਸਪੀ ਨਹੀਂ',
+    btn_back_to_login:'← ਲੌਗਿਨ ਤੇ ਵਾਪਸ ਜਾਓ',
+    lbl_guidelines_badge:'ਦਿਸ਼ਾ-ਨਿਰਦੇਸ਼',lbl_confirmation_badge:'ਪੁਸ਼ਟੀ',lbl_token_payment_badge:'ਟੋਕਨ ਭੁਗਤਾਨ'
   }
 };
 
@@ -1726,12 +1897,43 @@ function applyTranslations(lang){
   var opStd=document.getElementById('op-std');
   // op-std is populated by loadContentForLang from DB — no static override needed
 
-  // 16. ROI period prefix text inside divs
-  document.querySelectorAll('[data-i18n-roi-prefix]').forEach(function(el){
+  // 16. ROI period prefix — update all roi period divs
+  document.querySelectorAll('[data-t="roi_period_prefix"]').forEach(function(el){
     var txt=el.textContent;
     var prefix=T.roi_period_prefix||'ROI Period';
-    // Replace "ROI Period: XX" keeping the value
     el.textContent=txt.replace(/^[^:]+:/,prefix+':');
+  });
+
+  // 17. All data-t elements — the universal translator
+  document.querySelectorAll('[data-t]').forEach(function(el){
+    var key=el.getAttribute('data-t');
+    if(T[key]!==undefined)el.textContent=T[key];
+  });
+
+  // 18. Select option elements with data-t
+  document.querySelectorAll('option[data-t]').forEach(function(el){
+    var key=el.getAttribute('data-t');
+    if(T[key])el.textContent=T[key];
+  });
+
+  // 19. Input placeholders with data-t-ph
+  // (handled via data-t on labels — placeholders stay English as hints)
+
+  // 20. Invest screen "Included:" labels (appear multiple times)
+  document.querySelectorAll('[data-t="lbl_included"]').forEach(function(el){
+    if(T.lbl_included)el.textContent=T.lbl_included;
+  });
+
+  // 21. Payment step names and notes in royalty screen
+  var paySteps=[
+    {name:'pay1-name',note:'pay1-note',nkey:'lbl_pay1'},
+    {name:'pay2-name',note:'pay2-note',nkey:'lbl_pay2'},
+    {name:'pay3-name',note:'pay3-note',nkey:'lbl_pay3'},
+    {name:'pay4-name',note:'pay4-note',nkey:'lbl_pay4'}
+  ];
+  paySteps.forEach(function(ps){
+    var ne=document.getElementById(ps.name);
+    if(ne&&T[ps.nkey])ne.textContent=T[ps.nkey];
   });
 }
 </script>
