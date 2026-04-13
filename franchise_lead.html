@@ -350,39 +350,39 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     <div class="ssub">Complete breakdown per franchise model with all inclusions</div>
     <div class="vmock"><div class="vtag">Investment Video</div><div class="vplay" onclick="pv('invest')"><div class="vtri"></div></div><div class="vlbl" id="vs-invest">Investment &amp; Requirements</div><div class="vprog" id="vp-invest"></div><div class="vurl-badge" id="vub-invest" style="display:none;"></div></div>
     <div class="tabs">
-      <button class="tab active" onclick="stab(this,'i3')">3 Chair</button>
-      <button class="tab" onclick="stab(this,'i4')">4 Chair</button>
-      <button class="tab" onclick="stab(this,'i5')">5 Chair</button>
+      <button class="tab active" id="itab-3" onclick="stab(this,'i3')">3 Chair</button>
+      <button class="tab" id="itab-4" onclick="stab(this,'i4')">4 Chair</button>
+      <button class="tab" id="itab-5" onclick="stab(this,'i5')">5 Chair</button>
     </div>
     <div id="i3"><div class="card">
       <div class="sec">3 Chair — 250 sq ft — ₹8.5 Lakhs</div>
-      <div class="irow"><span class="ilbl">Franchise Fee</span><span class="ival" id="i3-fee">₹2,50,000</span></div>
-      <div class="irow"><span class="ilbl">Interior Setup</span><span class="ival" id="i3-int">₹3,00,000</span></div>
-      <div class="irow"><span class="ilbl">Equipment &amp; Technology</span><span class="ival" id="i3-eq">₹2,00,000</span></div>
-      <div class="irow"><span class="ilbl">Initial Product Stock</span><span class="ival" id="i3-stk">₹50,000</span></div>
-      <div class="irow"><span class="ilbl">Working Capital</span><span class="ival" id="i3-wc">₹50,000</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_franchise_fee">Franchise Fee</span><span class="ival" id="i3-fee">₹2,50,000</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_interior">Interior Setup</span><span class="ival" id="i3-int">₹3,00,000</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_equipment">Equipment &amp; Technology</span><span class="ival" id="i3-eq">₹2,00,000</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_product_stock">Initial Product Stock</span><span class="ival" id="i3-stk">₹50,000</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_working_capital">Working Capital</span><span class="ival" id="i3-wc">₹50,000</span></div>
       <div class="divdr"></div>
       <div style="font-size:12px;font-weight:700;margin-bottom:8px;">Included:</div>
       <div style="font-size:12px;color:var(--mut);line-height:2.1;" id="i3-inc">3 Marc Salon Chairs · Digital Mirror · POS System · AC Unit · Branding Kit · Uniforms ×6 · AI Tablet · 1-Year License</div>
     </div></div>
     <div id="i4" style="display:none;"><div class="card">
       <div class="sec">4 Chair — 350 sq ft — ₹11 Lakhs</div>
-      <div class="irow"><span class="ilbl">Franchise Fee</span><span class="ival">₹3,00,000</span></div>
-      <div class="irow"><span class="ilbl">Interior Setup</span><span class="ival">₹4,50,000</span></div>
-      <div class="irow"><span class="ilbl">Equipment &amp; Technology</span><span class="ival">₹2,50,000</span></div>
-      <div class="irow"><span class="ilbl">Initial Product Stock</span><span class="ival">₹60,000</span></div>
-      <div class="irow"><span class="ilbl">Working Capital</span><span class="ival">₹40,000</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_franchise_fee">Franchise Fee</span><span class="ival">₹3,00,000</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_interior">Interior Setup</span><span class="ival">₹4,50,000</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_equipment">Equipment &amp; Technology</span><span class="ival">₹2,50,000</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_product_stock">Initial Product Stock</span><span class="ival">₹60,000</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_working_capital">Working Capital</span><span class="ival">₹40,000</span></div>
       <div class="divdr"></div>
       <div style="font-size:12px;font-weight:700;margin-bottom:8px;">Included:</div>
       <div style="font-size:12px;color:var(--mut);line-height:2.1;">4 Marc Chairs · 2 Digital Mirrors · POS · 2 ACs · Branding Kit · Uniforms ×8 · AI Tablets ×2 · Priority Support · 1-Year License</div>
     </div></div>
     <div id="i5" style="display:none;"><div class="card">
       <div class="sec">5 Chair — 450 sq ft — ₹14 Lakhs</div>
-      <div class="irow"><span class="ilbl">Franchise Fee</span><span class="ival">₹4,00,000</span></div>
-      <div class="irow"><span class="ilbl">Interior Setup</span><span class="ival">₹6,00,000</span></div>
-      <div class="irow"><span class="ilbl">Equipment &amp; Technology</span><span class="ival">₹3,00,000</span></div>
-      <div class="irow"><span class="ilbl">Initial Product Stock</span><span class="ival">₹60,000</span></div>
-      <div class="irow"><span class="ilbl">Working Capital</span><span class="ival">₹40,000</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_franchise_fee">Franchise Fee</span><span class="ival">₹4,00,000</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_interior">Interior Setup</span><span class="ival">₹6,00,000</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_equipment">Equipment &amp; Technology</span><span class="ival">₹3,00,000</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_product_stock">Initial Product Stock</span><span class="ival">₹60,000</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_working_capital">Working Capital</span><span class="ival">₹40,000</span></div>
       <div class="divdr"></div>
       <div style="font-size:12px;font-weight:700;margin-bottom:8px;">Included:</div>
       <div style="font-size:12px;color:var(--mut);line-height:2.1;">5 Marc Chairs · 3 Digital Mirrors · 2 POS · 3 ACs · Premium Branding · Uniforms ×10 · AI Tablets ×3 · Account Manager · 1-Year License</div>
@@ -401,48 +401,48 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     <div class="ssub">Revenue projections, operational expenses, and monthly profit estimates</div>
     <div class="vmock"><div class="vtag">ROI Video</div><div class="vplay" onclick="pv('roi')"><div class="vtri"></div></div><div class="vlbl">ROI &amp; Monthly Profit</div><div class="vprog" id="vp-roi"></div><div class="vurl-badge" id="vub-roi" style="display:none;"></div></div>
     <div class="tabs">
-      <button class="tab active" onclick="stab(this,'r3')">3 Chair</button>
-      <button class="tab" onclick="stab(this,'r4')">4 Chair</button>
-      <button class="tab" onclick="stab(this,'r5')">5 Chair</button>
+      <button class="tab active" id="rtab-3" onclick="stab(this,'r3')">3 Chair</button>
+      <button class="tab" id="rtab-4" onclick="stab(this,'r4')">4 Chair</button>
+      <button class="tab" id="rtab-5" onclick="stab(this,'r5')">5 Chair</button>
     </div>
     <div id="r3"><div class="card">
       <div class="sec">Monthly Snapshot — 3 Chair</div>
-      <div class="rrow"><span>Avg Customers/Day</span><span class="rval" id="r3-cust">40</span></div>
-      <div class="rrow"><span>Avg Ticket Size</span><span class="rval" id="r3-tick">₹120</span></div>
-      <div class="rrow"><span style="font-weight:700;">Gross Revenue</span><span class="rval" style="color:var(--ok-tx);" id="r3-rev">₹1,44,000</span></div>
+      <div class="rrow"><span data-i18n="lbl_avg_customers">Avg Customers/Day</span><span class="rval" id="r3-cust">40</span></div>
+      <div class="rrow"><span data-i18n="lbl_avg_ticket">Avg Ticket Size</span><span class="rval" id="r3-tick">₹120</span></div>
+      <div class="rrow"><span style="font-weight:700;" data-i18n="lbl_gross_revenue">Gross Revenue</span><span class="rval" style="color:var(--ok-tx);" id="r3-rev">₹1,44,000</span></div>
       <div class="divdr"></div>
-      <div class="rrow"><span>Staff Salaries</span><span class="rval" style="color:var(--no-tx);" id="r3-sal">-₹54,000</span></div>
-      <div class="rrow"><span>Rent &amp; Utilities</span><span class="rval" style="color:var(--no-tx);" id="r3-rent">-₹25,000</span></div>
-      <div class="rrow"><span>Royalty (8%)</span><span class="rval" style="color:var(--no-tx);" id="r3-roy">-₹11,520</span></div>
-      <div class="rrow"><span>Products &amp; Misc</span><span class="rval" style="color:var(--no-tx);" id="r3-misc">-₹10,000</span></div>
+      <div class="rrow"><span data-i18n="lbl_staff_salaries">Staff Salaries</span><span class="rval" style="color:var(--no-tx);" id="r3-sal">-₹54,000</span></div>
+      <div class="rrow"><span data-i18n="lbl_rent">Rent &amp; Utilities</span><span class="rval" style="color:var(--no-tx);" id="r3-rent">-₹25,000</span></div>
+      <div class="rrow"><span data-i18n="lbl_royalty_deduction">Royalty (8%)</span><span class="rval" style="color:var(--no-tx);" id="r3-roy">-₹11,520</span></div>
+      <div class="rrow"><span data-i18n="lbl_products">Products &amp; Misc</span><span class="rval" style="color:var(--no-tx);" id="r3-misc">-₹10,000</span></div>
       <div style="background:var(--ok-bg);border-radius:var(--rad);padding:12px 14px;margin-top:12px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;color:var(--ok-tx);">Net Profit / Month</span><span style="font-size:20px;font-weight:700;color:var(--ok-tx);" id="r3-profit">₹43,480</span></div>
-        <div style="font-size:12px;color:var(--ok-tx);margin-top:4px;" id="r3-roi">ROI Period: 18–22 months</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;color:var(--ok-tx);" data-i18n="lbl_net_profit">Net Profit / Month</span><span style="font-size:20px;font-weight:700;color:var(--ok-tx);" id="r3-profit">₹43,480</span></div>
+        <div style="font-size:12px;color:var(--ok-tx);margin-top:4px;" id="r3-roi" data-i18n-roi-prefix="roi_period_prefix">ROI Period: 18–22 months</div>
       </div>
     </div></div>
     <div id="r4" style="display:none;"><div class="card">
       <div class="sec">Monthly Snapshot — 4 Chair</div>
-      <div class="rrow"><span>Avg Customers/Day</span><span class="rval">55</span></div>
-      <div class="rrow"><span>Avg Ticket Size</span><span class="rval">₹120</span></div>
-      <div class="rrow"><span style="font-weight:700;">Gross Revenue</span><span class="rval" style="color:var(--ok-tx);">₹1,98,000</span></div>
+      <div class="rrow"><span data-i18n="lbl_avg_customers">Avg Customers/Day</span><span class="rval">55</span></div>
+      <div class="rrow"><span data-i18n="lbl_avg_ticket">Avg Ticket Size</span><span class="rval">₹120</span></div>
+      <div class="rrow"><span style="font-weight:700;" data-i18n="lbl_gross_revenue">Gross Revenue</span><span class="rval" style="color:var(--ok-tx);">₹1,98,000</span></div>
       <div class="divdr"></div>
-      <div class="rrow"><span>Staff Salaries</span><span class="rval" style="color:var(--no-tx);">-₹72,000</span></div>
-      <div class="rrow"><span>Rent &amp; Utilities</span><span class="rval" style="color:var(--no-tx);">-₹32,000</span></div>
-      <div class="rrow"><span>Royalty (8%)</span><span class="rval" style="color:var(--no-tx);">-₹15,840</span></div>
-      <div class="rrow"><span>Products &amp; Misc</span><span class="rval" style="color:var(--no-tx);">-₹10,000</span></div>
-      <div style="background:var(--ok-bg);border-radius:var(--rad);padding:12px 14px;margin-top:12px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;color:var(--ok-tx);">Net Profit / Month</span><span style="font-size:20px;font-weight:700;color:var(--ok-tx);">₹68,160</span></div><div style="font-size:12px;color:var(--ok-tx);margin-top:4px;">ROI Period: 16–20 months</div></div>
+      <div class="rrow"><span data-i18n="lbl_staff_salaries">Staff Salaries</span><span class="rval" style="color:var(--no-tx);">-₹72,000</span></div>
+      <div class="rrow"><span data-i18n="lbl_rent">Rent &amp; Utilities</span><span class="rval" style="color:var(--no-tx);">-₹32,000</span></div>
+      <div class="rrow"><span data-i18n="lbl_royalty_deduction">Royalty (8%)</span><span class="rval" style="color:var(--no-tx);">-₹15,840</span></div>
+      <div class="rrow"><span data-i18n="lbl_products">Products &amp; Misc</span><span class="rval" style="color:var(--no-tx);">-₹10,000</span></div>
+      <div style="background:var(--ok-bg);border-radius:var(--rad);padding:12px 14px;margin-top:12px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;color:var(--ok-tx);" data-i18n="lbl_net_profit">Net Profit / Month</span><span style="font-size:20px;font-weight:700;color:var(--ok-tx);">₹68,160</span></div><div style="font-size:12px;color:var(--ok-tx);margin-top:4px;">ROI Period: 16–20 months</div></div>
     </div></div>
     <div id="r5" style="display:none;"><div class="card">
       <div class="sec">Monthly Snapshot — 5 Chair</div>
-      <div class="rrow"><span>Avg Customers/Day</span><span class="rval">70</span></div>
-      <div class="rrow"><span>Avg Ticket Size</span><span class="rval">₹120</span></div>
-      <div class="rrow"><span style="font-weight:700;">Gross Revenue</span><span class="rval" style="color:var(--ok-tx);">₹2,52,000</span></div>
+      <div class="rrow"><span data-i18n="lbl_avg_customers">Avg Customers/Day</span><span class="rval">70</span></div>
+      <div class="rrow"><span data-i18n="lbl_avg_ticket">Avg Ticket Size</span><span class="rval">₹120</span></div>
+      <div class="rrow"><span style="font-weight:700;" data-i18n="lbl_gross_revenue">Gross Revenue</span><span class="rval" style="color:var(--ok-tx);">₹2,52,000</span></div>
       <div class="divdr"></div>
-      <div class="rrow"><span>Staff Salaries</span><span class="rval" style="color:var(--no-tx);">-₹90,000</span></div>
-      <div class="rrow"><span>Rent &amp; Utilities</span><span class="rval" style="color:var(--no-tx);">-₹42,000</span></div>
-      <div class="rrow"><span>Royalty (8%)</span><span class="rval" style="color:var(--no-tx);">-₹20,160</span></div>
-      <div class="rrow"><span>Products &amp; Misc</span><span class="rval" style="color:var(--no-tx);">-₹12,000</span></div>
-      <div style="background:var(--ok-bg);border-radius:var(--rad);padding:12px 14px;margin-top:12px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;color:var(--ok-tx);">Net Profit / Month</span><span style="font-size:20px;font-weight:700;color:var(--ok-tx);">₹87,840</span></div><div style="font-size:12px;color:var(--ok-tx);margin-top:4px;">ROI Period: 14–18 months</div></div>
+      <div class="rrow"><span data-i18n="lbl_staff_salaries">Staff Salaries</span><span class="rval" style="color:var(--no-tx);">-₹90,000</span></div>
+      <div class="rrow"><span data-i18n="lbl_rent">Rent &amp; Utilities</span><span class="rval" style="color:var(--no-tx);">-₹42,000</span></div>
+      <div class="rrow"><span data-i18n="lbl_royalty_deduction">Royalty (8%)</span><span class="rval" style="color:var(--no-tx);">-₹20,160</span></div>
+      <div class="rrow"><span data-i18n="lbl_products">Products &amp; Misc</span><span class="rval" style="color:var(--no-tx);">-₹12,000</span></div>
+      <div style="background:var(--ok-bg);border-radius:var(--rad);padding:12px 14px;margin-top:12px;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:700;color:var(--ok-tx);" data-i18n="lbl_net_profit">Net Profit / Month</span><span style="font-size:20px;font-weight:700;color:var(--ok-tx);">₹87,840</span></div><div style="font-size:12px;color:var(--ok-tx);margin-top:4px;">ROI Period: 14–18 months</div></div>
     </div></div>
     <button class="btn btn-p btn-f" onclick="fstep('s-support')">Continue to Support →</button>
   </div></div>
@@ -482,11 +482,11 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     <div class="vmock"><div class="vtag">Operations Video</div><div class="vplay" onclick="pv('ops')"><div class="vtri"></div></div><div class="vlbl">Operations SOP</div><div class="vprog" id="vp-ops"></div><div class="vurl-badge" id="vub-ops" style="display:none;"></div></div>
     <div class="card">
       <div class="sec">Daily Operations</div>
-      <div class="irow"><span class="ilbl">Salon Hours</span><span class="ival" id="op-hrs">8:00 AM – 9:00 PM</span></div>
-      <div class="irow"><span class="ilbl">Operating Days</span><span class="ival" id="op-days">7 Days / Week</span></div>
-      <div class="irow"><span class="ilbl">Breaks</span><span class="ival" id="op-breaks">Staggered — no closure</span></div>
-      <div class="irow"><span class="ilbl">OT Allowance</span><span class="ival" id="op-ot">₹80 / hr post 9 PM</span></div>
-      <div class="irow" style="border:none;"><span class="ilbl">Max Customer Wait</span><span class="ival" id="op-wait">15 minutes</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_salon_hours">Salon Hours</span><span class="ival" id="op-hrs">8:00 AM – 9:00 PM</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_operating_days">Operating Days</span><span class="ival" id="op-days">7 Days / Week</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_breaks">Breaks</span><span class="ival" id="op-breaks">Staggered — no closure</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_ot">OT Allowance</span><span class="ival" id="op-ot">₹80 / hr post 9 PM</span></div>
+      <div class="irow" style="border:none;"><span class="ilbl" data-i18n="lbl_max_wait">Max Customer Wait</span><span class="ival" id="op-wait">15 minutes</span></div>
     </div>
     <div class="card">
       <div class="sec">Service &amp; Staff Standards</div>
@@ -528,11 +528,11 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     <div class="vmock"><div class="vtag">Royalty Video</div><div class="vplay" onclick="pv('royalty')"><div class="vtri"></div></div><div class="vlbl">Royalty &amp; Timelines</div><div class="vprog" id="vp-royalty"></div><div class="vurl-badge" id="vub-royalty" style="display:none;"></div></div>
     <div class="card">
       <div class="sec">Royalty Structure</div>
-      <div class="irow"><span class="ilbl">Monthly Royalty Rate</span><span class="ival" id="roy-rate">8% of Revenue</span></div>
-      <div class="irow"><span class="ilbl">Due Date</span><span class="ival" id="roy-due">5th of every month</span></div>
-      <div class="irow"><span class="ilbl" style="color:var(--ok-tx);">On-Time Benefit</span><span class="ival" style="color:var(--ok-tx);" id="roy-benefit">Priority Staff Replacement</span></div>
-      <div class="irow"><span class="ilbl" style="color:var(--wrn-tx);">Late 1–7 Days</span><span class="ival" style="color:var(--wrn-tx);" id="roy-late1">₹500 penalty / day</span></div>
-      <div class="irow" style="border:none;"><span class="ilbl" style="color:var(--no-tx);">Non-payment &gt;30 Days</span><span class="ival" style="color:var(--no-tx);" id="roy-late2">Franchise Review + Termination</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_royalty_rate">Monthly Royalty Rate</span><span class="ival" id="roy-rate">8% of Revenue</span></div>
+      <div class="irow"><span class="ilbl" data-i18n="lbl_due_date">Due Date</span><span class="ival" id="roy-due">5th of every month</span></div>
+      <div class="irow"><span class="ilbl" style="color:var(--ok-tx);" data-i18n="lbl_ontime_benefit">On-Time Benefit</span><span class="ival" style="color:var(--ok-tx);" id="roy-benefit">Priority Staff Replacement</span></div>
+      <div class="irow"><span class="ilbl" style="color:var(--wrn-tx);" data-i18n="lbl_late_1_7">Late 1–7 Days</span><span class="ival" style="color:var(--wrn-tx);" id="roy-late1">₹500 penalty / day</span></div>
+      <div class="irow" style="border:none;"><span class="ilbl" style="color:var(--no-tx);" data-i18n="lbl_nonpayment">Non-payment &gt;30 Days</span><span class="ival" style="color:var(--no-tx);" id="roy-late2">Franchise Review + Termination</span></div>
     </div>
     <div class="card">
       <div class="sec">Payment Schedule</div>
@@ -744,7 +744,7 @@ let glChecked=0,cfChecked=0,selLangV=null;
 
 // GUIDELINES loaded from Supabase — see loadDBGuidelines()
 let GUIDELINES = [];
-const CONFIRM_ITEMS=[
+var CONFIRM_ITEMS=[
   'I confirm my selected franchise model: 3 Chair — ₹8,50,000 total investment.',
   'I have reviewed and understood the ROI projections and profit estimates.',
   'I accept the payment schedule: ₹2.5L cheque + ₹6L cash + ₹1.5L Marc Chairs.',
@@ -752,6 +752,8 @@ const CONFIRM_ITEMS=[
   'I have viewed all presentation videos and fully understood the onboarding.',
   'I agree to provide staff welfare, OT, and working conditions as described.'
 ];
+// Backup of English confirm items for fallback
+var CONFIRM_ITEMS_EN=CONFIRM_ITEMS.slice();
 
 function fs(id){
   document.querySelectorAll('.fscreen').forEach(s=>s.classList.remove('active'));
@@ -1297,7 +1299,25 @@ var TRANSLATIONS={
     // payment screen
     lbl_upi_pay:'Pay via UPI',lbl_bank_transfer:'Bank Transfer',
     lbl_upi_id:'UPI ID',lbl_bank_acc:'Account No.',lbl_bank_ifsc:'IFSC Code',
-    lbl_upload_screenshot:'Upload Payment Screenshot',btn_confirm_payment:'Confirm Payment →'
+    lbl_upload_screenshot:'Upload Payment Screenshot',btn_confirm_payment:'Confirm Payment →',
+    // invest row labels
+    lbl_equipment:'Equipment & Technology',lbl_product_stock:'Initial Product Stock',lbl_working_capital:'Working Capital',
+    // roi row labels
+    lbl_avg_ticket:'Avg Ticket Size',lbl_gross_revenue:'Gross Revenue',
+    lbl_staff_salaries:'Staff Salaries',lbl_rent:'Rent & Utilities',
+    lbl_royalty_deduction:'Royalty (8%)',lbl_products:'Products & Misc',
+    lbl_net_profit:'Net Profit / Month',roi_period_prefix:'ROI Period',
+    // royalty extra
+    lbl_late_1_7:'Late 1–7 Days',
+    // tab buttons
+    tab_3chair:'3 Chair',tab_4chair:'4 Chair',tab_5chair:'5 Chair',
+    // confirm items (dynamic)
+    confirm_item1:'I confirm my selected franchise model and total investment amount.',
+    confirm_item2:'I have reviewed and understood the ROI projections and profit estimates.',
+    confirm_item3:'I accept the payment schedule and understand all four payment steps.',
+    confirm_item4:'I understand the royalty structure of 8% monthly, due by the 5th.',
+    confirm_item5:'I have viewed all presentation videos and fully understood the onboarding.',
+    confirm_item6:'I agree to provide staff welfare, OT, and working conditions as described.'
   },
   Telugu:{
     step1:'దశ 1 / 10',step2:'దశ 2 / 10',step3:'దశ 3 / 10',step4:'దశ 4 / 10',
@@ -1388,7 +1408,20 @@ var TRANSLATIONS={
     // payment screen
     lbl_upi_pay:'UPI ద్వారా చెల్లించు',lbl_bank_transfer:'బ్యాంక్ బదిలీ',
     lbl_upi_id:'UPI ID',lbl_bank_acc:'ఖాతా సంఖ్య',lbl_bank_ifsc:'IFSC కోడ్',
-    lbl_upload_screenshot:'చెల్లింపు స్క్రీన్‌షాట్ అప్‌లోడ్ చేయండి',btn_confirm_payment:'చెల్లింపు నిర్ధారించు →'
+    lbl_upload_screenshot:'చెల్లింపు స్క్రీన్‌షాట్ అప్‌లోడ్ చేయండి',btn_confirm_payment:'చెల్లింపు నిర్ధారించు →',
+    lbl_equipment:'పరికరాలు & సాంకేతికత',lbl_product_stock:'ప్రారంభ ఉత్పత్తి స్టాక్',lbl_working_capital:'వర్కింగ్ క్యాపిటల్',
+    lbl_avg_ticket:'సగటు టికెట్ సైజ్',lbl_gross_revenue:'మొత్తం ఆదాయం',
+    lbl_staff_salaries:'సిబ్బంది జీతాలు',lbl_rent:'అద్దె & యుటిలిటీలు',
+    lbl_royalty_deduction:'రాయల్టీ (8%)',lbl_products:'ఉత్పత్తులు & ఇతరాలు',
+    lbl_net_profit:'నికర లాభం / నెల',roi_period_prefix:'ROI కాలం',
+    lbl_late_1_7:'ఆలస్యం 1–7 రోజులు',
+    tab_3chair:'3 కుర్చీలు',tab_4chair:'4 కుర్చీలు',tab_5chair:'5 కుర్చీలు',
+    confirm_item1:'నా ఎంచుకున్న ఫ్రాంచైజ్ మోడల్ మరియు మొత్తం పెట్టుబడి మొత్తాన్ని నిర్ధారిస్తున్నాను.',
+    confirm_item2:'ROI అంచనాలు మరియు లాభ అంచనాలను సమీక్షించి అర్థం చేసుకున్నాను.',
+    confirm_item3:'చెల్లింపు షెడ్యూల్ అంగీకరిస్తున్నాను మరియు నాలుగు చెల్లింపు దశలు అర్థం చేసుకున్నాను.',
+    confirm_item4:'నెలవారీ 8% రాయల్టీ నిర్మాణం అర్థం చేసుకున్నాను, ప్రతి 5వ తేదీ చెల్లించాలి.',
+    confirm_item5:'అన్ని ప్రెజెంటేషన్ వీడియోలు చూసి ఆన్‌బోర్డింగ్ పూర్తిగా అర్థం చేసుకున్నాను.',
+    confirm_item6:'వివరించిన విధంగా సిబ్బంది సంక్షేమం, OT మరియు పని పరిస్థితులు అందించడానికి అంగీకరిస్తున్నాను.'
   },
   Hindi:{
     step1:'चरण 1/10',step2:'चरण 2/10',step3:'चरण 3/10',step4:'चरण 4/10',
@@ -1411,7 +1444,27 @@ var TRANSLATIONS={
     logout_lbl:'⎋ लॉगआउट',continue_lbl:'जारी रखें →',back_lbl:'← वापस',
     support_highlight:'⭐ स्टाफ सपोर्ट हमारा सबसे मजबूत स्तंभ है — भर्ती, प्रशिक्षण और प्रतिस्थापन संभाला जाता है',
     notinterested_title:'यह सुनकर दुख हुआ',notinterested_sub:'आपके समय के लिए धन्यवाद। भविष्य में मिलने की उम्मीद है।',
-    btn_rewatch:'प्रेजेंटेशन दोबारा देखें',btn_change_mind:'मेरा मन बदल गया'
+    btn_rewatch:'प्रेजेंटेशन दोबारा देखें',btn_change_mind:'मेरा मन बदल गया',
+    lbl_equipment:'उपकरण और प्रौद्योगिकी',lbl_product_stock:'प्रारंभिक उत्पाद स्टॉक',lbl_working_capital:'कार्यशील पूंजी',
+    lbl_avg_ticket:'औसत टिकट साइज़',lbl_gross_revenue:'सकल राजस्व',
+    lbl_staff_salaries:'कर्मचारी वेतन',lbl_rent:'किराया और उपयोगिताएं',
+    lbl_royalty_deduction:'रॉयल्टी (8%)',lbl_products:'उत्पाद और विविध',
+    lbl_net_profit:'शुद्ध लाभ / माह',roi_period_prefix:'ROI अवधि',
+    lbl_late_1_7:'देर 1–7 दिन',
+    tab_3chair:'3 कुर्सी',tab_4chair:'4 कुर्सी',tab_5chair:'5 कुर्सी',
+    lbl_avg_customers:'औसत ग्राहक/दिन',lbl_franchise_fee:'फ्रेंचाइज़ शुल्क',
+    lbl_interior:'इंटीरियर सेटअप',lbl_digital_mirrors:'डिजिटल दर्पण',
+    lbl_salon_furniture:'सैलून फर्नीचर',lbl_inclusions:'पैकेज सामग्री',
+    lbl_salon_hours:'सैलून का समय',lbl_operating_days:'काम के दिन',
+    lbl_breaks:'विराम',lbl_ot:'ओटी भत्ता',lbl_max_wait:'अधिकतम प्रतीक्षा',
+    lbl_royalty_rate:'मासिक रॉयल्टी दर',lbl_due_date:'देय तिथि',
+    lbl_ontime_benefit:'समय पर लाभ',lbl_nonpayment:'भुगतान न होना (>30 दिन)',
+    confirm_item1:'मैं अपने चुने हुए फ्रेंचाइज़ मॉडल और कुल निवेश राशि की पुष्टि करता/करती हूं।',
+    confirm_item2:'मैंने ROI अनुमानों और लाभ अनुमानों की समीक्षा और समझ की है।',
+    confirm_item3:'मैं भुगतान कार्यक्रम स्वीकार करता/करती हूं और चारों भुगतान चरणों को समझता/समझती हूं।',
+    confirm_item4:'मैं 8% मासिक रॉयल्टी संरचना को समझता/समझती हूं, 5 तारीख तक देय।',
+    confirm_item5:'मैंने सभी प्रेजेंटेशन वीडियो देखे हैं और ऑनबोर्डिंग पूरी तरह समझी है।',
+    confirm_item6:'मैं वर्णित कर्मचारी कल्याण, ओटी और कार्य स्थितियां प्रदान करने के लिए सहमत हूं।'
   },
   Punjabi:{
     step1:'ਕਦਮ 1 / 10',step2:'ਕਦਮ 2 / 10',step3:'ਕਦਮ 3 / 10',step4:'ਕਦਮ 4 / 10',
@@ -1479,7 +1532,20 @@ var TRANSLATIONS={
     support_highlight:'⭐ ਸਟਾਫ਼ ਸਹਾਇਤਾ ਸਾਡਾ ਸਭ ਤੋਂ ਮਜ਼ਬੂਤ ਥੰਮ੍ਹ ਹੈ — ਭਰਤੀ, ਸਿਖਲਾਈ ਅਤੇ ਬਦਲੀ ਸੰਭਾਲੀ ਜਾਂਦੀ ਹੈ',
     lbl_upi_pay:'UPI ਦੁਆਰਾ ਭੁਗਤਾਨ ਕਰੋ',lbl_bank_transfer:'ਬੈਂਕ ਟ੍ਰਾਂਸਫਰ',
     lbl_upi_id:'UPI ID',lbl_bank_acc:'ਖਾਤਾ ਨੰ.',lbl_bank_ifsc:'IFSC ਕੋਡ',
-    lbl_upload_screenshot:'ਭੁਗਤਾਨ ਸਕਰੀਨਸ਼ਾਟ ਅੱਪਲੋਡ ਕਰੋ',btn_confirm_payment:'ਭੁਗਤਾਨ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ →'
+    lbl_upload_screenshot:'ਭੁਗਤਾਨ ਸਕਰੀਨਸ਼ਾਟ ਅੱਪਲੋਡ ਕਰੋ',btn_confirm_payment:'ਭੁਗਤਾਨ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ →',
+    lbl_equipment:'ਉਪਕਰਣ ਅਤੇ ਤਕਨਾਲੋਜੀ',lbl_product_stock:'ਸ਼ੁਰੂਆਤੀ ਉਤਪਾਦ ਸਟਾਕ',lbl_working_capital:'ਕਾਰਜਕਾਰੀ ਪੂੰਜੀ',
+    lbl_avg_ticket:'ਔਸਤ ਟਿਕਟ ਸਾਈਜ਼',lbl_gross_revenue:'ਕੁੱਲ ਆਮਦਨ',
+    lbl_staff_salaries:'ਸਟਾਫ਼ ਤਨਖਾਹਾਂ',lbl_rent:'ਕਿਰਾਇਆ ਅਤੇ ਉਪਯੋਗਤਾਵਾਂ',
+    lbl_royalty_deduction:'ਰਾਇਲਟੀ (8%)',lbl_products:'ਉਤਪਾਦ ਅਤੇ ਹੋਰ',
+    lbl_net_profit:'ਸ਼ੁੱਧ ਲਾਭ / ਮਹੀਨਾ',roi_period_prefix:'ROI ਮਿਆਦ',
+    lbl_late_1_7:'ਦੇਰੀ 1–7 ਦਿਨ',
+    tab_3chair:'3 ਕੁਰਸੀਆਂ',tab_4chair:'4 ਕੁਰਸੀਆਂ',tab_5chair:'5 ਕੁਰਸੀਆਂ',
+    confirm_item1:'ਮੈਂ ਆਪਣੇ ਚੁਣੇ ਫ੍ਰੈਂਚਾਈਜ਼ ਮਾਡਲ ਅਤੇ ਕੁੱਲ ਨਿਵੇਸ਼ ਰਕਮ ਦੀ ਪੁਸ਼ਟੀ ਕਰਦਾ/ਕਰਦੀ ਹਾਂ।',
+    confirm_item2:'ਮੈਂ ROI ਅਨੁਮਾਨਾਂ ਅਤੇ ਲਾਭ ਅਨੁਮਾਨਾਂ ਦੀ ਸਮੀਖਿਆ ਕੀਤੀ ਅਤੇ ਸਮਝੀ ਹੈ।',
+    confirm_item3:'ਮੈਂ ਭੁਗਤਾਨ ਕਾਰਜਕ੍ਰਮ ਸਵੀਕਾਰ ਕਰਦਾ/ਕਰਦੀ ਹਾਂ ਅਤੇ ਚਾਰੇ ਭੁਗਤਾਨ ਕਦਮ ਸਮਝਦਾ/ਸਮਝਦੀ ਹਾਂ।',
+    confirm_item4:'ਮੈਂ 8% ਮਹੀਨਾਵਾਰ ਰਾਇਲਟੀ ਢਾਂਚਾ ਸਮਝਦਾ/ਸਮਝਦੀ ਹਾਂ, 5 ਤਾਰੀਖ਼ ਤੱਕ ਦੇਣਾ ਹੈ।',
+    confirm_item5:'ਮੈਂ ਸਾਰੇ ਪੇਸ਼ਕਾਰੀ ਵੀਡੀਓ ਦੇਖੇ ਹਨ ਅਤੇ ਔਨਬੋਰਡਿੰਗ ਪੂਰੀ ਤਰ੍ਹਾਂ ਸਮਝੀ ਹੈ।',
+    confirm_item6:'ਮੈਂ ਦੱਸੇ ਅਨੁਸਾਰ ਸਟਾਫ਼ ਭਲਾਈ, OT ਅਤੇ ਕੰਮ ਦੀਆਂ ਸ਼ਰਤਾਂ ਪ੍ਰਦਾਨ ਕਰਨ ਲਈ ਸਹਿਮਤ ਹਾਂ।'
   }
 };
 
@@ -1628,6 +1694,45 @@ function applyTranslations(lang){
   // 11. Support highlight bar
   var suppHL=document.getElementById('support-highlight');
   if(suppHL&&T.support_highlight)suppHL.textContent=T.support_highlight;
+
+  // 12. All data-i18n spans (row labels throughout all screens)
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key=el.getAttribute('data-i18n');
+    if(T[key])el.textContent=T[key];
+  });
+
+  // 13. Tab buttons for invest and ROI screens
+  var tabs={
+    'itab-3':'tab_3chair','itab-4':'tab_4chair','itab-5':'tab_5chair',
+    'rtab-3':'tab_3chair','rtab-4':'tab_4chair','rtab-5':'tab_5chair'
+  };
+  Object.keys(tabs).forEach(function(id){
+    var el=document.getElementById(id);
+    if(el&&T[tabs[id]])el.textContent=T[tabs[id]];
+  });
+
+  // 14. CONFIRM_ITEMS — rebuild in selected language
+  var newItems=[];
+  for(var ci=1;ci<=6;ci++){
+    var ck='confirm_item'+ci;
+    newItems.push(T[ck]||CONFIRM_ITEMS_EN[ci-1]||'');
+  }
+  if(newItems.some(function(x){return x;}))CONFIRM_ITEMS=newItems;
+  // Rebuild confirm list if already visible
+  var cfList=document.getElementById('cflist');
+  if(cfList&&cfList.children.length>0){cfList.innerHTML='';cfChecked=0;buildCF();}
+
+  // 15. op-std service standards section (static fallback text if not loaded from DB)
+  var opStd=document.getElementById('op-std');
+  // op-std is populated by loadContentForLang from DB — no static override needed
+
+  // 16. ROI period prefix text inside divs
+  document.querySelectorAll('[data-i18n-roi-prefix]').forEach(function(el){
+    var txt=el.textContent;
+    var prefix=T.roi_period_prefix||'ROI Period';
+    // Replace "ROI Period: XX" keeping the value
+    el.textContent=txt.replace(/^[^:]+:/,prefix+':');
+  });
 }
 </script>
 </body>
