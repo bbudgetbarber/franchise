@@ -228,7 +228,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     </div>
     <div class="fr"><label class="fl">Phone Number</label><input type="tel" id="lp" placeholder="+91 98765 43210"/></div>
     <div class="fr"><label class="fl">6-Digit PIN</label>
-      <input type="password" id="login-pin" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Enter your 6-digit PIN" autocomplete="current-password" style="font-size:20px;letter-spacing:6px;text-align:center;" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <input type="password" id="login-pin" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Enter 6-digit PIN" autocomplete="current-password" style="font-size:22px;letter-spacing:8px;text-align:center;" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
     <div id="login-err" style="display:none;background:#FCEBEB;color:#A32D2D;border-radius:8px;padding:9px 12px;font-size:12px;margin-bottom:10px;">⚠️ Phone not found or incorrect PIN.</div>
     <div style="background:#edf5f1;border-radius:8px;padding:10px 14px;font-size:12px;color:#1a5c44;margin-bottom:12px;"><strong>Demo Login:</strong> Any phone number · PIN: <strong>2 4 6 8 1 0</strong></div>
@@ -258,8 +258,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     <div class="fr"><label class="fl">Email Address</label><input type="email" id="remail" placeholder="rajesh@email.com"/></div>
     <div class="fr"><label class="fl">City</label><input type="text" id="rcity" placeholder="Hyderabad"/></div>
     <div class="fr"><label class="fl">Set 6-Digit PIN</label>
-      <input type="password" id="reg-pin" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Choose a 6-digit PIN" autocomplete="new-password" style="font-size:20px;letter-spacing:6px;text-align:center;"/>
-    </div>
+      <input type="password" id="reg-pin" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Choose a 6-digit PIN" autocomplete="new-password" style="font-size:22px;letter-spacing:8px;text-align:center;"/>
     </div>
     <button class="btn btn-p btn-f" onclick="doReg()">Create Account &amp; Continue →</button>
   </div></div>
@@ -733,7 +732,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
 <script>
 // ── SUPABASE CONFIG ──
 const SUPABASE_URL = 'https://lplaxibcbbpuyioqhwhz.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwbGF4aWJjYmJwdXlpb3Fod2h6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5ODc5OTksImV4cCI6MjA5MTU2Mzk5OX0.AWlg4TvQ6aKUWw0J7PpreclWUQo7zkH7kAbF5Y8NYY8';
+const SUPABASE_ANON_KEY = 'sb_publishable_oLCrG76KYYQcA07xKB4DIw_j7Dlq-D5';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ── LEAD SESSION ──
@@ -784,6 +783,22 @@ function rp(c,cur){
   for(let i=0;i<TOTAL_STEPS;i++){const d=document.createElement('div');d.className='sdot'+(i<cur?' done':'')+(i===cur-1?' active':'');c.appendChild(d);}
 }
 // PIN auto-advance: gridId = parent div id, el = current input, idx = 0-based index
+function pinMove(gridId, el, idx){
+  if(el.value.length===1){
+    var grid=document.getElementById(gridId);
+    if(grid){var pins=grid.querySelectorAll('.pin-i');if(pins[idx+1])pins[idx+1].focus();}
+  }
+}
+// Backspace goes to previous box
+function pinBack(e, el){
+  if(e.key==='Backspace'&&el.value===''){
+    var grid=el.closest('.pin-grid');
+    if(grid){var pins=grid.querySelectorAll('.pin-i');var arr=Array.from(pins);var i=arr.indexOf(el);if(i>0)pins[i-1].focus();}
+  }
+}
+// Legacy pm kept for safety
+function pm(el,idx){if(el.value.length===1&&idx<6){const p=el.parentElement.querySelectorAll('.pin-i');if(p[idx])p[idx].focus();}}
+
 // ════════════════════════════════════════════
 // ── FRANCHISE APP SUPABASE FUNCTIONS ──
 // ════════════════════════════════════════════
@@ -897,22 +912,18 @@ function doLogin(){
   var rawPhone=(document.getElementById('lp')||{}).value||'';
   var pin=(document.getElementById('login-pin')||{}).value||'';
   var errEl=document.getElementById('login-err');
-
-  // Normalize phone: strip all spaces, ensure starts with +91
+  // Normalize phone
   var phone=rawPhone.trim().replace(/\s+/g,'');
   if(phone.length===10) phone='+91'+phone;
   else if(phone.startsWith('91')&&phone.length===12) phone='+'+phone;
-
   if(!phone||pin.length<6){
     if(errEl){errEl.style.display='block';errEl.textContent='⚠️ Enter your phone number and 6-digit PIN.';}
     return;
   }
   if(errEl)errEl.style.display='none';
-
   var btn=document.querySelector('#s-login .btn-p');
   if(btn){btn.textContent='Signing in…';btn.disabled=true;}
   function resetBtn(){if(btn){btn.textContent='Sign In →';btn.disabled=false;}}
-
   sb.from('leads')
     .select('id,name,phone,current_step,status,pin_hash,language,model_interest')
     .or('phone.eq.'+phone+',phone.eq.'+rawPhone.trim())
@@ -921,7 +932,7 @@ function doLogin(){
       var data=res.data&&res.data.length?res.data[0]:null;
       resetBtn();
       if(!data){
-        if(errEl){errEl.style.display='block';errEl.textContent='⚠️ Phone number not found. Please check and try again.';}
+        if(errEl){errEl.style.display='block';errEl.textContent='⚠️ Phone number not found.';}
         return;
       }
       if(data.pin_hash===pin){
@@ -942,8 +953,7 @@ function doLogin(){
       } else {
         if(errEl){errEl.style.display='block';errEl.textContent='⚠️ Incorrect PIN. Please try again.';}
       }
-    })
-    .catch(function(){
+    }).catch(function(){
       resetBtn();
       if(errEl){errEl.style.display='block';errEl.textContent='⚠️ Connection error. Please try again.';}
     });
@@ -960,19 +970,14 @@ function doReg(){
   if(!ph||!ph.value.trim()){alert('Please enter your phone number.');return;}
   if(pin.length<6){alert('Please set a 6-digit PIN to continue.');return;}
   var nameVal=n.value.trim();
-  // Normalize phone
   var phoneVal=ph.value.trim().replace(/\s+/g,'');
   if(phoneVal.length===10) phoneVal='+91'+phoneVal;
   else if(phoneVal.startsWith('91')&&phoneVal.length===12) phoneVal='+'+phoneVal;
   sb.from('leads').insert({
-    name:nameVal,
-    phone:phoneVal,
+    name:nameVal, phone:phoneVal,
     email:em?em.value.trim()||null:null,
     city:city?city.value.trim()||'':'',
-    pin_hash:pin,
-    status:'new',
-    current_step:0,
-    created_by_type:'self'
+    pin_hash:pin, status:'new', current_step:0, created_by_type:'self'
   }).then(function({data,error}){
     if(error){
       if(error.code==='23505'){alert('This phone number is already registered. Please login.');}
@@ -1000,6 +1005,7 @@ function doPay(){
       // Still navigate even if DB write failed — show project screen
       fs('s-project');
     }
+  });
 }
 function selLang(el,lang){
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('sel'));
