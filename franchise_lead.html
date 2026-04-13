@@ -762,6 +762,12 @@ function fs(id){
 }
 function fstep(screenId){
   fs(screenId);
+  // Reload guidelines in current language when navigating to that screen
+  if(screenId==='s-guidelines'){
+    loadDBGuidelines().then(function(gl){
+      GUIDELINES=gl;buildGL();ugc();
+    });
+  }
   var idx=STEPS.indexOf(screenId.replace('s-',''));
   if(idx>=0){
     for(var i=1;i<=10;i++){var sp=document.getElementById('sb'+i);if(sp)rp(sp,idx+1);}
@@ -1145,8 +1151,8 @@ function smtab(btn,tabId){
 }
 function selPay(el){document.querySelectorAll('.ccard').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
 function buildGL(){
-  const list=document.getElementById('gllist');if(!list||list.children.length>0)return;
-  glChecked=0;
+  const list=document.getElementById('gllist');if(!list)return;
+  list.innerHTML='';glChecked=0;
   GUIDELINES.forEach(g=>{
     const item=document.createElement('div');item.className='cli';
     item.innerHTML=`<div class="cbox" onclick="tck(this,'gl')"><div class="cico"></div></div><div class="ctxt">${g}</div>`;
