@@ -860,12 +860,55 @@ async function mfCreateLead(fields){
   return true;
 }
 
-async function mfLoadGuidelines(){
+async function mfLoadGuidelines(lang){
+  lang=lang||'english';
   const {data,error}=await sb.from('guidelines')
-    .select('id,sort_order,text,category,is_mandatory')
+    .select('id,sort_order,text,text_hindi,text_telugu,text_punjabi,category,is_mandatory')
     .eq('is_active',true).order('sort_order');
   if(error){console.error('mfLoadGuidelines:',error);return[];}
-  return data||[];
+  return (data||[]).map(g=>({
+    ...g,
+    display_text: lang==='english'?g.text:(g['text_'+lang]||g.text)
+  }));
+}
+
+async function mfLoadOpsForLang(lang){
+  lang=lang||'english';
+  const {data,error}=await sb.from('operations_content').select('*').limit(1).single();
+  if(error||!data)return null;
+  if(lang==='english')return data;
+  return {
+    ...data,
+    salon_hours:data['salon_hours_'+lang]||data.salon_hours,
+    operating_days:data['operating_days_'+lang]||data.operating_days,
+    break_policy:data['break_policy_'+lang]||data.break_policy,
+    ot_allowance:data['ot_allowance_'+lang]||data.ot_allowance,
+    max_wait_time:data['max_wait_time_'+lang]||data.max_wait_time,
+    service_standards:data['service_standards_'+lang]||data.service_standards,
+    staff_initial_setup:data['staff_initial_setup_'+lang]||data.staff_initial_setup,
+    staff_ongoing:data['staff_ongoing_'+lang]||data.staff_ongoing
+  };
+}
+
+async function mfLoadSupportForLang(lang){
+  lang=lang||'english';
+  const {data,error}=await sb.from('support_content').select('*').eq('is_active',true).order('sort_order');
+  if(error||!data)return[];
+  return (data||[]).map(item=>({
+    ...item,
+    display_title: lang==='english'?item.title:(item['title_'+lang]||item.title),
+    display_description: lang==='english'?item.description:(item['description_'+lang]||item.description)
+  }));
+}
+
+async function mfLoadInvestForLang(modelName, lang){
+  lang=lang||'english';
+  const {data,error}=await sb.from('investment_models').select('*').eq('model_name',modelName).single();
+  if(error||!data)return null;
+  return {
+    ...data,
+    package_inclusions: lang==='english'?data.package_inclusions:(data['package_inclusions_'+lang]||data.package_inclusions)
+  };
 }
 
 async function mfSaveGuideline(text){

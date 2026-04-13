@@ -272,13 +272,11 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
   <div class="fscreen-scroll"><div class="sbody">
     <div class="stitle">Select Language</div>
     <div class="ssub">Choose your preferred language for the franchise presentation</div>
-    <div class="lang-grid">
+    <div class="lang-grid" style="grid-template-columns:1fr 1fr;">
       <div class="lang-btn" onclick="selLang(this,'English')"><span class="lang-em">🇬🇧</span>English</div>
-      <div class="lang-btn" onclick="selLang(this,'Telugu')"><span class="lang-em">🇮🇳</span>తెలుగు</div>
       <div class="lang-btn" onclick="selLang(this,'Hindi')"><span class="lang-em">🇮🇳</span>हिन्दी</div>
-      <div class="lang-btn" onclick="selLang(this,'Tamil')"><span class="lang-em">🇮🇳</span>தமிழ்</div>
-      <div class="lang-btn" onclick="selLang(this,'Kannada')"><span class="lang-em">🇮🇳</span>ಕನ್ನಡ</div>
-      <div class="lang-btn" onclick="selLang(this,'Malayalam')"><span class="lang-em">🇮🇳</span>മലയാളം</div>
+      <div class="lang-btn" onclick="selLang(this,'Telugu')"><span class="lang-em">🇮🇳</span>తెలుగు</div>
+      <div class="lang-btn" onclick="selLang(this,'Punjabi')"><span class="lang-em">🇮🇳</span>ਪੰਜਾਬੀ</div>
     </div>
     <button class="btn btn-p btn-f" id="lb" style="opacity:.4;pointer-events:none;" onclick="fstep('s-vision')">Continue →</button>
   </div></div>
@@ -461,11 +459,13 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     <div class="vmock"><div class="vtag">Support Video</div><div class="vplay" onclick="pv('support')"><div class="vtri"></div></div><div class="vlbl">Full Support Ecosystem</div><div class="vprog" id="vp-support"></div><div class="vurl-badge" id="vub-support" style="display:none;"></div></div>
     <div class="alert alert-wrn" id="support-highlight">⭐ Staff Support is our strongest pillar — recruitment, training &amp; replacement handled</div>
     <div class="card">
-      <div class="sup-item"><div class="sup-icon">👨‍💼</div><div><div style="font-size:13px;font-weight:700;">Staff Recruitment &amp; Training</div><div style="font-size:12px;color:var(--mut);">Trained barbers deployed at launch. Replacement within 7 days guaranteed.</div></div></div>
-      <div class="sup-item"><div class="sup-icon">📣</div><div><div style="font-size:13px;font-weight:700;">Marketing Support</div><div style="font-size:12px;color:var(--mut);">Digital ads, local campaigns &amp; grand opening promotion included.</div></div></div>
-      <div class="sup-item"><div class="sup-icon">💻</div><div><div style="font-size:13px;font-weight:700;">Billing &amp; POS System</div><div style="font-size:12px;color:var(--mut);">Cloud POS with real-time reporting, inventory &amp; daily revenue dashboard.</div></div></div>
-      <div class="sup-item"><div class="sup-icon">📊</div><div><div style="font-size:13px;font-weight:700;">Monthly Performance Reviews</div><div style="font-size:12px;color:var(--mut);">Dedicated franchise manager reviews KPIs monthly with action plan.</div></div></div>
-      <div class="sup-item" style="border:none;"><div class="sup-icon">🛠</div><div><div style="font-size:13px;font-weight:700;">Technical &amp; Equipment Support</div><div style="font-size:12px;color:var(--mut);">48-hour response SLA for all equipment &amp; technology issues.</div></div></div>
+      <div id="support-list">
+        <div class="sup-item"><div class="sup-icon">👨‍💼</div><div><div style="font-size:13px;font-weight:700;">Staff Recruitment &amp; Training</div><div style="font-size:12px;color:var(--mut);">Trained barbers deployed at launch. Replacement within 7 days guaranteed.</div></div></div>
+        <div class="sup-item"><div class="sup-icon">📣</div><div><div style="font-size:13px;font-weight:700;">Marketing Support</div><div style="font-size:12px;color:var(--mut);">Digital ads, local campaigns &amp; grand opening promotion included.</div></div></div>
+        <div class="sup-item"><div class="sup-icon">💻</div><div><div style="font-size:13px;font-weight:700;">Billing &amp; POS System</div><div style="font-size:12px;color:var(--mut);">Cloud POS with real-time reporting, inventory &amp; daily revenue dashboard.</div></div></div>
+        <div class="sup-item"><div class="sup-icon">📊</div><div><div style="font-size:13px;font-weight:700;">Monthly Performance Reviews</div><div style="font-size:12px;color:var(--mut);">Dedicated franchise manager reviews KPIs monthly with action plan.</div></div></div>
+        <div class="sup-item" style="border:none;"><div class="sup-icon">🛠</div><div><div style="font-size:13px;font-weight:700;">Technical &amp; Equipment Support</div><div style="font-size:12px;color:var(--mut);">48-hour response SLA for all equipment &amp; technology issues.</div></div></div>
+      </div>
     </div>
     <button class="btn btn-p btn-f" onclick="fstep('s-ops')">Continue to Operations →</button>
   </div></div>
@@ -732,7 +732,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
 <script>
 // ── SUPABASE CONFIG ──
 const SUPABASE_URL = 'https://lplaxibcbbpuyioqhwhz.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_oLCrG76KYYQcA07xKB4DIw_j7Dlq-D5';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwbGF4aWJjYmJwdXlpb3Fod2h6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5ODc5OTksImV4cCI6MjA5MTU2Mzk5OX0.AWlg4TvQ6aKUWw0J7PpreclWUQo7zkH7kAbF5Y8NYY8';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ── LEAD SESSION ──
@@ -804,17 +804,59 @@ function pm(el,idx){if(el.value.length===1&&idx<6){const p=el.parentElement.quer
 // ════════════════════════════════════════════
 
 async function loadDBGuidelines(){
-  const langCol = selLangV && selLangV!=='English'
-    ? 'text_'+selLangV.toLowerCase()
-    : 'text';
   const {data,error}=await sb.from('guidelines')
-    .select('id,text,text_telugu,text_hindi,text_tamil,text_kannada,text_malayalam')
+    .select('id,text,text_hindi,text_telugu,text_punjabi,sort_order')
     .eq('is_active',true).order('sort_order');
   if(error){console.error('loadDBGuidelines:',error);return[];}
   return (data||[]).map(g=>{
-    const translated=g['text_'+((selLangV||'English').toLowerCase())]||g.text;
-    return translated||g.text;
+    const lang=(selLangV||'English').toLowerCase();
+    if(lang==='english')return g.text;
+    return g['text_'+lang]||g.text;
   });
+}
+
+async function loadOperationsForLang(){
+  const {data,error}=await sb.from('operations_content').select('*').limit(1).single();
+  if(error||!data)return null;
+  const lang=(selLangV||'English').toLowerCase();
+  if(lang==='english')return {
+    salon_hours:data.salon_hours,operating_days:data.operating_days,
+    break_policy:data.break_policy,ot_allowance:data.ot_allowance,
+    max_wait_time:data.max_wait_time,service_standards:data.service_standards,
+    staff_initial_setup:data.staff_initial_setup,staff_ongoing:data.staff_ongoing
+  };
+  return {
+    salon_hours:data['salon_hours_'+lang]||data.salon_hours,
+    operating_days:data['operating_days_'+lang]||data.operating_days,
+    break_policy:data['break_policy_'+lang]||data.break_policy,
+    ot_allowance:data['ot_allowance_'+lang]||data.ot_allowance,
+    max_wait_time:data['max_wait_time_'+lang]||data.max_wait_time,
+    service_standards:data['service_standards_'+lang]||data.service_standards,
+    staff_initial_setup:data['staff_initial_setup_'+lang]||data.staff_initial_setup,
+    staff_ongoing:data['staff_ongoing_'+lang]||data.staff_ongoing
+  };
+}
+
+async function loadSupportForLang(){
+  const {data,error}=await sb.from('support_content').select('*').eq('is_active',true).order('sort_order');
+  if(error||!data)return[];
+  const lang=(selLangV||'English').toLowerCase();
+  return (data||[]).map(item=>({
+    icon:item.icon||'⭐',
+    title: lang==='english'?item.title:(item['title_'+lang]||item.title),
+    description: lang==='english'?item.description:(item['description_'+lang]||item.description),
+    highlight_text: lang==='english'?item.highlight_text:(item['highlight_text_'+lang]||item.highlight_text)
+  }));
+}
+
+async function loadInvestForLang(modelName){
+  const {data,error}=await sb.from('investment_models').select('*').eq('model_name',modelName).single();
+  if(error||!data)return null;
+  const lang=(selLangV||'English').toLowerCase();
+  return {
+    ...data,
+    package_inclusions: lang==='english'?data.package_inclusions:(data['package_inclusions_'+lang]||data.package_inclusions)
+  };
 }
 
 async function loadPaymentSettings(){
@@ -1013,15 +1055,66 @@ function selLang(el,lang){
   const lb=document.getElementById('lb');if(lb){lb.style.opacity='1';lb.style.pointerEvents='auto';}
   applyTranslations(lang);
   // Save language preference to DB
-  if(leadSession?.id){
-    sb.from('leads').update({language:lang,updated_at:new Date().toISOString()}).eq('id',leadSession.id).then(()=>{});
+  if(leadSession&&leadSession.id){
+    sb.from('leads').update({language:lang,updated_at:new Date().toISOString()}).eq('id',leadSession.id).then(function(){});
   }
-  // Load videos for this language from DB
+  // Load videos for this language
   loadVideosForLang(lang).then(function(vidMap){
     Object.entries(vidMap).forEach(function([key,url]){
       const badgeEl=document.getElementById('vub-'+key);
       if(badgeEl&&url){badgeEl.textContent=url;badgeEl.style.display='block';}
     });
+  });
+  // Load all DB content in selected language
+  loadContentForLang(lang);
+}
+
+function loadContentForLang(lang){
+  // Investment models
+  ['3 Chair','4 Chair','5 Chair'].forEach(function(model){
+    loadInvestForLang(model).then(function(data){
+      if(!data)return;
+      const s=model==='3 Chair'?'3':model==='4 Chair'?'4':'5';
+      var feeEl=document.getElementById('i'+s+'-fee');if(feeEl)feeEl.textContent=data.franchise_fee?'₹'+Number(data.franchise_fee).toLocaleString('en-IN'):feeEl.textContent;
+      var intEl=document.getElementById('i'+s+'-int');if(intEl)intEl.textContent=data.interior_setup?'₹'+Number(data.interior_setup).toLocaleString('en-IN'):intEl.textContent;
+      var incEl=document.getElementById('i'+s+'-inc');if(incEl&&data.package_inclusions)incEl.textContent=data.package_inclusions;
+    });
+  });
+  // Operations & Staff
+  loadOperationsForLang().then(function(ops){
+    if(!ops)return;
+    var el;
+    el=document.getElementById('op-hrs');if(el&&ops.salon_hours)el.textContent=ops.salon_hours;
+    el=document.getElementById('op-days');if(el&&ops.operating_days)el.textContent=ops.operating_days;
+    el=document.getElementById('op-breaks');if(el&&ops.break_policy)el.textContent=ops.break_policy;
+    el=document.getElementById('op-ot');if(el&&ops.ot_allowance)el.textContent=ops.ot_allowance;
+    el=document.getElementById('op-wait');if(el&&ops.max_wait_time)el.textContent=ops.max_wait_time;
+    el=document.getElementById('op-std');if(el&&ops.service_standards)el.textContent=ops.service_standards;
+    el=document.getElementById('staff-initial');if(el&&ops.staff_initial_setup)el.textContent=ops.staff_initial_setup;
+    el=document.getElementById('staff-ongoing');if(el&&ops.staff_ongoing)el.textContent=ops.staff_ongoing;
+  });
+  // Support items
+  loadSupportForLang().then(function(items){
+    if(!items||!items.length)return;
+    var container=document.getElementById('support-list');
+    if(!container)return;
+    container.innerHTML='';
+    items.forEach(function(item,i){
+      var div=document.createElement('div');
+      div.className='sup-item';
+      if(i===items.length-1)div.style.borderBottom='none';
+      div.innerHTML='<div class="sup-icon">'+(item.icon||'⭐')+'</div><div><div style="font-size:13px;font-weight:700;">'+item.title+'</div><div style="font-size:12px;color:var(--mut);">'+item.description+'</div></div>';
+      container.appendChild(div);
+    });
+    // Set highlight bar
+    var hl=document.getElementById('support-highlight');
+    if(hl&&items[0]&&items[0].highlight_text)hl.textContent=items[0].highlight_text;
+  });
+  // Guidelines (reload for language)
+  loadDBGuidelines().then(function(gl){
+    GUIDELINES=gl;
+    var list=document.getElementById('gllist');if(list)list.innerHTML='';
+    glChecked=0;buildGL();
   });
 }
 function pv(type){
@@ -1320,77 +1413,73 @@ var TRANSLATIONS={
     notinterested_title:'यह सुनकर दुख हुआ',notinterested_sub:'आपके समय के लिए धन्यवाद। भविष्य में मिलने की उम्मीद है।',
     btn_rewatch:'प्रेजेंटेशन दोबारा देखें',btn_change_mind:'मेरा मन बदल गया'
   },
-  Tamil:{
-    step1:'படி 1/10',step2:'படி 2/10',step3:'படி 3/10',step4:'படி 4/10',
-    step5:'படி 5/10',step6:'படி 6/10',step7:'படி 7/10',step8:'படி 8/10',
-    step9:'படி 9/10',step10:'படி 10/10',
-    lang_title:'மொழி தேர்ந்தெடுக்கவும்',lang_sub:'உங்கள் விருப்பமான மொழியை தேர்ந்தெடுக்கவும்',
-    vision_title:'நிறுவனரின் தொலைநோக்கு',vision_sub:'எங்கள் நிறுவனரிடமிருந்து தனிப்பட்ட செய்தி',
-    salon_title:'சலூன் 360° சுற்றுப்பயணம்',salon_sub:'பட்ஜெட் பார்பர் சலூனின் முழு வழிகாட்டி சுற்றுப்பயணம்',
-    invest_title:'முதலீட்டு விவரங்கள்',invest_sub:'ஒவ்வொரு மாடலுக்கும் முழுமையான முதலீட்டு விவரம்',
-    roi_title:'ROI கால்குலேட்டர்',roi_sub:'உங்கள் மாடல் அடிப்படையில் லாப மதிப்பீட்டைப் பாருங்கள்',
-    support_title:'ஆதரவு அமைப்பு',support_sub:'உங்கள் வெற்றிக்கு பட்ஜெட் பார்பர் வழங்குவதெல்லாம்',
-    ops_title:'செயல்பாடுகள்',ops_sub:'அன்றாட செயல்பாடுகள், நேரங்கள் மற்றும் சலூன் மேலாண்மை',
-    staff_title:'பணியாளர்கள்',staff_sub:'பணியாளர் ஆட்சேர்ப்பு, பயிற்சி மற்றும் நலன் விவரங்கள்',
-    royalty_title:'ராயல்டி & கட்டண காலவரிசை',royalty_sub:'ராயல்டி கட்டமைப்பு மற்றும் முழு கட்டண அட்டவணை',
-    interest_title:'உங்களுக்கு ஆர்வம் உள்ளதா?',interest_sub:'எல்லாவற்றையும் பார்த்தீர்கள் — முதலீடு, ROI, ஆதரவு. உங்கள் முடிவு?',
-    yes_btn:'ஆம், எனக்கு ஆர்வம் உள்ளது 🚀',no_btn:'ஆர்வம் இல்லை',
-    guidelines_title:'ஃப்ரான்சைஸ் வழிகாட்டுதல்கள்',guidelines_sub:'ஒவ்வொரு வழிகாட்டுதலையும் படித்து ஒப்புக்கொள்ளுங்கள்.',
-    confirm_title:'இறுதி உறுதிப்படுத்தல்',confirm_sub:'அனைத்து தேர்வுகளையும் மதிப்பாய்வு செய்து உறுதிப்படுத்துங்கள்',
-    payment_title:'டோக்கன் தொகை',payment_sub:'உங்கள் இடத்தை தடுக்க ₹20,000 செலுத்தவும்.',
-    logout_lbl:'⎋ வெளியேறு',continue_lbl:'தொடரவும் →',back_lbl:'← பின்னால்',
-    support_highlight:'⭐ ஊழியர் ஆதரவு எங்கள் மிகவும் வலுவான தூண் — ஆட்சேர்ப்பு, பயிற்சி & மாற்றீடு நிர்வகிக்கப்படுகிறது',
-    notinterested_title:'நீங்கள் ஆர்வம் இல்லை என்று சொல்வது வருத்தமாக உள்ளது',
-    notinterested_sub:'உங்கள் நேரத்திற்கு நன்றி. எதிர்காலத்தில் தொடர்பு கொள்வோம்.',
-    btn_rewatch:'விளக்கக்காட்சியை மீண்டும் பாருங்கள்',btn_change_mind:'என் மனம் மாறியது'
-  },
-  Kannada:{
-    step1:'ಹಂತ 1/10',step2:'ಹಂತ 2/10',step3:'ಹಂತ 3/10',step4:'ಹಂತ 4/10',
-    step5:'ಹಂತ 5/10',step6:'ಹಂತ 6/10',step7:'ಹಂತ 7/10',step8:'ಹಂತ 8/10',
-    step9:'ಹಂತ 9/10',step10:'ಹಂತ 10/10',
-    lang_title:'ಭಾಷೆ ಆಯ್ಕೆ ಮಾಡಿ',lang_sub:'ಫ್ರ್ಯಾಂಚೈಸ್ ಪ್ರಸ್ತುತಿಗಾಗಿ ನಿಮ್ಮ ಭಾಷೆ ಆಯ್ಕೆ ಮಾಡಿ',
-    vision_title:'ಸಂಸ್ಥಾಪಕರ ದೃಷ್ಟಿ',vision_sub:'ನಮ್ಮ ಸಂಸ್ಥಾಪಕರಿಂದ ವೈಯಕ್ತಿಕ ಸಂದೇಶ',
-    salon_title:'ಸಲೂನ್ 360° ಟೂರ್',salon_sub:'ಬಜೆಟ್ ಬಾರ್ಬರ್ ಸಲೂನ್‌ನ ಸಂಪೂರ್ಣ ವಾಕ್‌ಥ್ರೂ',
-    invest_title:'ಹೂಡಿಕೆ ವಿವರಗಳು',invest_sub:'ಪ್ರತಿ ಮಾದರಿಗೆ ಸಂಪೂರ್ಣ ಹೂಡಿಕೆ ವಿವರ',
-    roi_title:'ROI ಕ್ಯಾಲ್ಕುಲೇಟರ್',roi_sub:'ನಿಮ್ಮ ಆಯ್ದ ಮಾದರಿ ಆಧರಿಸಿ ಲಾಭ ಅಂದಾಜು ನೋಡಿ',
-    support_title:'ಬೆಂಬಲ ವ್ಯವಸ್ಥೆ',support_sub:'ನಿಮ್ಮ ಯಶಸ್ಸಿಗೆ ಬಜೆಟ್ ಬಾರ್ಬರ್ ಒದಗಿಸುವ ಎಲ್ಲವೂ',
-    ops_title:'ಕಾರ್ಯಾಚರಣೆಗಳು',ops_sub:'ದೈನಂದಿನ ಕಾರ್ಯಾಚರಣೆಗಳು ಮತ್ತು ಸಲೂನ್ ನಿರ್ವಹಣೆ',
-    staff_title:'ಸಿಬ್ಬಂದಿ & ನೇಮಕಾತಿ',staff_sub:'ಸಿಬ್ಬಂದಿ ನೇಮಕ, ತರಬೇತಿ ಮತ್ತು ಕಲ್ಯಾಣ ವಿವರಗಳು',
-    royalty_title:'ರಾಯಲ್ಟಿ & ಪಾವತಿ ವೇಳಾಪಟ್ಟಿ',royalty_sub:'ರಾಯಲ್ಟಿ ರಚನೆ ಮತ್ತು ಸಂಪೂರ್ಣ ಪಾವತಿ ವೇಳಾಪಟ್ಟಿ',
-    interest_title:'ನಿಮಗೆ ಆಸಕ್ತಿ ಇದೆಯೇ?',interest_sub:'ನೀವು ಎಲ್ಲವನ್ನೂ ನೋಡಿದ್ದೀರಿ — ಹೂಡಿಕೆ, ROI, ಬೆಂಬಲ. ನಿಮ್ಮ ನಿರ್ಧಾರ?',
-    yes_btn:'ಹೌದು, ನನಗೆ ಆಸಕ್ತಿ ಇದೆ 🚀',no_btn:'ಆಸಕ್ತಿ ಇಲ್ಲ',
-    guidelines_title:'ಫ್ರ್ಯಾಂಚೈಸ್ ಮಾರ್ಗಸೂಚಿಗಳು',guidelines_sub:'ಪ್ರತಿ ಮಾರ್ಗಸೂಚಿ ಓದಿ ಒಪ್ಪಿಕೊಳ್ಳಿ.',
-    confirm_title:'ಅಂತಿಮ ದೃಢೀಕರಣ',confirm_sub:'ಎಲ್ಲಾ ಆಯ್ಕೆಗಳನ್ನು ಪರಿಶೀಲಿಸಿ ನಿಮ್ಮ ಅರ್ಜಿಯನ್ನು ದೃಢೀಕರಿಸಿ',
-    payment_title:'ಟೋಕನ್ ಮೊತ್ತ',payment_sub:'ನಿಮ್ಮ ಸ್ಥಳವನ್ನು ಬ್ಲಾಕ್ ಮಾಡಲು ₹20,000 ಪಾವತಿಸಿ.',
-    logout_lbl:'⎋ ಲಾಗ್ ಔಟ್',continue_lbl:'ಮುಂದುವರಿಸಿ →',back_lbl:'← ಹಿಂದೆ',
-    support_highlight:'⭐ ಸಿಬ್ಬಂದಿ ಬೆಂಬಲ ನಮ್ಮ ಅತ್ಯಂತ ಬಲವಾದ ಸ್ತಂಭ — ನೇಮಕ, ತರಬೇತಿ & ಬದಲಿ ನಿರ್ವಹಿಸಲಾಗುತ್ತದೆ',
-    notinterested_title:'ನೀವು ಆಸಕ್ತಿ ಇಲ್ಲ ಎಂದು ಕೇಳಿ ವಿಷಾದವಾಯಿತು',
-    notinterested_sub:'ನಿಮ್ಮ ಸಮಯಕ್ಕೆ ಧನ್ಯವಾದಗಳು. ಭವಿಷ್ಯದಲ್ಲಿ ಸಂಪರ್ಕಿಸಲು ಆಶಿಸುತ್ತೇವೆ.',
-    btn_rewatch:'ಪ್ರಸ್ತುತಿ ಮತ್ತೆ ನೋಡಿ',btn_change_mind:'ನನ್ನ ಮನಸ್ಸು ಬದಲಾಯಿತು'
-  },
-  Malayalam:{
-    step1:'ഘട്ടം 1/10',step2:'ഘട്ടം 2/10',step3:'ഘട്ടം 3/10',step4:'ഘട്ടം 4/10',
-    step5:'ഘട്ടം 5/10',step6:'ഘട്ടം 6/10',step7:'ഘട്ടം 7/10',step8:'ഘട്ടം 8/10',
-    step9:'ഘട്ടം 9/10',step10:'ഘട്ടം 10/10',
-    lang_title:'ഭാഷ തിരഞ്ഞെടുക്കുക',lang_sub:'ഫ്രാഞ്ചൈസ് പ്രസ്തുതിക്കായി നിങ്ങളുടെ ഭാഷ തിരഞ്ഞെടുക്കുക',
-    vision_title:'സ്ഥാപകന്റെ ദർശനം',vision_sub:'ഞങ്ങളുടെ സ്ഥാപകനിൽ നിന്നുള്ള വ്യക്തിഗത സന്ദേശം',
-    salon_title:'സലൂൺ 360° ടൂർ',salon_sub:'ബജറ്റ് ബാർബർ സലൂണിന്റെ പൂർണ്ണ വാക്ക്ത്രൂ',
-    invest_title:'നിക്ഷേപ വിശദാംശങ്ങൾ',invest_sub:'ഓരോ മോഡലിനും പൂർണ്ണ നിക്ഷേപ വിവരണം',
-    roi_title:'ROI കാൽക്കുലേറ്റർ',roi_sub:'നിങ്ങളുടെ മോഡൽ അടിസ്ഥാനമാക്കി ലാഭ പ്രവചനങ്ങൾ കാണുക',
-    support_title:'പിന്തുണ സംവിധാനം',support_sub:'നിങ്ങളുടെ വിജയത്തിനായി ബജറ്റ് ബാർബർ നൽകുന്നതെല്ലാം',
-    ops_title:'പ്രവർത്തനങ്ങൾ',ops_sub:'ദൈനംദിന പ്രവർത്തനങ്ങൾ, സമയം, സലൂൺ മാനേജ്മെന്റ്',
-    staff_title:'ജീവനക്കാർ & റിക്രൂട്ട്മെന്റ്',staff_sub:'ജീവനക്കാർ, പരിശീലനം, ക്ഷേമ വിശദാംശങ്ങൾ',
-    royalty_title:'റോയൽറ്റി & പേമെന്റ് ടൈംലൈൻ',royalty_sub:'റോയൽറ്റി ഘടന, ആനുകൂല്യങ്ങൾ, പൂർണ്ണ ഷെഡ്യൂൾ',
-    interest_title:'നിങ്ങൾക്ക് താൽപ്പര്യമുണ്ടോ?',interest_sub:'നിങ്ങൾ എല്ലാം കണ്ടു — നിക്ഷേപം, ROI, പിന്തുണ. നിങ്ങളുടെ തീരുമാനം?',
-    yes_btn:'അതെ, എനിക്ക് താൽപ്പര്യമുണ്ട് 🚀',no_btn:'താൽപ്പര്യമില്ല',
-    guidelines_title:'ഫ്രാഞ്ചൈസ് മാർഗ്ഗനിർദ്ദേശങ്ങൾ',guidelines_sub:'ഓരോ മാർഗ്ഗനിർദ്ദേശവും വായിച്ച് സ്വീകരിക്കുക.',
-    confirm_title:'അന്തിമ സ്ഥിരീകരണം',confirm_sub:'എല്ലാ തിരഞ്ഞെടുപ്പുകളും അവലോകനം ചെയ്ത് അപേക്ഷ സ്ഥിരീകരിക്കുക',
-    payment_title:'ടോക്കൻ തുക',payment_sub:'നിങ്ങളുടെ ഇഷ്ടപ്പെട്ട ലൊക്കേഷൻ ബ്ലോക്ക് ചെയ്യാൻ ₹20,000 അടയ്ക്കുക.',
-    logout_lbl:'⎋ ലോഗ്ഔട്ട്',continue_lbl:'തുടരുക →',back_lbl:'← തിരിച്ച്',
-    support_highlight:'⭐ ജീവനക്കാരുടെ പിന്തുണ ഞങ്ങളുടെ ഏറ്റവും ശക്തമായ തൂൺ — റിക്രൂട്ട്മെന്റ്, പരിശീലനം & മാറ്റിസ്ഥാപിക്കൽ കൈകാര്യം ചെയ്യുന്നു',
-    notinterested_title:'നിങ്ങൾക്ക് താൽപ്പര്യമില്ല എന്ന് കേൾക്കാൻ ദുഃഖമുണ്ട്',
-    notinterested_sub:'നിങ്ങളുടെ സമയത്തിന് നന്ദി. ഭാവിയിൽ ബന്ധപ്പെടാൻ ആശിക്കുന്നു.',
-    btn_rewatch:'പ്രസന്റേഷൻ വീണ്ടും കാണുക',btn_change_mind:'എന്റെ മനസ്സ് മാറി'
+  Punjabi:{
+    step1:'ਕਦਮ 1 / 10',step2:'ਕਦਮ 2 / 10',step3:'ਕਦਮ 3 / 10',step4:'ਕਦਮ 4 / 10',
+    step5:'ਕਦਮ 5 / 10',step6:'ਕਦਮ 6 / 10',step7:'ਕਦਮ 7 / 10',step8:'ਕਦਮ 8 / 10',
+    step9:'ਕਦਮ 9 / 10',step10:'ਕਦਮ 10 / 10',
+    lang_title:'ਭਾਸ਼ਾ ਚੁਣੋ',lang_sub:'ਫ੍ਰੈਂਚਾਈਜ਼ ਪੇਸ਼ਕਾਰੀ ਲਈ ਆਪਣੀ ਪਸੰਦੀਦਾ ਭਾਸ਼ਾ ਚੁਣੋ',
+    vision_title:'ਸੰਸਥਾਪਕ ਦੀ ਦ੍ਰਿਸ਼ਟੀ',vision_sub:'ਸਾਡੇ ਸੰਸਥਾਪਕ ਤੋਂ ਇੱਕ ਨਿੱਜੀ ਸੁਨੇਹਾ',
+    salon_title:'ਸਲੂਨ 360° ਟੂਰ',salon_sub:'ਬਜਟ ਬਾਰਬਰ ਸਲੂਨ ਦਾ ਪੂਰਾ ਵਾਕਥ੍ਰੂ ਦੇਖੋ',
+    invest_title:'ਨਿਵੇਸ਼ ਵੇਰਵੇ',invest_sub:'ਹਰ ਫ੍ਰੈਂਚਾਈਜ਼ ਮਾਡਲ ਲਈ ਪੂਰੀ ਨਿਵੇਸ਼ ਜਾਣਕਾਰੀ',
+    roi_title:'ROI ਕੈਲਕੁਲੇਟਰ',roi_sub:'ਆਪਣੇ ਚੁਣੇ ਮਾਡਲ ਦੇ ਆਧਾਰ ਤੇ ਲਾਭ ਅਨੁਮਾਨ ਦੇਖੋ',
+    support_title:'ਸਹਾਇਤਾ ਪ੍ਰਣਾਲੀ',support_sub:'ਤੁਹਾਡੀ ਸਫਲਤਾ ਲਈ ਬਜਟ ਬਾਰਬਰ ਵੱਲੋਂ ਸਭ ਕੁਝ',
+    ops_title:'ਕਾਰਜ',ops_sub:'ਰੋਜ਼ਾਨਾ ਕਾਰਵਾਈਆਂ, ਸਮਾਂ ਅਤੇ ਸਲੂਨ ਪ੍ਰਬੰਧਨ',
+    staff_title:'ਸਟਾਫ਼ ਅਤੇ ਭਰਤੀ',staff_sub:'ਸਟਾਫ਼ ਭਰਤੀ, ਸਿਖਲਾਈ, ਭਲਾਈ ਅਤੇ ਪ੍ਰਬੰਧਨ ਵੇਰਵੇ',
+    royalty_title:'ਰਾਇਲਟੀ ਅਤੇ ਭੁਗਤਾਨ ਸਮਾਂ-ਰੇਖਾ',royalty_sub:'ਰਾਇਲਟੀ ਢਾਂਚਾ, ਪ੍ਰੋਤਸਾਹਨ ਅਤੇ ਪੂਰਾ ਭੁਗਤਾਨ ਕਾਰਜਕ੍ਰਮ',
+    interest_title:'ਕੀ ਤੁਹਾਨੂੰ ਦਿਲਚਸਪੀ ਹੈ?',interest_sub:'ਤੁਸੀਂ ਸਭ ਕੁਝ ਦੇਖਿਆ — ਨਿਵੇਸ਼, ROI, ਸਹਾਇਤਾ। ਤੁਹਾਡਾ ਫੈਸਲਾ?',
+    yes_btn:'ਹਾਂ, ਮੈਨੂੰ ਦਿਲਚਸਪੀ ਹੈ 🚀',no_btn:'ਦਿਲਚਸਪੀ ਨਹੀਂ',
+    guidelines_title:'ਫ੍ਰੈਂਚਾਈਜ਼ ਦਿਸ਼ਾ-ਨਿਰਦੇਸ਼',guidelines_sub:'ਹਰ ਦਿਸ਼ਾ-ਨਿਰਦੇਸ਼ ਪੜ੍ਹੋ ਅਤੇ ਸਵੀਕਾਰ ਕਰੋ।',
+    confirm_title:'ਅੰਤਿਮ ਪੁਸ਼ਟੀ',confirm_sub:'ਸਾਰੀਆਂ ਚੋਣਾਂ ਦੀ ਸਮੀਖਿਆ ਕਰੋ ਅਤੇ ਅਰਜ਼ੀ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ',
+    payment_title:'ਟੋਕਨ ਰਕਮ',payment_sub:'ਆਪਣੀ ਪਸੰਦੀਦਾ ਥਾਂ ਬੁੱਕ ਕਰਨ ਲਈ ₹20,000 ਅਦਾ ਕਰੋ।',
+    logout_lbl:'⎋ ਲੌਗਆਊਟ',continue_lbl:'ਜਾਰੀ ਰੱਖੋ →',back_lbl:'← ਵਾਪਸ',
+    vtag_vision:'ਵਿਜ਼ਨ ਵੀਡੀਓ',vtag_salon:'360° ਵਿਊ',vtag_invest:'ਨਿਵੇਸ਼ ਵੀਡੀਓ',
+    vtag_roi:'ROI ਵੀਡੀਓ',vtag_support:'ਸਹਾਇਤਾ ਵੀਡੀਓ',vtag_ops:'ਕਾਰਜ ਵੀਡੀਓ',
+    vtag_staff:'ਸਟਾਫ਼ ਵੀਡੀਓ',vtag_royalty:'ਰਾਇਲਟੀ ਵੀਡੀਓ',
+    vlbl_vision:'ਇਸ ਵੀਡੀਓ ਵਿੱਚ',vlbl_invest:'ਨਿਵੇਸ਼ ਅਤੇ ਲੋੜਾਂ',vlbl_roi:'ROI ਅਤੇ ਮਹੀਨਾਵਾਰ ਲਾਭ',
+    vlbl_support:'ਪੂਰਾ ਸਹਾਇਤਾ ਈਕੋਸਿਸਟਮ',vlbl_ops:'ਕਾਰਜ SOP',
+    vlbl_staff:'ਸਟਾਫ਼ ਭਲਾਈ ਦਿਸ਼ਾ-ਨਿਰਦੇਸ਼',vlbl_royalty:'ਰਾਇਲਟੀ ਅਤੇ ਸਮਾਂ-ਰੇਖਾ',
+    sec_franchise_models:'ਫ੍ਰੈਂਚਾਈਜ਼ ਮਾਡਲ',
+    sec_3chair:'3 ਕੁਰਸੀਆਂ — 250 ਵ.ਫੁ. — ₹8.5 ਲੱਖ',
+    sec_4chair:'4 ਕੁਰਸੀਆਂ — 350 ਵ.ਫੁ. — ₹11 ਲੱਖ',
+    sec_5chair:'5 ਕੁਰਸੀਆਂ — 450 ਵ.ਫੁ. — ₹14 ਲੱਖ',
+    sec_roi3:'ਮਹੀਨਾਵਾਰ ਸਨੈਪਸ਼ਾਟ — 3 ਕੁਰਸੀਆਂ',
+    sec_roi4:'ਮਹੀਨਾਵਾਰ ਸਨੈਪਸ਼ਾਟ — 4 ਕੁਰਸੀਆਂ',
+    sec_roi5:'ਮਹੀਨਾਵਾਰ ਸਨੈਪਸ਼ਾਟ — 5 ਕੁਰਸੀਆਂ',
+    sec_daily_ops:'ਰੋਜ਼ਾਨਾ ਕਾਰਵਾਈਆਂ',
+    sec_service_standards:'ਸੇਵਾ ਅਤੇ ਸਟਾਫ਼ ਮਾਪਦੰਡ',
+    sec_initial_setup:'ਸ਼ੁਰੂਆਤੀ ਸੈੱਟਅੱਪ — ਬਜਟ ਬਾਰਬਰ ਦੁਆਰਾ',
+    sec_ongoing:'ਚੱਲ ਰਿਹਾ — ਫ੍ਰੈਂਚਾਈਜ਼ੀ ਦੁਆਰਾ',
+    sec_royalty:'ਰਾਇਲਟੀ ਢਾਂਚਾ',sec_payment_schedule:'ਭੁਗਤਾਨ ਕਾਰਜਕ੍ਰਮ',
+    lbl_franchise_fee:'ਫ੍ਰੈਂਚਾਈਜ਼ ਫੀਸ',lbl_interior:'ਅੰਦਰੂਨੀ ਸੈੱਟਅੱਪ',
+    lbl_digital_mirrors:'ਡਿਜੀਟਲ ਸ਼ੀਸ਼ੇ',lbl_salon_furniture:'ਸਲੂਨ ਫਰਨੀਚਰ',lbl_inclusions:'ਪੈਕੇਜ ਸਮੱਗਰੀ',
+    lbl_avg_customers:'ਔਸਤ ਗਾਹਕ/ਦਿਨ',lbl_avg_ticket:'ਔਸਤ ਬਿੱਲ',
+    lbl_gross_revenue:'ਕੁੱਲ ਆਮਦਨ/ਮਹੀਨਾ',lbl_staff_salaries:'ਸਟਾਫ਼ ਤਨਖਾਹਾਂ',
+    lbl_rent:'ਕਿਰਾਇਆ ਅਤੇ ਉਪਯੋਗਤਾਵਾਂ',lbl_royalty_deduction:'ਰਾਇਲਟੀ (8%)',
+    lbl_products:'ਉਤਪਾਦ ਅਤੇ ਹੋਰ',lbl_net_profit:'ਸ਼ੁੱਧ ਲਾਭ/ਮਹੀਨਾ',lbl_roi_period:'ROI ਮਿਆਦ',
+    lbl_salon_hours:'ਸਲੂਨ ਦਾ ਸਮਾਂ',lbl_operating_days:'ਕੰਮ ਦੇ ਦਿਨ',
+    lbl_breaks:'ਬ੍ਰੇਕ',lbl_ot:'OT ਭੱਤਾ',lbl_max_wait:'ਵੱਧ ਤੋਂ ਵੱਧ ਉਡੀਕ ਸਮਾਂ',
+    lbl_royalty_rate:'ਮਹੀਨਾਵਾਰ ਰਾਇਲਟੀ ਦਰ',lbl_due_date:'ਦੇਣ ਦੀ ਤਾਰੀਖ਼',
+    lbl_ontime_benefit:'ਸਮੇਂ ਸਿਰ ਭੁਗਤਾਨ ਲਾਭ',lbl_late_penalty:'ਦੇਰੀ ਭੁਗਤਾਨ ਜੁਰਮਾਨਾ',
+    lbl_nonpayment:'ਭੁਗਤਾਨ ਨਾ ਕਰਨਾ (>30 ਦਿਨ)',
+    lbl_pay1:'ਕਦਮ 1 — ਟੋਕਨ',lbl_pay2:'ਕਦਮ 2 — ਚੈੱਕ',
+    lbl_pay3:'ਕਦਮ 3 — ਮਾਰਕ ਕੁਰਸੀਆਂ',lbl_pay4:'ਕਦਮ 4 — ਨਕਦ',
+    btn_continue_salon:'ਸਲੂਨ ਟੂਰ ਤੇ ਜਾਓ →',
+    btn_continue_invest:'ਨਿਵੇਸ਼ ਤੇ ਜਾਓ →',
+    btn_continue_roi:'ROI ਤੇ ਜਾਓ →',
+    btn_continue_support:'ਸਹਾਇਤਾ ਤੇ ਜਾਓ →',
+    btn_continue_ops:'ਕਾਰਜਾਂ ਤੇ ਜਾਓ →',
+    btn_continue_staff:'ਸਟਾਫ਼ ਵੇਰਵਿਆਂ ਤੇ ਜਾਓ →',
+    btn_continue_royalty:'ਰਾਇਲਟੀ ਤੇ ਜਾਓ →',
+    btn_continue_interest:'ਜਾਰੀ ਰੱਖੋ →',
+    btn_continue_guidelines:'ਸਭ ਸਵੀਕਾਰ ਕਰੋ ਅਤੇ ਜਾਰੀ ਰੱਖੋ →',
+    btn_continue_confirm:'ਪੁਸ਼ਟੀ ਕਰੋ ਅਤੇ ਟੋਕਨ ਭੁਗਤਾਨ ਤੇ ਜਾਓ →',
+    notinterested_title:'ਸੁਣ ਕੇ ਅਫਸੋਸ ਹੋਇਆ',
+    notinterested_sub:'ਤੁਹਾਡੇ ਸਮੇਂ ਲਈ ਧੰਨਵਾਦ। ਭਵਿੱਖ ਵਿੱਚ ਸੰਪਰਕ ਕਰਨ ਦੀ ਉਮੀਦ ਹੈ।',
+    btn_rewatch:'ਪੇਸ਼ਕਾਰੀ ਦੁਬਾਰਾ ਦੇਖੋ',btn_change_mind:'ਮੇਰਾ ਮਨ ਬਦਲ ਗਿਆ',
+    support_highlight:'⭐ ਸਟਾਫ਼ ਸਹਾਇਤਾ ਸਾਡਾ ਸਭ ਤੋਂ ਮਜ਼ਬੂਤ ਥੰਮ੍ਹ ਹੈ — ਭਰਤੀ, ਸਿਖਲਾਈ ਅਤੇ ਬਦਲੀ ਸੰਭਾਲੀ ਜਾਂਦੀ ਹੈ',
+    lbl_upi_pay:'UPI ਦੁਆਰਾ ਭੁਗਤਾਨ ਕਰੋ',lbl_bank_transfer:'ਬੈਂਕ ਟ੍ਰਾਂਸਫਰ',
+    lbl_upi_id:'UPI ID',lbl_bank_acc:'ਖਾਤਾ ਨੰ.',lbl_bank_ifsc:'IFSC ਕੋਡ',
+    lbl_upload_screenshot:'ਭੁਗਤਾਨ ਸਕਰੀਨਸ਼ਾਟ ਅੱਪਲੋਡ ਕਰੋ',btn_confirm_payment:'ਭੁਗਤਾਨ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ →'
   }
 };
 

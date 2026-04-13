@@ -456,7 +456,11 @@ input:checked + .slider:before{transform:translateX(16px);}
             <div class="fr"><label class="fl">Digital Mirrors</label><input type="text" id="e-i3mirror" value="₹50,000"/></div>
             <div class="fr"><label class="fl">Salon Furniture</label><input type="text" id="e-i3furn" value="₹1,00,000"/></div>
           </div>
-          <div class="fr"><label class="fl">Package Inclusions</label><textarea id="e-i3inc" style="min-height:100px;">3 Marc Salon Chairs · 1 Digital Mirror · POS System · AC Unit · Salon Furniture · Branding Kit · Uniforms ×6 · AI Tablet · 1-Year License</textarea></div>
+          <div class="fr"><label class="fl">Package Inclusions (English)</label><textarea id="e-i3inc" style="min-height:80px;">3 Marc Salon Chairs · 1 Digital Mirror · POS System · AC Unit · Salon Furniture · Branding Kit · Uniforms ×6 · AI Tablet · 1-Year License</textarea></div>
+          <div class="fr"><label class="fl">Package Inclusions — हिन्दी</label><textarea id="e-i3inc-hi" style="min-height:60px;" placeholder="Hindi translation…"></textarea></div>
+          <div class="fr"><label class="fl">Package Inclusions — తెలుగు</label><textarea id="e-i3inc-te" style="min-height:60px;" placeholder="Telugu translation…"></textarea></div>
+          <div class="fr"><label class="fl">Package Inclusions — ਪੰਜਾਬੀ</label><textarea id="e-i3inc-pa" style="min-height:60px;" placeholder="Punjabi translation…"></textarea></div>
+          <button class="btn btn-sm" style="background:var(--inf-bg);color:var(--inf-tx);margin-bottom:10px;" onclick="autoTranslateInclusions('3')">✨ Auto-Translate Inclusions</button>
           <button class="btn btn-p" onclick="saveInvestModelUI('3 Chair')">Save &amp; Publish Changes</button>
         </div>
       </div>
@@ -471,7 +475,11 @@ input:checked + .slider:before{transform:translateX(16px);}
             <div class="fr"><label class="fl">Digital Mirrors</label><input type="text" value="₹80,000"/></div>
             <div class="fr"><label class="fl">Salon Furniture</label><input type="text" value="₹1,50,000"/></div>
           </div>
-          <div class="fr"><label class="fl">Package Inclusions</label><textarea style="min-height:100px;">4 Marc Chairs · 2 Digital Mirrors · POS · 2 ACs · Salon Furniture · Branding Kit · Uniforms ×8 · AI Tablets ×2 · Priority Support · 1-Year License</textarea></div>
+          <div class="fr"><label class="fl">Package Inclusions (English)</label><textarea id="e-i4inc" style="min-height:80px;">4 Marc Chairs · 2 Digital Mirrors · POS · 2 ACs · Salon Furniture · Branding Kit · Uniforms ×8 · AI Tablets ×2 · Priority Support · 1-Year License</textarea></div>
+          <div class="fr"><label class="fl">Package Inclusions — हिन्दी</label><textarea id="e-i4inc-hi" style="min-height:60px;" placeholder="Hindi translation…"></textarea></div>
+          <div class="fr"><label class="fl">Package Inclusions — తెలుగు</label><textarea id="e-i4inc-te" style="min-height:60px;" placeholder="Telugu translation…"></textarea></div>
+          <div class="fr"><label class="fl">Package Inclusions — ਪੰਜਾਬੀ</label><textarea id="e-i4inc-pa" style="min-height:60px;" placeholder="Punjabi translation…"></textarea></div>
+          <button class="btn btn-sm" style="background:var(--inf-bg);color:var(--inf-tx);margin-bottom:10px;" onclick="autoTranslateInclusions('4')">✨ Auto-Translate Inclusions</button>
           <button class="btn btn-p" onclick="saveInvestModelUI('4 Chair')">Save &amp; Publish Changes</button>
         </div>
       </div>
@@ -486,7 +494,11 @@ input:checked + .slider:before{transform:translateX(16px);}
             <div class="fr"><label class="fl">Digital Mirrors</label><input type="text" value="₹1,20,000"/></div>
             <div class="fr"><label class="fl">Salon Furniture</label><input type="text" value="₹2,00,000"/></div>
           </div>
-          <div class="fr"><label class="fl">Package Inclusions</label><textarea style="min-height:100px;">5 Marc Chairs · 3 Digital Mirrors · 2 POS · 3 ACs · Premium Salon Furniture · Premium Branding · Uniforms ×10 · AI Tablets ×3 · Account Manager · 1-Year License</textarea></div>
+          <div class="fr"><label class="fl">Package Inclusions (English)</label><textarea id="e-i5inc" style="min-height:80px;">5 Marc Chairs · 3 Digital Mirrors · 2 POS · 3 ACs · Premium Salon Furniture · Premium Branding · Uniforms ×10 · AI Tablets ×3 · Account Manager · 1-Year License</textarea></div>
+          <div class="fr"><label class="fl">Package Inclusions — हिन्दी</label><textarea id="e-i5inc-hi" style="min-height:60px;" placeholder="Hindi translation…"></textarea></div>
+          <div class="fr"><label class="fl">Package Inclusions — తెలుగు</label><textarea id="e-i5inc-te" style="min-height:60px;" placeholder="Telugu translation…"></textarea></div>
+          <div class="fr"><label class="fl">Package Inclusions — ਪੰਜਾਬੀ</label><textarea id="e-i5inc-pa" style="min-height:60px;" placeholder="Punjabi translation…"></textarea></div>
+          <button class="btn btn-sm" style="background:var(--inf-bg);color:var(--inf-tx);margin-bottom:10px;" onclick="autoTranslateInclusions('5')">✨ Auto-Translate Inclusions</button>
           <button class="btn btn-p" onclick="saveInvestModelUI('5 Chair')">Save &amp; Publish Changes</button>
         </div>
       </div>
@@ -596,62 +608,197 @@ input:checked + .slider:before{transform:translateX(16px);}
     </div>
 
     <!-- GUIDELINES MANAGEMENT -->
+    <!-- GUIDELINES -->
     <div id="at-guidelines" class="admin-tab">
       <div class="adm-page-title">Guidelines Management</div>
-      <div class="adm-page-sub">Add, edit, remove, and reorder franchise guidelines shown to leads</div>
-      <div class="adm-card">
-        <div class="content-section-title">Current Guidelines <button class="btn btn-sm btn-p" onclick="addGuideline()">+ Add</button></div>
-        <div id="gl-admin-list"></div>
+      <div class="adm-page-sub">Enter guidelines in English — click <strong>Auto-Translate</strong> to fill Hindi, Telugu &amp; Punjabi automatically</div>
+      <div class="adm-tabs">
+        <button class="adm-tab-btn active" onclick="cLangTab(this,'gl-en')">🇬🇧 English</button>
+        <button class="adm-tab-btn" onclick="cLangTab(this,'gl-hi')">हि Hindi</button>
+        <button class="adm-tab-btn" onclick="cLangTab(this,'gl-te')">తె Telugu</button>
+        <button class="adm-tab-btn" onclick="cLangTab(this,'gl-pa')">ਪੰ Punjabi</button>
       </div>
-      <div class="adm-card">
-        <div class="adm-card-title">Add New Guideline</div>
-        <div class="fr"><label class="fl">Guideline Text</label><textarea id="new-gl-text" placeholder="Enter new guideline for franchise leads…"></textarea></div>
-        <div class="form-2col">
-          <div class="fr"><label class="fl">Category</label><select><option>Operational</option><option>Staff</option><option>Financial</option><option>Compliance</option></select></div>
-          <div class="fr"><label class="fl">Mandatory</label>
-            <div style="display:flex;align-items:center;gap:10px;margin-top:8px;"><label class="switch"><input type="checkbox" checked/><span class="slider"></span></label><span style="font-size:13px;color:var(--mut);">Lead must accept</span></div>
+      <div id="gl-en">
+        <div class="adm-card">
+          <div class="content-section-title" style="display:flex;align-items:center;justify-content:space-between;">
+            <span>English Guidelines <button class="btn btn-sm btn-p" onclick="addGuideline()" style="margin-left:8px;">+ Add</button></span>
+            <button class="btn btn-sm" style="background:var(--inf-bg);color:var(--inf-tx);" onclick="autoTranslateAll()">✨ Auto-Translate All</button>
           </div>
+          <div id="gl-admin-list"></div>
         </div>
-        <button class="btn btn-p" onclick="addGuideline()">Add Guideline</button>
+        <div class="adm-card">
+          <div class="adm-card-title">Add New Guideline</div>
+          <div class="fr"><label class="fl">Guideline Text (English)</label><textarea id="new-gl-text" placeholder="Enter guideline in English…"></textarea></div>
+          <div class="form-2col">
+            <div class="fr"><label class="fl">Category</label><select><option>Operational</option><option>Staff</option><option>Financial</option><option>Compliance</option></select></div>
+            <div class="fr"><label class="fl">Mandatory</label><div style="display:flex;align-items:center;gap:10px;margin-top:8px;"><label class="switch"><input type="checkbox" checked/><span class="slider"></span></label><span style="font-size:13px;color:var(--mut);">Lead must accept</span></div></div>
+          </div>
+          <button class="btn btn-p" onclick="addGuideline()">Add Guideline</button>
+        </div>
+      </div>
+      <div id="gl-hi" style="display:none;">
+        <div class="adm-card">
+          <div class="adm-card-title" style="display:flex;align-items:center;justify-content:space-between;">हिन्दी दिशानिर्देश<button class="btn btn-sm" style="background:var(--inf-bg);color:var(--inf-tx);" onclick="autoTranslateLang('hindi')">✨ Auto-Translate</button></div>
+          <div class="adm-card-sub">Shown to leads who select Hindi. Auto-translate fills these from English.</div>
+          <div id="gl-hindi-list"></div>
+          <button class="btn btn-p" style="margin-top:14px;" onclick="saveGuidelineTranslations('hindi')">💾 Save Hindi Guidelines</button>
+        </div>
+      </div>
+      <div id="gl-te" style="display:none;">
+        <div class="adm-card">
+          <div class="adm-card-title" style="display:flex;align-items:center;justify-content:space-between;">తెలుగు మార్గదర్శకాలు<button class="btn btn-sm" style="background:var(--inf-bg);color:var(--inf-tx);" onclick="autoTranslateLang('telugu')">✨ Auto-Translate</button></div>
+          <div class="adm-card-sub">Shown to leads who select Telugu. Auto-translate fills these from English.</div>
+          <div id="gl-telugu-list"></div>
+          <button class="btn btn-p" style="margin-top:14px;" onclick="saveGuidelineTranslations('telugu')">💾 Save Telugu Guidelines</button>
+        </div>
+      </div>
+      <div id="gl-pa" style="display:none;">
+        <div class="adm-card">
+          <div class="adm-card-title" style="display:flex;align-items:center;justify-content:space-between;">ਪੰਜਾਬੀ ਦਿਸ਼ਾ-ਨਿਰਦੇਸ਼<button class="btn btn-sm" style="background:var(--inf-bg);color:var(--inf-tx);" onclick="autoTranslateLang('punjabi')">✨ Auto-Translate</button></div>
+          <div class="adm-card-sub">Shown to leads who select Punjabi. Auto-translate fills these from English.</div>
+          <div id="gl-punjabi-list"></div>
+          <button class="btn btn-p" style="margin-top:14px;" onclick="saveGuidelineTranslations('punjabi')">💾 Save Punjabi Guidelines</button>
+        </div>
       </div>
     </div>
 
     <!-- SUPPORT CONTENT -->
     <div id="at-support-content" class="admin-tab">
       <div class="adm-page-title">Support Information</div>
-      <div class="adm-page-sub">Edit the support details and highlight text shown in the franchise portal</div>
-      <div class="adm-card">
-        <div class="adm-card-title">Support Section Highlight</div>
-        <div class="fr"><label class="fl">Highlight Text (shown in alert bar)</label><input type="text" id="e-sup-hl" value="⭐ Staff Support is our strongest pillar — recruitment, training &amp; replacement handled"/></div>
+      <div class="adm-page-sub">Enter in English — use <strong>Auto-Translate</strong> to fill other languages automatically</div>
+      <div class="adm-tabs">
+        <button class="adm-tab-btn active" onclick="cLangTab(this,'sup-en')">🇬🇧 English</button>
+        <button class="adm-tab-btn" onclick="cLangTab(this,'sup-hi')">हि Hindi</button>
+        <button class="adm-tab-btn" onclick="cLangTab(this,'sup-te')">తె Telugu</button>
+        <button class="adm-tab-btn" onclick="cLangTab(this,'sup-pa')">ਪੰ Punjabi</button>
       </div>
-      <div class="adm-card">
-        <div class="adm-card-title">Support Items</div>
-        <div id="support-items-editor"></div>
+      <div id="sup-en">
+        <div class="adm-card">
+          <div class="adm-card-title" style="display:flex;align-items:center;justify-content:space-between;">English Support Content<button class="btn btn-sm" style="background:var(--inf-bg);color:var(--inf-tx);" onclick="autoTranslateSupport()">✨ Auto-Translate All</button></div>
+          <div class="fr"><label class="fl">Highlight Bar Text</label><input type="text" id="e-sup-hl" value="⭐ Staff Support is our strongest pillar — recruitment, training &amp; replacement handled"/></div>
+          <div style="margin-top:12px;" id="support-items-editor"></div>
+        </div>
+        <button class="btn btn-p" onclick="saveSupportUI('english')">💾 Save English Support</button>
       </div>
-      <button class="btn btn-p" onclick="saveSupportUI()">Save &amp; Publish Support Info</button>
+      <div id="sup-hi" style="display:none;">
+        <div class="adm-card">
+          <div class="adm-card-title">हिन्दी — सहायता सामग्री</div>
+          <div class="fr"><label class="fl">Highlight Bar (Hindi)</label><input type="text" id="e-sup-hl-hi" placeholder="⭐ स्टाफ सपोर्ट हमारा सबसे मजबूत स्तंभ है…"/></div>
+          <div style="margin-top:12px;" id="support-items-editor-hi"></div>
+        </div>
+        <button class="btn btn-p" onclick="saveSupportUI('hindi')">💾 Save Hindi Support</button>
+      </div>
+      <div id="sup-te" style="display:none;">
+        <div class="adm-card">
+          <div class="adm-card-title">తెలుగు — మద్దతు సమాచారం</div>
+          <div class="fr"><label class="fl">Highlight Bar (Telugu)</label><input type="text" id="e-sup-hl-te" placeholder="⭐ సిబ్బంది మద్దతు మా అతి బలమైన స్తంభం…"/></div>
+          <div style="margin-top:12px;" id="support-items-editor-te"></div>
+        </div>
+        <button class="btn btn-p" onclick="saveSupportUI('telugu')">💾 Save Telugu Support</button>
+      </div>
+      <div id="sup-pa" style="display:none;">
+        <div class="adm-card">
+          <div class="adm-card-title">ਪੰਜਾਬੀ — ਸਹਾਇਤਾ ਜਾਣਕਾਰੀ</div>
+          <div class="fr"><label class="fl">Highlight Bar (Punjabi)</label><input type="text" id="e-sup-hl-pa" placeholder="⭐ ਸਟਾਫ਼ ਸਹਾਇਤਾ ਸਾਡਾ ਸਭ ਤੋਂ ਮਜ਼ਬੂਤ ਥੰਮ੍ਹ ਹੈ…"/></div>
+          <div style="margin-top:12px;" id="support-items-editor-pa"></div>
+        </div>
+        <button class="btn btn-p" onclick="saveSupportUI('punjabi')">💾 Save Punjabi Support</button>
+      </div>
     </div>
 
     <!-- OPERATIONS CONTENT -->
     <div id="at-ops-content" class="admin-tab">
-      <div class="adm-page-title">Operations Information</div>
-      <div class="adm-page-sub">Edit operational details, timings, and standards shown to leads</div>
-      <div class="adm-card">
-        <div class="adm-card-title">Salon Timings &amp; Operations</div>
-        <div class="form-2col">
-          <div class="fr"><label class="fl">Salon Hours</label><input type="text" id="e-ophrs" value="8:00 AM – 9:00 PM"/></div>
-          <div class="fr"><label class="fl">Operating Days</label><input type="text" id="e-opdays" value="7 Days / Week"/></div>
-          <div class="fr"><label class="fl">Break Policy</label><input type="text" id="e-opbreaks" value="Staggered — no closure"/></div>
-          <div class="fr"><label class="fl">OT Allowance</label><input type="text" id="e-opot" value="₹80 / hr post 9 PM"/></div>
-          <div class="fr"><label class="fl">Max Customer Wait</label><input type="text" id="e-opwait" value="15 minutes"/></div>
-        </div>
-        <div class="fr"><label class="fl">Service &amp; Staff Standards</label><textarea id="e-opstd" style="min-height:100px;">✓ Greet every customer within 30 seconds · ✓ No phone usage during service · ✓ Uniform dress code enforced · ✓ Zero tolerance for rude behavior · ✓ Feedback collected after every visit</textarea></div>
-        <button class="btn btn-p" onclick="saveOpsUI()">Save &amp; Publish Operations Info</button>
+      <div class="adm-page-title">Operations &amp; Staff Content</div>
+      <div class="adm-page-sub">Enter in English — use <strong>Auto-Translate</strong> to fill other languages automatically</div>
+      <div class="adm-tabs">
+        <button class="adm-tab-btn active" onclick="cLangTab(this,'ops-en')">🇬🇧 English</button>
+        <button class="adm-tab-btn" onclick="cLangTab(this,'ops-hi')">हि Hindi</button>
+        <button class="adm-tab-btn" onclick="cLangTab(this,'ops-te')">తె Telugu</button>
+        <button class="adm-tab-btn" onclick="cLangTab(this,'ops-pa')">ਪੰ Punjabi</button>
       </div>
-      <div class="adm-card">
-        <div class="adm-card-title">Staff Welfare Content</div>
-        <div class="fr"><label class="fl">Initial Setup (by Budget Barber)</label><textarea style="min-height:90px;">✓ Uniforms (2 sets/staff) · ✓ 5-day bootcamp training · ✓ Tool &amp; grooming kit · ✓ Product training · ✓ SOP manual · ✓ ID cards · ✓ AI system training</textarea></div>
-        <div class="fr"><label class="fl">Ongoing (by Franchisee)</label><textarea style="min-height:90px;">✓ Monthly salary by 5th · ✓ 1 day off/week · ✓ Accommodation support · ✓ Festival bonus · ✓ Refresher training (quarterly) · ✓ Meals during shift</textarea></div>
-        <button class="btn btn-p" onclick="saveStaffUI()">Save &amp; Publish Staff Info</button>
+      <!-- ENGLISH -->
+      <div id="ops-en">
+        <div class="adm-card">
+          <div class="adm-card-title" style="display:flex;align-items:center;justify-content:space-between;">Salon Operations (English)<button class="btn btn-sm" style="background:var(--inf-bg);color:var(--inf-tx);" onclick="autoTranslateOps()">✨ Auto-Translate All</button></div>
+          <div class="form-2col">
+            <div class="fr"><label class="fl">Salon Hours</label><input type="text" id="e-ophrs" value="8:00 AM – 9:00 PM"/></div>
+            <div class="fr"><label class="fl">Operating Days</label><input type="text" id="e-opdays" value="7 Days / Week"/></div>
+            <div class="fr"><label class="fl">Break Policy</label><input type="text" id="e-opbreaks" value="Staggered — no closure"/></div>
+            <div class="fr"><label class="fl">OT Allowance</label><input type="text" id="e-opot" value="₹80 / hr post 9 PM"/></div>
+            <div class="fr"><label class="fl">Max Customer Wait</label><input type="text" id="e-opwait" value="15 minutes"/></div>
+          </div>
+          <div class="fr"><label class="fl">Service &amp; Staff Standards</label><textarea id="e-opstd" style="min-height:90px;">✓ Greet every customer within 30 seconds · ✓ No phone usage during service · ✓ Uniform dress code enforced · ✓ Zero tolerance for rude behavior · ✓ Feedback collected after every visit</textarea></div>
+          <button class="btn btn-p" onclick="saveOpsUI('english')">💾 Save English Operations</button>
+        </div>
+        <div class="adm-card">
+          <div class="adm-card-title">Staff Welfare (English)</div>
+          <div class="fr"><label class="fl">Initial Setup (by Budget Barber)</label><textarea id="e-staff-initial" style="min-height:80px;">✓ Uniforms (2 sets/staff) · ✓ 5-day bootcamp training · ✓ Tool &amp; grooming kit · ✓ Product training · ✓ SOP manual · ✓ ID cards · ✓ AI system training</textarea></div>
+          <div class="fr"><label class="fl">Ongoing (by Franchisee)</label><textarea id="e-staff-ongoing" style="min-height:80px;">✓ Monthly salary by 5th · ✓ 1 day off/week · ✓ Accommodation support · ✓ Festival bonus · ✓ Refresher training (quarterly) · ✓ Meals during shift</textarea></div>
+          <button class="btn btn-p" onclick="saveStaffUI('english')">💾 Save English Staff Info</button>
+        </div>
+      </div>
+      <!-- HINDI -->
+      <div id="ops-hi" style="display:none;">
+        <div class="adm-card">
+          <div class="adm-card-title">हिन्दी — सैलून संचालन</div>
+          <div class="form-2col">
+            <div class="fr"><label class="fl">सैलून का समय</label><input type="text" id="e-ophrs-hi" placeholder="8:00 AM – 9:00 PM"/></div>
+            <div class="fr"><label class="fl">काम के दिन</label><input type="text" id="e-opdays-hi" placeholder="7 दिन / सप्ताह"/></div>
+            <div class="fr"><label class="fl">विराम नीति</label><input type="text" id="e-opbreaks-hi" placeholder="क्रमबद्ध — कोई बंद नहीं"/></div>
+            <div class="fr"><label class="fl">ओटी भत्ता</label><input type="text" id="e-opot-hi" placeholder="₹80 / घंटा रात 9 बजे के बाद"/></div>
+            <div class="fr"><label class="fl">अधिकतम प्रतीक्षा</label><input type="text" id="e-opwait-hi" placeholder="15 मिनट"/></div>
+          </div>
+          <div class="fr"><label class="fl">सेवा और कर्मचारी मानक</label><textarea id="e-opstd-hi" style="min-height:90px;" placeholder="✓ हर ग्राहक को 30 सेकंड में अभिवादन…"></textarea></div>
+          <button class="btn btn-p" onclick="saveOpsUI('hindi')">💾 Save Hindi Operations</button>
+        </div>
+        <div class="adm-card">
+          <div class="adm-card-title">हिन्दी — कर्मचारी कल्याण</div>
+          <div class="fr"><label class="fl">प्रारंभिक सेटअप</label><textarea id="e-staff-initial-hi" style="min-height:80px;" placeholder="✓ वर्दी (2 सेट/कर्मचारी)…"></textarea></div>
+          <div class="fr"><label class="fl">चालू (फ्रेंचाइज़ी द्वारा)</label><textarea id="e-staff-ongoing-hi" style="min-height:80px;" placeholder="✓ 5 तारीख तक मासिक वेतन…"></textarea></div>
+          <button class="btn btn-p" onclick="saveStaffUI('hindi')">💾 Save Hindi Staff Info</button>
+        </div>
+      </div>
+      <!-- TELUGU -->
+      <div id="ops-te" style="display:none;">
+        <div class="adm-card">
+          <div class="adm-card-title">తెలుగు — సెలూన్ కార్యకలాపాలు</div>
+          <div class="form-2col">
+            <div class="fr"><label class="fl">సెలూన్ వేళలు</label><input type="text" id="e-ophrs-te" placeholder="8:00 AM – 9:00 PM"/></div>
+            <div class="fr"><label class="fl">పని దినాలు</label><input type="text" id="e-opdays-te" placeholder="7 రోజులు / వారం"/></div>
+            <div class="fr"><label class="fl">విరామ విధానం</label><input type="text" id="e-opbreaks-te" placeholder="స్తబ్ద — మూసివేత లేదు"/></div>
+            <div class="fr"><label class="fl">OT అలవెన్స్</label><input type="text" id="e-opot-te" placeholder="₹80 / గంట రాత్రి 9 తర్వాత"/></div>
+            <div class="fr"><label class="fl">గరిష్ట వేచి సమయం</label><input type="text" id="e-opwait-te" placeholder="15 నిమిషాలు"/></div>
+          </div>
+          <div class="fr"><label class="fl">సేవ &amp; సిబ్బంది ప్రమాణాలు</label><textarea id="e-opstd-te" style="min-height:90px;" placeholder="✓ 30 సెకన్లలో కస్టమర్‌ను స్వాగతించండి…"></textarea></div>
+          <button class="btn btn-p" onclick="saveOpsUI('telugu')">💾 Save Telugu Operations</button>
+        </div>
+        <div class="adm-card">
+          <div class="adm-card-title">తెలుగు — సిబ్బంది సంక్షేమం</div>
+          <div class="fr"><label class="fl">ప్రారంభ సెటప్</label><textarea id="e-staff-initial-te" style="min-height:80px;" placeholder="✓ యూనిఫాంలు (2 సెట్లు/సిబ్బంది)…"></textarea></div>
+          <div class="fr"><label class="fl">కొనసాగింపు (ఫ్రాంచైజీ ద్వారా)</label><textarea id="e-staff-ongoing-te" style="min-height:80px;" placeholder="✓ 5వ తేదీ వేతనం…"></textarea></div>
+          <button class="btn btn-p" onclick="saveStaffUI('telugu')">💾 Save Telugu Staff Info</button>
+        </div>
+      </div>
+      <!-- PUNJABI -->
+      <div id="ops-pa" style="display:none;">
+        <div class="adm-card">
+          <div class="adm-card-title">ਪੰਜਾਬੀ — ਸਲੂਨ ਕਾਰਜ</div>
+          <div class="form-2col">
+            <div class="fr"><label class="fl">ਸਲੂਨ ਦਾ ਸਮਾਂ</label><input type="text" id="e-ophrs-pa" placeholder="8:00 AM – 9:00 PM"/></div>
+            <div class="fr"><label class="fl">ਕੰਮ ਦੇ ਦਿਨ</label><input type="text" id="e-opdays-pa" placeholder="7 ਦਿਨ / ਹਫ਼ਤਾ"/></div>
+            <div class="fr"><label class="fl">ਬ੍ਰੇਕ ਨੀਤੀ</label><input type="text" id="e-opbreaks-pa" placeholder="ਕ੍ਰਮਵਾਰ — ਕੋਈ ਬੰਦ ਨਹੀਂ"/></div>
+            <div class="fr"><label class="fl">OT ਭੱਤਾ</label><input type="text" id="e-opot-pa" placeholder="₹80 / ਘੰਟਾ ਰਾਤ 9 ਵਜੇ ਬਾਅਦ"/></div>
+            <div class="fr"><label class="fl">ਵੱਧ ਤੋਂ ਵੱਧ ਉਡੀਕ</label><input type="text" id="e-opwait-pa" placeholder="15 ਮਿੰਟ"/></div>
+          </div>
+          <div class="fr"><label class="fl">ਸੇਵਾ ਅਤੇ ਸਟਾਫ਼ ਮਾਪਦੰਡ</label><textarea id="e-opstd-pa" style="min-height:90px;" placeholder="✓ ਹਰ ਗਾਹਕ ਨੂੰ 30 ਸਕਿੰਟਾਂ ਵਿੱਚ ਸੁਆਗਤ ਕਰੋ…"></textarea></div>
+          <button class="btn btn-p" onclick="saveOpsUI('punjabi')">💾 Save Punjabi Operations</button>
+        </div>
+        <div class="adm-card">
+          <div class="adm-card-title">ਪੰਜਾਬੀ — ਸਟਾਫ਼ ਭਲਾਈ</div>
+          <div class="fr"><label class="fl">ਸ਼ੁਰੂਆਤੀ ਸੈੱਟਅੱਪ</label><textarea id="e-staff-initial-pa" style="min-height:80px;" placeholder="✓ ਵਰਦੀਆਂ (2 ਸੈੱਟ/ਸਟਾਫ਼)…"></textarea></div>
+          <div class="fr"><label class="fl">ਚੱਲ ਰਿਹਾ (ਫ੍ਰੈਂਚਾਈਜ਼ੀ ਦੁਆਰਾ)</label><textarea id="e-staff-ongoing-pa" style="min-height:80px;" placeholder="✓ 5 ਤਾਰੀਖ਼ ਤੱਕ ਮਹੀਨਾਵਾਰ ਤਨਖਾਹ…"></textarea></div>
+          <button class="btn btn-p" onclick="saveStaffUI('punjabi')">💾 Save Punjabi Staff Info</button>
+        </div>
       </div>
     </div>
 
@@ -1537,10 +1684,17 @@ function closeLdBtn(id){
 
 function buildGLAdmin(){
   const list=document.getElementById('gl-admin-list');if(!list)return;list.innerHTML='';
-  GUIDELINES.forEach((g,i)=>{
-    const div=document.createElement('div');div.className='guideline-admin-item';
-    div.innerHTML=`<div class="gai-num">${i+1}.</div><div class="gai-txt">${g}</div><div class="gai-acts"><button class="btn btn-xs" onclick="editGL(${i})">Edit</button><button class="btn btn-xs btn-d" onclick="delGL(${i})">Delete</button></div>`;
-    list.appendChild(div);
+  // Load full guideline objects from DB to get IDs and translations
+  sb.from('guidelines').select('id,text,text_hindi,text_telugu,text_punjabi,sort_order,category,is_mandatory').eq('is_active',true).order('sort_order').then(({data})=>{
+    if(data&&data.length){GUIDELINES_OBJ=data;GUIDELINES=data.map(g=>g.text);}
+    const displayList=GUIDELINES_OBJ.length?GUIDELINES_OBJ:GUIDELINES.map((t,i)=>({id:null,text:t,sort_order:i+1}));
+    list.innerHTML='';
+    displayList.forEach((g,i)=>{
+      const text=typeof g==='string'?g:(g.text||'');
+      const div=document.createElement('div');div.className='guideline-admin-item';
+      div.innerHTML=`<div class="gai-num">${i+1}.</div><div class="gai-txt">${text}</div><div class="gai-acts"><button class="btn btn-xs" onclick="editGL(${i})">Edit</button><button class="btn btn-xs btn-d" onclick="delGL(${i})">Delete</button></div>`;
+      list.appendChild(div);
+    });
   });
 }
 function addGuideline(){
@@ -2179,7 +2333,10 @@ function saveInvestModelUI(modelName){
     interior_setup:parseFloat((document.getElementById('e-i'+s+'int')||{}).value)||0,
     digital_mirrors:parseFloat((document.getElementById('e-i'+s+'mirror')||{}).value)||0,
     salon_furniture:parseFloat((document.getElementById('e-i'+s+'furn')||{}).value)||0,
-    package_inclusions:(document.getElementById('e-i'+s+'inc')||{}).value||''
+    package_inclusions:(document.getElementById('e-i'+s+'inc')||{}).value||'',
+    package_inclusions_hindi:(document.getElementById('e-i'+s+'inc-hi')||{}).value||'',
+    package_inclusions_telugu:(document.getElementById('e-i'+s+'inc-te')||{}).value||'',
+    package_inclusions_punjabi:(document.getElementById('e-i'+s+'inc-pa')||{}).value||''
   };
   saveInvestmentModel(modelName, fields).then(ok=>{if(ok)alert('✓ '+modelName+' investment info saved and published!');});
 }
@@ -2213,37 +2370,326 @@ function saveRoyaltyStructureUI(){
     op.then(({error})=>{if(!error)alert('✓ Royalty structure saved!');else alert('Error: '+error.message);});
   });
 }
-function saveSupportUI(){
-  const items=[];
-  for(let i=1;i<=5;i++){
-    const t=(document.getElementById('sup-t'+i)||{}).value||'';
-    const d=(document.getElementById('sup-d'+i)||{}).value||'';
-    if(t)items.push({sort_order:i,title:t,description:d,is_active:true,updated_by:adminSession?.id||null});
-  }
-  if(!items.length){alert('No support items to save.');return;}
-  sb.from('support_content').upsert(items,{onConflict:'sort_order'}).then(({error})=>{
-    if(!error)alert('✓ Support info saved and published!');
-    else alert('Error: '+error.message);
+// ── LANGUAGE TAB SWITCHER ──
+function cLangTab(btn, panelId){
+  const parent=btn.closest('.admin-tab');if(!parent)return;
+  parent.querySelectorAll('.adm-tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const prefix=panelId.split('-')[0]+'-';
+  parent.querySelectorAll('[id^="'+prefix+'"]').forEach(p=>{p.style.display='none';});
+  const panel=document.getElementById(panelId);if(panel)panel.style.display='block';
+  if(panelId==='gl-hi')buildGLTranslations('hindi');
+  if(panelId==='gl-te')buildGLTranslations('telugu');
+  if(panelId==='gl-pa')buildGLTranslations('punjabi');
+  if(panelId==='sup-hi')buildSupportEditorLang('hi');
+  if(panelId==='sup-te')buildSupportEditorLang('te');
+  if(panelId==='sup-pa')buildSupportEditorLang('pa');
+  if(panelId==='ops-hi')loadOpsTranslations('hindi');
+  if(panelId==='ops-te')loadOpsTranslations('telugu');
+  if(panelId==='ops-pa')loadOpsTranslations('punjabi');
+}
+
+// ── BUILD GUIDELINE TRANSLATION EDITORS ──
+let GUIDELINES_OBJ=[];
+function buildGLTranslations(lang){
+  const ids={hindi:'gl-hindi-list',telugu:'gl-telugu-list',punjabi:'gl-punjabi-list'};
+  const container=document.getElementById(ids[lang]);if(!container)return;
+  container.innerHTML='';
+  const list=GUIDELINES_OBJ.length?GUIDELINES_OBJ:GUIDELINES.map((t,i)=>({id:null,text:t,sort_order:i+1}));
+  list.forEach((g,i)=>{
+    const text=typeof g==='string'?g:(g.text||'');
+    const existing=(typeof g==='object'&&g['text_'+lang])||'';
+    const div=document.createElement('div');
+    div.style.cssText='border-bottom:0.5px solid var(--bdr);padding-bottom:12px;margin-bottom:12px;';
+    div.innerHTML=`<div style="font-size:11px;font-weight:700;color:var(--mut);margin-bottom:5px;">Guideline ${i+1}</div>
+      <div style="font-size:12px;padding:7px 10px;background:var(--surf2);border-radius:6px;margin-bottom:7px;">${text}</div>
+      <input type="text" id="gl-trans-${lang}-${i}" data-gid="${(g.id||'')}" data-idx="${i}"
+        value="${existing.replace(/"/g,'&quot;')}"
+        placeholder="Enter ${lang} translation…"
+        style="width:100%;padding:9px 12px;border:0.5px solid var(--bdr2);border-radius:var(--rad);font-size:13px;"/>`;
+    container.appendChild(div);
   });
 }
-function saveOpsUI(){
-  const fields={
-    salon_hours:(document.getElementById('e-ophrs')||{}).value||'',
-    operating_days:(document.getElementById('e-opdays')||{}).value||'',
-    break_policy:(document.getElementById('e-opbreaks')||{}).value||'',
-    ot_allowance:(document.getElementById('e-opot')||{}).value||'',
-    max_wait_time:(document.getElementById('e-opwait')||{}).value||'',
-    service_standards:(document.getElementById('e-opstd')||{}).value||''
-  };
-  saveOperationsContent(fields).then(ok=>{if(ok)alert('✓ Operations info saved!');});
+
+// ── SAVE GUIDELINE TRANSLATIONS ──
+async function saveGuidelineTranslations(lang){
+  const inputs=document.querySelectorAll('[id^="gl-trans-'+lang+'-"]');
+  if(!inputs.length){alert('No guidelines to save.');return;}
+  let saved=0,errors=0;
+  const glList=GUIDELINES_OBJ.length?GUIDELINES_OBJ:GUIDELINES.map((t,i)=>({id:null,text:t,sort_order:i+1}));
+  for(let i=0;i<inputs.length;i++){
+    const val=inputs[i].value.trim();
+    const g=glList[i];
+    if(!g)continue;
+    const col='text_'+lang;
+    if(g.id){
+      const {error}=await sb.from('guidelines').update({[col]:val}).eq('id',g.id);
+      if(error)errors++;else{saved++;if(GUIDELINES_OBJ[i])GUIDELINES_OBJ[i][col]=val;}
+    } else {
+      // no ID yet — try matching by sort_order
+      const {error}=await sb.from('guidelines').update({[col]:val}).eq('sort_order',g.sort_order||i+1);
+      if(error)errors++;else saved++;
+    }
+  }
+  alert(errors?`⚠ Saved ${saved}, failed ${errors}.`:`✓ ${lang} guidelines saved!`);
 }
-function saveStaffUI(){
+
+// ── AUTO-TRANSLATE via Claude API ──
+async function callTranslateAPI(text, targetLang){
+  const langNames={hindi:'Hindi',telugu:'Telugu',punjabi:'Punjabi'};
+  const tl=langNames[targetLang]||targetLang;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:`Translate the following text to ${tl}. Return ONLY the translated text, no explanation, no quotes.
+
+${text}`}]
+      })
+    });
+    const data=await res.json();
+    return (data.content&&data.content[0]&&data.content[0].text)||text;
+  }catch(e){console.error('Translate error:',e);return text;}
+}
+
+async function autoTranslateLang(lang){
+  const ids={hindi:'gl-hindi-list',telugu:'gl-telugu-list',punjabi:'gl-punjabi-list'};
+  const container=document.getElementById(ids[lang]);
+  const inputs=container?container.querySelectorAll('input[type=text]'):[];
+  if(!inputs.length){buildGLTranslations(lang);setTimeout(()=>autoTranslateLang(lang),300);return;}
+  const btn=event.target;btn.textContent='Translating…';btn.disabled=true;
+  const glList=GUIDELINES_OBJ.length?GUIDELINES_OBJ:GUIDELINES.map((t,i)=>({id:null,text:t}));
+  for(let i=0;i<inputs.length;i++){
+    const src=glList[i]?(typeof glList[i]==='string'?glList[i]:glList[i].text):'';
+    if(src){const t=await callTranslateAPI(src,lang);inputs[i].value=t;}
+  }
+  btn.textContent='✨ Auto-Translate';btn.disabled=false;
+  alert('✓ Auto-translation complete! Review and save.');
+}
+
+async function autoTranslateAll(){
+  if(!confirm('Auto-translate all guidelines to Hindi, Telugu & Punjabi? This will overwrite existing translations.'))return;
+  const event={target:document.querySelector('#gl-en .adm-card-title')};
+  const langs=['hindi','telugu','punjabi'];
+  for(const lang of langs){
+    buildGLTranslations(lang);
+    await new Promise(r=>setTimeout(r,100));
+    const ids={hindi:'gl-hindi-list',telugu:'gl-telugu-list',punjabi:'gl-punjabi-list'};
+    const container=document.getElementById(ids[lang]);
+    const inputs=container?container.querySelectorAll('input[type=text]'):[];
+    const glList=GUIDELINES_OBJ.length?GUIDELINES_OBJ:GUIDELINES.map((t,i)=>({id:null,text:t}));
+    for(let i=0;i<inputs.length;i++){
+      const src=glList[i]?(typeof glList[i]==='string'?glList[i]:glList[i].text):'';
+      if(src){const t=await callTranslateAPI(src,lang);inputs[i].value=t;}
+    }
+  }
+  alert('✓ All languages auto-translated! Switch to each language tab and click Save.');
+}
+
+// ── SUPPORT EDITOR ──
+function buildSupportEditor(){
+  buildSupportEditorForContainer('support-items-editor','');
+}
+function buildSupportEditorLang(langCode){
+  const container=document.getElementById('support-items-editor-'+langCode);
+  if(!container||container.children.length>0)return;
+  const langNames={hi:'hindi',te:'telugu',pa:'punjabi'};
+  const lang=langNames[langCode];
+  const defaultItems=[
+    {t:'Staff Recruitment & Training',d:'Trained barbers deployed at launch. Replacement within 7 days guaranteed.'},
+    {t:'Marketing Support',d:'Digital ads, local campaigns & grand opening promotion included.'},
+    {t:'Billing & POS System',d:'Cloud POS with real-time reporting, inventory & daily revenue dashboard.'},
+    {t:'Monthly Performance Reviews',d:'Dedicated franchise manager reviews KPIs monthly with action plan.'},
+    {t:'Technical & Equipment Support',d:'48-hour response SLA for all equipment & technology issues.'}
+  ];
+  // Load from DB
+  sb.from('support_content').select('sort_order,title,description,title_'+lang+',description_'+lang).order('sort_order').then(({data})=>{
+    const items=data&&data.length?data:defaultItems.map((d,i)=>({sort_order:i+1,title:d.t,description:d.d,['title_'+lang]:'',['description_'+lang]:''}));
+    container.innerHTML='';
+    items.forEach(item=>{
+      const idx=item.sort_order||1;
+      const etitle=item['title_'+lang]||'';
+      const edesc=item['description_'+lang]||'';
+      const div=document.createElement('div');
+      div.style.cssText='border-bottom:0.5px solid var(--bdr);padding-bottom:12px;margin-bottom:12px;';
+      div.innerHTML=`<div style="font-size:11px;font-weight:700;color:var(--mut);margin-bottom:5px;">Item ${idx}</div>
+        <div style="font-size:12px;padding:7px 10px;background:var(--surf2);border-radius:6px;margin-bottom:7px;">${item.title} — ${item.description}</div>
+        <div class="form-2col">
+          <div><label class="fl">Title (${lang})</label><input type="text" id="sup-t${idx}-${langCode}" value="${etitle.replace(/"/g,'&quot;')}" placeholder="Translate title…"/></div>
+          <div><label class="fl">Description (${lang})</label><input type="text" id="sup-d${idx}-${langCode}" value="${edesc.replace(/"/g,'&quot;')}" placeholder="Translate description…"/></div>
+        </div>`;
+      container.appendChild(div);
+    });
+  });
+}
+function buildSupportEditorForContainer(containerId, suffix){
+  const c=document.getElementById(containerId);if(!c||c.children.length>0)return;
+  sb.from('support_content').select('*').order('sort_order').then(({data})=>{
+    const items=data&&data.length?data:[
+      {sort_order:1,title:'Staff Recruitment & Training',description:'Trained barbers deployed at launch. Replacement within 7 days guaranteed.'},
+      {sort_order:2,title:'Marketing Support',description:'Digital ads, local campaigns & grand opening promotion included.'},
+      {sort_order:3,title:'Billing & POS System',description:'Cloud POS with real-time reporting, inventory & daily revenue dashboard.'},
+      {sort_order:4,title:'Monthly Performance Reviews',description:'Dedicated franchise manager reviews KPIs monthly with action plan.'},
+      {sort_order:5,title:'Technical & Equipment Support',description:'48-hour response SLA for all equipment & technology issues.'}
+    ];
+    items.forEach(item=>{
+      const idx=item.sort_order;
+      const div=document.createElement('div');div.className='fr';
+      div.style.cssText='border-bottom:0.5px solid var(--bdr);padding-bottom:12px;margin-bottom:12px;';
+      div.innerHTML=`<div class="form-2col">
+        <div><label class="fl">Item ${idx} Title</label><input type="text" id="sup-t${idx}" value="${(item.title||'').replace(/"/g,'&quot;')}"/></div>
+        <div><label class="fl">Description</label><input type="text" id="sup-d${idx}" value="${(item.description||'').replace(/"/g,'&quot;')}"/></div>
+      </div>`;
+      c.appendChild(div);
+    });
+  });
+}
+
+// ── SAVE SUPPORT UI (multilingual) ──
+async function saveSupportUI(lang){
+  lang=lang||'english';
+  if(lang==='english'){
+    const hl=(document.getElementById('e-sup-hl')||{}).value||'';
+    const items=[];
+    for(let i=1;i<=5;i++){
+      const t=(document.getElementById('sup-t'+i)||{}).value||'';
+      const d=(document.getElementById('sup-d'+i)||{}).value||'';
+      if(t)items.push({sort_order:i,title:t,description:d,highlight_text:i===1?hl:'',is_active:true});
+    }
+    if(!items.length){alert('No items to save.');return;}
+    const {error}=await sb.from('support_content').upsert(items,{onConflict:'sort_order'});
+    if(!error)alert('✓ English support saved!');else alert('Error: '+error.message);
+    return;
+  }
+  const langSuffixes={hindi:'hi',telugu:'te',punjabi:'pa'};
+  const lc=langSuffixes[lang];
+  const hl=(document.getElementById('e-sup-hl-'+lc)||{}).value||'';
+  const items=[];
+  for(let i=1;i<=5;i++){
+    const t=(document.getElementById('sup-t'+i+'-'+lc)||{}).value||'';
+    const d=(document.getElementById('sup-d'+i+'-'+lc)||{}).value||'';
+    items.push({['title_'+lang]:t,['description_'+lang]:d,['highlight_text_'+lang]:i===1?hl:''});
+    const {error}=await sb.from('support_content').update({['title_'+lang]:t,['description_'+lang]:d}).eq('sort_order',i);
+    if(error)console.error('Support save error:',error);
+  }
+  // Save highlight to first row
+  await sb.from('support_content').update({['highlight_text_'+lang]:hl}).eq('sort_order',1);
+  alert('✓ '+lang.charAt(0).toUpperCase()+lang.slice(1)+' support saved!');
+}
+
+// ── AUTO-TRANSLATE SUPPORT ──
+async function autoTranslateSupport(){
+  if(!confirm('Auto-translate support items to Hindi, Telugu & Punjabi?'))return;
+  const hl=(document.getElementById('e-sup-hl')||{}).value||'';
+  const langCodes={hindi:'hi',telugu:'te',punjabi:'pa'};
+  for(const [lang,lc] of Object.entries(langCodes)){
+    const hlEl=document.getElementById('e-sup-hl-'+lc);
+    if(hlEl&&hl)hlEl.value=await callTranslateAPI(hl,lang);
+    for(let i=1;i<=5;i++){
+      const t=(document.getElementById('sup-t'+i)||{}).value||'';
+      const d=(document.getElementById('sup-d'+i)||{}).value||'';
+      const tEl=document.getElementById('sup-t'+i+'-'+lc);
+      const dEl=document.getElementById('sup-d'+i+'-'+lc);
+      if(tEl&&t)tEl.value=await callTranslateAPI(t,lang);
+      if(dEl&&d)dEl.value=await callTranslateAPI(d,lang);
+    }
+  }
+  alert('✓ Support translated! Review each tab and save.');
+}
+
+// ── SAVE OPS UI (multilingual) ──
+async function saveOpsUI(lang){
+  lang=lang||'english';
+  const suffix=lang==='english'?'':('-'+lang.substring(0,2));
+  const sfx=lang==='english'?'':('-'+{english:'',hindi:'hi',telugu:'te',punjabi:'pa'}[lang]);
+  const fields={};
+  if(lang==='english'){
+    fields.salon_hours=(document.getElementById('e-ophrs')||{}).value||'';
+    fields.operating_days=(document.getElementById('e-opdays')||{}).value||'';
+    fields.break_policy=(document.getElementById('e-opbreaks')||{}).value||'';
+    fields.ot_allowance=(document.getElementById('e-opot')||{}).value||'';
+    fields.max_wait_time=(document.getElementById('e-opwait')||{}).value||'';
+    fields.service_standards=(document.getElementById('e-opstd')||{}).value||'';
+  } else {
+    const lc={hindi:'hi',telugu:'te',punjabi:'pa'}[lang];
+    fields['salon_hours_'+lang]=(document.getElementById('e-ophrs-'+lc)||{}).value||'';
+    fields['operating_days_'+lang]=(document.getElementById('e-opdays-'+lc)||{}).value||'';
+    fields['break_policy_'+lang]=(document.getElementById('e-opbreaks-'+lc)||{}).value||'';
+    fields['ot_allowance_'+lang]=(document.getElementById('e-opot-'+lc)||{}).value||'';
+    fields['max_wait_time_'+lang]=(document.getElementById('e-opwait-'+lc)||{}).value||'';
+    fields['service_standards_'+lang]=(document.getElementById('e-opstd-'+lc)||{}).value||'';
+  }
+  saveOperationsContent(fields).then(ok=>{if(ok)alert('✓ '+lang+' operations saved!');});
+}
+
+// ── SAVE STAFF UI (multilingual) ──
+async function saveStaffUI(lang){
+  lang=lang||'english';
+  const fields={};
+  if(lang==='english'){
+    fields.staff_initial_setup=(document.getElementById('e-staff-initial')||{}).value||'';
+    fields.staff_ongoing=(document.getElementById('e-staff-ongoing')||{}).value||'';
+  } else {
+    const lc={hindi:'hi',telugu:'te',punjabi:'pa'}[lang];
+    fields['staff_initial_setup_'+lang]=(document.getElementById('e-staff-initial-'+lc)||{}).value||'';
+    fields['staff_ongoing_'+lang]=(document.getElementById('e-staff-ongoing-'+lc)||{}).value||'';
+  }
+  saveOperationsContent(fields).then(ok=>{if(ok)alert('✓ '+lang+' staff info saved!');});
+}
+
+// ── LOAD OPS TRANSLATIONS FROM DB ──
+async function loadOpsTranslations(lang){
+  const {data,error}=await sb.from('operations_content').select('*').limit(1).single();
+  if(error||!data)return;
+  const lc={hindi:'hi',telugu:'te',punjabi:'pa'}[lang];
+  const setVal=(id,val)=>{const el=document.getElementById(id);if(el)el.value=val||'';};
+  setVal('e-ophrs-'+lc,data['salon_hours_'+lang]);
+  setVal('e-opdays-'+lc,data['operating_days_'+lang]);
+  setVal('e-opbreaks-'+lc,data['break_policy_'+lang]);
+  setVal('e-opot-'+lc,data['ot_allowance_'+lang]);
+  setVal('e-opwait-'+lc,data['max_wait_time_'+lang]);
+  setVal('e-opstd-'+lc,data['service_standards_'+lang]);
+  setVal('e-staff-initial-'+lc,data['staff_initial_setup_'+lang]);
+  setVal('e-staff-ongoing-'+lc,data['staff_ongoing_'+lang]);
+}
+
+// ── AUTO-TRANSLATE OPS ──
+async function autoTranslateOps(){
+  if(!confirm('Auto-translate operations to Hindi, Telugu & Punjabi?'))return;
   const fields={
-    staff_initial_setup:(document.querySelector('[id="e-opstd"]')
-      ?document.querySelectorAll('textarea')[1]?.value:'')||'',
-    staff_ongoing:(document.querySelectorAll('textarea')[2]?.value)||''
+    'e-ophrs':'salon_hours','e-opdays':'operating_days','e-opbreaks':'break_policy',
+    'e-opot':'ot_allowance','e-opwait':'max_wait_time','e-opstd':'service_standards',
+    'e-staff-initial':'staff_initial_setup','e-staff-ongoing':'staff_ongoing'
   };
-  saveOperationsContent(fields).then(ok=>{if(ok)alert('✓ Staff info saved!');});
+  const langs=['hindi','telugu','punjabi'];
+  const lcMap={hindi:'hi',telugu:'te',punjabi:'pa'};
+  for(const [eid] of Object.entries(fields)){
+    const src=(document.getElementById(eid)||{}).value||'';
+    if(!src)continue;
+    for(const lang of langs){
+      const lc=lcMap[lang];
+      const targetId=eid+'-'+lc;
+      const el=document.getElementById(targetId);
+      if(el)el.value=await callTranslateAPI(src,lang);
+    }
+  }
+  alert('✓ Operations translated! Review each language tab and save.');
+}
+
+// ── AUTO-TRANSLATE INCLUSIONS ──
+async function autoTranslateInclusions(model){
+  const src=(document.getElementById('e-i'+model+'inc')||{}).value||'';
+  if(!src){alert('Enter English inclusions first.');return;}
+  const btn=event.target;btn.textContent='Translating…';btn.disabled=true;
+  const langs={hi:'hindi',te:'telugu',pa:'punjabi'};
+  for(const [lc,lang] of Object.entries(langs)){
+    const el=document.getElementById('e-i'+model+'inc-'+lc);
+    if(el)el.value=await callTranslateAPI(src,lang);
+  }
+  btn.textContent='✨ Auto-Translate Inclusions';btn.disabled=false;
 }
 function savePortalSettingsUI(){
   const checkboxes=document.querySelectorAll('#at-settings .switch input[type=checkbox]');
