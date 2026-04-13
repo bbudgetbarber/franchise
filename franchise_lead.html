@@ -762,26 +762,17 @@ function fs(id){
 }
 function fstep(screenId){
   fs(screenId);
-  // Reload guidelines in current language when navigating to that screen
-  if(screenId==='s-guidelines'){
-    loadDBGuidelines().then(function(gl){
-      GUIDELINES=gl;buildGL();ugc();
-    });
-  }
   var idx=STEPS.indexOf(screenId.replace('s-',''));
   if(idx>=0){
     for(var i=1;i<=10;i++){var sp=document.getElementById('sb'+i);if(sp)rp(sp,idx+1);}
-    // Save progress to DB
     saveLeadStep(idx+1);
   }
   if(screenId==='s-guidelines'){
-    // Reload guidelines with current language from DB
     loadDBGuidelines().then(function(gl){
       GUIDELINES=gl;
       var list=document.getElementById('gllist');
       if(list)list.innerHTML='';
-      glChecked=0;
-      buildGL();
+      glChecked=0;buildGL();ugc();
     });
   }
   if(screenId==='s-confirm')buildCF();
@@ -1584,7 +1575,51 @@ var TRANSLATIONS={
     lbl_accepted_status:'स्वीकृत ✓',closed_sub:'आपकी प्रतिक्रिया दर्ज की गई और लीड बंद हो गई।',
     lbl_feedback:'प्रतिक्रिया',lbl_recorded:'दर्ज ✓',lbl_closed_status:'बंद — रुचि नहीं',
     btn_back_to_login:'← लॉगिन पर वापस जाएं',
-    lbl_guidelines_badge:'दिशानिर्देश',lbl_confirmation_badge:'पुष्टि',lbl_token_payment_badge:'टोकन भुगतान'
+    lbl_guidelines_badge:'दिशानिर्देश',lbl_confirmation_badge:'पुष्टि',lbl_token_payment_badge:'टोकन भुगतान',
+    btn_continue_salon:'सैलून टूर पर जाएं →',
+    btn_continue_invest:'निवेश पर जाएं →',
+    btn_continue_roi:'ROI पर जाएं →',
+    btn_continue_support:'सहायता पर जाएं →',
+    btn_continue_ops:'संचालन पर जाएं →',
+    btn_continue_staff:'स्टाफ विवरण पर जाएं →',
+    btn_continue_royalty:'रॉयल्टी पर जाएं →',
+    btn_continue_interest:'जारी रखें →',
+    btn_continue_guidelines:'सभी स्वीकार करें और जारी रखें →',
+    btn_continue_confirm:'पुष्टि करें और टोकन भुगतान पर जाएं →',
+    btn_change_mind:'मेरा मन बदल गया',
+    lbl_digital_mirrors:'डिजिटल दर्पण',
+    lbl_franchise_fee:'फ्रेंचाइज़ शुल्क',
+    lbl_gross_revenue:'सकल राजस्व',
+    lbl_inclusions:'पैकेज सामग्री',
+    lbl_nonpayment:'भुगतान नहीं (>30 दिन)',
+    lbl_pay1:'चरण 1 — टोकन',
+    lbl_pay3:'चरण 3 — मार्क कुर्सियाँ',
+    lbl_products:'उत्पाद और विविध',
+    lbl_rent:'किराया और उपयोगिताएं',
+    lbl_upi_id:'UPI ID',
+    lbl_upi_pay:'UPI से भुगतान करें',
+    lbl_upload_screenshot:'भुगतान स्क्रीनशॉट अपलोड करें',
+    notinterested_reason:'कारण बताएं',
+    notinterested_sub:'कृपया अपना कारण साझा करें ताकि हम सुधार कर सकें।',
+    sec_3chair:'3 कुर्सी — 250 वर्ग फुट — ₹8.5 लाख',
+    sec_4chair:'4 कुर्सी — 350 वर्ग फुट — ₹11 लाख',
+    sec_5chair:'5 कुर्सी — 450 वर्ग फुट — ₹14 लाख',
+    sec_daily_ops:'दैनिक संचालन',
+    sec_franchise_models:'फ्रेंचाइज़ मॉडल',
+    sec_initial_setup:'प्रारंभिक सेटअप — Budget Barber द्वारा',
+    sec_ongoing:'चालू — फ्रेंचाइज़ी द्वारा',
+    sec_payment_schedule:'भुगतान कार्यक्रम',
+    sec_roi3:'मासिक स्नैपशॉट — 3 कुर्सी',
+    sec_roi4:'मासिक स्नैपशॉट — 4 कुर्सी',
+    sec_roi5:'मासिक स्नैपशॉट — 5 कुर्सी',
+    sec_royalty:'रॉयल्टी संरचना',
+    sec_service_standards:'सेवा और कर्मचारी मानक',
+    vlbl_staff:'कर्मचारी कल्याण दिशानिर्देश',
+    vlbl_support:'पूर्ण सहायता पारिस्थितिकी तंत्र',
+    vlbl_vision:'इस वीडियो में',
+    vtag_roi:'ROI वीडियो',
+    vtag_staff:'स्टाफ वीडियो',
+    vtag_vision:'विज़न वीडियो'
   },
   Punjabi:{
     step1:'ਕਦਮ 1 / 10',step2:'ਕਦਮ 2 / 10',step3:'ਕਦਮ 3 / 10',step4:'ਕਦਮ 4 / 10',
