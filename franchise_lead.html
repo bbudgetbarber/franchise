@@ -229,12 +229,12 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     <div class="fr"><label class="fl">Phone Number</label><input type="tel" id="lp" placeholder="+91 98765 43210"/></div>
     <div class="fr"><label class="fl">6-Digit PIN</label>
       <div class="pin-grid" id="login-pin-grid">
-        <input class="pin-i" id="lpin1" maxlength="1" type="password" oninput="pinMove('login-pin-grid',this,0)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="lpin2" maxlength="1" type="password" oninput="pinMove('login-pin-grid',this,1)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="lpin3" maxlength="1" type="password" oninput="pinMove('login-pin-grid',this,2)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="lpin4" maxlength="1" type="password" oninput="pinMove('login-pin-grid',this,3)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="lpin5" maxlength="1" type="password" oninput="pinMove('login-pin-grid',this,4)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="lpin6" maxlength="1" type="password" oninput="pinMove('login-pin-grid',this,5)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="lpin1" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" oninput="pinMove('login-pin-grid',this,0)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="lpin2" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('login-pin-grid',this,1)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="lpin3" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('login-pin-grid',this,2)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="lpin4" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('login-pin-grid',this,3)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="lpin5" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('login-pin-grid',this,4)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="lpin6" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('login-pin-grid',this,5)" onkeydown="pinBack(event,this)"/>
       </div>
     </div>
     <div id="login-err" style="display:none;background:#FCEBEB;color:#A32D2D;border-radius:8px;padding:9px 12px;font-size:12px;margin-bottom:10px;">⚠️ Please enter all 6 digits of your PIN.</div>
@@ -266,12 +266,12 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     <div class="fr"><label class="fl">City</label><input type="text" id="rcity" placeholder="Hyderabad"/></div>
     <div class="fr"><label class="fl">Set 6-Digit PIN</label>
       <div class="pin-grid" id="reg-pin-grid">
-        <input class="pin-i" id="rpin1" maxlength="1" type="password" oninput="pinMove('reg-pin-grid',this,0)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="rpin2" maxlength="1" type="password" oninput="pinMove('reg-pin-grid',this,1)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="rpin3" maxlength="1" type="password" oninput="pinMove('reg-pin-grid',this,2)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="rpin4" maxlength="1" type="password" oninput="pinMove('reg-pin-grid',this,3)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="rpin5" maxlength="1" type="password" oninput="pinMove('reg-pin-grid',this,4)" onkeydown="pinBack(event,this)"/>
-        <input class="pin-i" id="rpin6" maxlength="1" type="password" oninput="pinMove('reg-pin-grid',this,5)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="rpin1" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('reg-pin-grid',this,0)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="rpin2" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('reg-pin-grid',this,1)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="rpin3" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('reg-pin-grid',this,2)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="rpin4" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('reg-pin-grid',this,3)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="rpin5" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('reg-pin-grid',this,4)" onkeydown="pinBack(event,this)"/>
+        <input class="pin-i" id="rpin6" maxlength="1" type="password" inputmode="numeric" pattern="[0-9]*" oninput="pinMove('reg-pin-grid',this,5)" onkeydown="pinBack(event,this)"/>
       </div>
     </div>
     <button class="btn btn-p btn-f" onclick="doReg()">Create Account &amp; Continue →</button>
@@ -798,16 +798,26 @@ function rp(c,cur){
 }
 // PIN auto-advance: gridId = parent div id, el = current input, idx = 0-based index
 function pinMove(gridId, el, idx){
+  // Take only the last character typed (handles paste/autofill)
+  if(el.value.length>1) el.value=el.value.slice(-1);
   if(el.value.length===1){
     var grid=document.getElementById(gridId);
-    if(grid){var pins=grid.querySelectorAll('.pin-i');if(pins[idx+1])pins[idx+1].focus();}
+    if(grid){
+      var pins=grid.querySelectorAll('.pin-i');
+      if(pins[idx+1]) pins[idx+1].focus();
+      // Auto-submit login when last PIN box filled
+      if(idx===5 && gridId==='login-pin-grid'){
+        var allFilled=Array.from(pins).every(function(p){return p.value.length===1;});
+        if(allFilled) setTimeout(doLogin, 120);
+      }
+    }
   }
 }
 // Backspace goes to previous box
 function pinBack(e, el){
   if(e.key==='Backspace'&&el.value===''){
     var grid=el.closest('.pin-grid');
-    if(grid){var pins=grid.querySelectorAll('.pin-i');var arr=Array.from(pins);var i=arr.indexOf(el);if(i>0)pins[i-1].focus();}
+    if(grid){var pins=grid.querySelectorAll('.pin-i');var arr=Array.from(pins);var i=arr.indexOf(el);if(i>0){pins[i-1].focus();pins[i-1].value='';}}
   }
 }
 // Legacy pm kept for safety
@@ -923,39 +933,51 @@ function dataURLtoBlob(dataURL){
 
 // ── LOGIN — Supabase version ──
 function doLogin(){
-  var phone=(document.getElementById('lp')||{}).value||'';
+  var rawPhone=(document.getElementById('lp')||{}).value||'';
   var pin='';
   document.querySelectorAll('#login-pin-grid .pin-i').forEach(function(p){pin+=p.value;});
   var errEl=document.getElementById('login-err');
-  if(!phone.trim()||pin.length<6){
-    if(errEl)errEl.style.display='block';
+
+  // Normalize phone: strip all spaces, ensure starts with +91
+  var phone=rawPhone.trim().replace(/\s+/g,'');
+  if(phone.length===10) phone='+91'+phone;
+  else if(phone.startsWith('91')&&phone.length===12) phone='+'+phone;
+
+  if(!phone||pin.length<6){
+    if(errEl){errEl.style.display='block';errEl.textContent='⚠️ Enter your phone number and all 6 PIN digits.';}
     var grid=document.getElementById('login-pin-grid');
     if(grid){grid.style.animation='none';setTimeout(function(){grid.style.animation='shake 0.3s ease';},10);}
     return;
   }
   if(errEl)errEl.style.display='none';
+
+  // Show loading state on button
+  var btn=document.querySelector('#s-login .btn-p');
+  if(btn){btn.textContent='Signing in…';btn.disabled=true;}
+
+  function resetBtn(){if(btn){btn.textContent='Sign In →';btn.disabled=false;}}
+
+  // Try exact phone match first, then normalized
   sb.from('leads')
     .select('id,name,phone,current_step,status,pin_hash,language,model_interest')
-    .eq('phone', phone.trim())
-    .single()
-    .then(function({data,error}){
+    .or('phone.eq.'+phone+',phone.eq.'+rawPhone.trim())
+    .limit(1)
+    .then(function(res){
+      var data=res.data&&res.data.length?res.data[0]:null;
+      var error=res.error;
+      resetBtn();
       if(error||!data){
-        if(errEl)errEl.style.display='block';return;
+        if(errEl){errEl.style.display='block';errEl.textContent='⚠️ Phone number not found. Please check and try again.';}
+        return;
       }
-      // NOTE: In production compare pin_hash with bcrypt
-      // For dev: pin_hash stores plain PIN
       if(data.pin_hash===pin){
         leadSession={id:data.id,name:data.name,current_step:data.current_step||0,status:data.status};
         if(errEl)errEl.style.display='none';
-        // Restore language if set
         if(data.language){selLangV=data.language;}
-        // Jump to saved step or start from lang
         var targetStep=data.current_step>0?STEPS[Math.min(data.current_step,STEPS.length-1)]:'lang';
         fstep('s-'+targetStep);
-        // Update greeting
         var g=document.getElementById('vgreet');
         if(g)g.textContent='Hi '+data.name+'! A personal message from our Founder';
-        // Load payment settings
         loadPaymentSettings().then(function(ps){
           if(ps){
             var upiEl=document.getElementById('disp-upi');if(upiEl)upiEl.textContent=ps.primary_upi_id||'budgetbarber@paytm';
@@ -964,8 +986,12 @@ function doLogin(){
           }
         });
       } else {
-        if(errEl)errEl.style.display='block';
+        if(errEl){errEl.style.display='block';errEl.textContent='⚠️ Incorrect PIN. Please try again.';}
       }
+    })
+    .catch(function(e){
+      resetBtn();
+      if(errEl){errEl.style.display='block';errEl.textContent='⚠️ Connection error. Please try again.';}
     });
 }
 
