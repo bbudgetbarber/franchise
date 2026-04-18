@@ -365,16 +365,17 @@ input:checked + .slider:before{transform:translateX(16px);}
       <div class="adm-card">
         <div class="adm-card-title">Lead Information</div>
         <div class="form-2col">
-          <div class="fr"><label class="fl">Full Name</label><input type="text" placeholder="Rajesh Kumar"/></div>
-          <div class="fr"><label class="fl">Phone Number</label><input type="tel" placeholder="+91 98765 43210"/></div>
-          <div class="fr"><label class="fl">Email Address</label><input type="email" placeholder="rajesh@email.com"/></div>
-          <div class="fr"><label class="fl">City</label><input type="text" placeholder="Hyderabad"/></div>
-          <div class="fr"><label class="fl">Lead Source</label><select><option>Direct</option><option>Referral</option><option>Social Media</option><option>Website</option><option>Exhibition</option><option>WhatsApp</option></select></div>
-          <div class="fr"><label class="fl">Preferred Language</label><select><option>English</option><option>Telugu</option><option>Hindi</option><option>Tamil</option><option>Kannada</option><option>Malayalam</option></select></div>
+          <div class="fr"><label class="fl">Full Name <span style="color:var(--no-tx);">*</span></label><input type="text" id="nl-name" placeholder="Rajesh Kumar"/></div>
+          <div class="fr"><label class="fl">Phone Number <span style="color:var(--no-tx);">*</span></label><input type="tel" id="nl-phone" placeholder="+91 98765 43210"/></div>
+          <div class="fr"><label class="fl">Email Address <span style="color:var(--no-tx);">*</span></label><input type="email" id="nl-email" placeholder="rajesh@email.com"/></div>
+          <div class="fr"><label class="fl">City <span style="color:var(--no-tx);">*</span></label><input type="text" id="nl-city" placeholder="Hyderabad"/></div>
+          <div class="fr"><label class="fl">Lead Source <span style="color:var(--no-tx);">*</span></label><select id="nl-source"><option value="">— Select Source —</option><option>Direct</option><option>Referral</option><option>Social Media</option><option>Website</option><option>Exhibition</option><option>WhatsApp</option></select></div>
+          <div class="fr"><label class="fl">Preferred Language <span style="color:var(--no-tx);">*</span></label><select id="nl-lang"><option value="">— Select Language —</option><option>English</option><option>Telugu</option><option>Hindi</option><option>Punjabi</option></select></div>
         </div>
-        <div class="fr"><label class="fl">Set 6-Digit PIN</label><input type="text" placeholder="e.g. 123456" maxlength="6" style="max-width:200px;"/></div>
-        <div class="fr"><label class="fl">Initial Admin Note</label><textarea placeholder="Add any notes about this lead…"></textarea></div>
-        <button class="btn btn-p" onclick="alert('✓ Lead created successfully! They can now log in with their phone + PIN.')">Create Lead &amp; Generate Access</button>
+        <div class="fr"><label class="fl">Set 6-Digit PIN <span style="color:var(--no-tx);">*</span></label><input type="text" id="nl-pin" placeholder="e.g. 123456" maxlength="6" style="max-width:200px;"/></div>
+        <div class="fr"><label class="fl">Initial Admin Note</label><textarea id="nl-note" placeholder="Add any notes about this lead…"></textarea></div>
+        <div id="nl-err" style="display:none;background:var(--no-bg);color:var(--no-tx);border-radius:8px;padding:9px 12px;font-size:13px;margin-bottom:12px;"></div>
+        <button class="btn btn-p" onclick="doCreateLead()">Create Lead &amp; Generate Access</button>
       </div>
     </div>
 
@@ -403,7 +404,7 @@ input:checked + .slider:before{transform:translateX(16px);}
                 <option value="royalty">Step 9 — Royalty</option>
               </select>
             </div>
-            <div class="fr"><label class="fl">Language</label><select><option>All Languages (Default)</option><option>English</option><option>Telugu</option><option>Hindi</option><option>Tamil</option><option>Kannada</option><option>Malayalam</option></select></div>
+            <div class="fr"><label class="fl">Language</label><select><option>All Languages (Default)</option><option>English</option><option>Telugu</option><option>Hindi</option><option>Punjabi</option></select></div>
           </div>
           <div class="fr"><label class="fl">Video Title</label><input type="text" id="vid-title-inp" placeholder="e.g. Founder's Vision — Telugu"/></div>
           <div class="fr"><label class="fl">Video URL</label><input type="url" id="vid-url-inp" placeholder="https://youtube.com/embed/... or CDN URL"/></div>
@@ -1241,7 +1242,7 @@ input:checked + .slider:before{transform:translateX(16px);}
             <div class="filter-chip" onclick="filterFranchises(this,'signed')">Signed</div>
             <div class="filter-chip" onclick="filterFranchises(this,'terminated')">Terminated</div>
           </div>
-          <button class="btn btn-p btn-sm">+ Add Franchise</button>
+          <button class="btn btn-p btn-sm" onclick="openAddFranchiseModal()">+ Add Franchise</button>
         </div>
         <table class="lead-table" id="franchise-table">
           <thead><tr><th>Franchise Owner</th><th>Location</th><th>Model</th><th>MF Region</th><th>Launch Date</th><th>Monthly Revenue</th><th>Royalty Status</th><th>Status</th><th>Actions</th></tr></thead>
@@ -1378,10 +1379,13 @@ input:checked + .slider:before{transform:translateX(16px);}
         <div style="background:var(--surf);border-radius:var(--rad-lg);padding:16px;margin-top:12px;border:0.5px solid var(--bdr);max-width:320px;">
           <div style="font-size:11px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Pay To — Budget Barber</div>
           <div style="text-align:center;padding:10px 0;">
-            <div style="width:100px;height:100px;background:var(--surf2);border:0.5px solid var(--bdr2);border-radius:10px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:8px;"><div style="font-size:30px;">📱</div><div style="font-size:9px;color:var(--hnt);">QR Code</div></div>
+            <div id="preview-qr-box" style="width:100px;height:100px;background:var(--surf2);border:0.5px solid var(--bdr2);border-radius:10px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:8px;overflow:hidden;">
+              <img id="preview-qr-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:contain;"/>
+              <div id="preview-qr-ph"><div style="font-size:30px;">📱</div><div style="font-size:9px;color:var(--hnt);">QR Code</div></div>
+            </div>
             <div style="font-size:12px;font-weight:700;">UPI ID</div>
             <div id="preview-upi" style="font-size:14px;font-weight:800;color:var(--hi);">budgetbarber@paytm</div>
-            <div style="font-size:10px;color:var(--mut);margin-top:2px;">Budget Barber Pvt Ltd</div>
+            <div id="preview-reg-name" style="font-size:10px;color:var(--mut);margin-top:2px;">Budget Barber Pvt Ltd</div>
           </div>
         </div>
       </div>
@@ -1391,6 +1395,73 @@ input:checked + .slider:before{transform:translateX(16px);}
   </div><!-- admin-content -->
 </div><!-- admin-main -->
 </div><!-- admin-wrap -->
+
+<!-- ADD FRANCHISE MODAL -->
+<div class="lead-detail-modal" id="add-franchise-modal">
+  <div class="ldm-box" style="max-width:680px;">
+    <div class="ldm-hdr">
+      <div>
+        <div style="font-size:16px;font-weight:700;">Add New Franchise</div>
+        <div style="font-size:12px;color:var(--mut);margin-top:3px;">Register a new franchise outlet in the system</div>
+      </div>
+      <button class="btn btn-sm" onclick="closeAddFranchiseModal()">✕ Close</button>
+    </div>
+    <div class="ldm-body">
+      <div class="card">
+        <div class="sec">Owner Details</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Owner Full Name <span style="color:var(--no-tx);">*</span></label><input type="text" id="af-name" placeholder="Lakshmi Rao"/></div>
+          <div class="fr"><label class="fl">Phone Number <span style="color:var(--no-tx);">*</span></label><input type="tel" id="af-phone" placeholder="+91 98765 43210"/></div>
+          <div class="fr"><label class="fl">Email Address</label><input type="email" id="af-email" placeholder="owner@email.com"/></div>
+          <div class="fr"><label class="fl">City <span style="color:var(--no-tx);">*</span></label><input type="text" id="af-city" placeholder="Vijayawada"/></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec">Franchise Details</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Franchise Model <span style="color:var(--no-tx);">*</span></label>
+            <select id="af-model"><option value="">— Select Model —</option><option>3 Chair</option><option>4 Chair</option><option>5 Chair</option></select>
+          </div>
+          <div class="fr"><label class="fl">Master Franchise Region</label>
+            <select id="af-mf">
+              <option value="">— Select MF Region —</option>
+              <option>Andhra Pradesh</option><option>Telangana</option><option>Karnataka</option><option>Tamil Nadu</option><option>Kerala</option><option>Maharashtra</option>
+            </select>
+          </div>
+          <div class="fr"><label class="fl">Launch Date</label><input type="text" id="af-launch" placeholder="DD/MM/YYYY"/></div>
+          <div class="fr"><label class="fl">Monthly Revenue (₹)</label><input type="number" id="af-revenue" placeholder="e.g. 144000"/></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec">Status</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Franchise Status <span style="color:var(--no-tx);">*</span></label>
+            <select id="af-status">
+              <option value="">— Select Status —</option>
+              <option value="signed">Agreement Signed</option>
+              <option value="setup">Under Setup</option>
+              <option value="active">Active</option>
+              <option value="terminated">Terminated</option>
+            </select>
+          </div>
+          <div class="fr"><label class="fl">Royalty Status</label>
+            <select id="af-royalty">
+              <option value="—">—</option>
+              <option value="paid">✓ Paid</option>
+              <option value="overdue">Overdue</option>
+              <option value="due">Due Today</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div id="af-err" style="display:none;background:var(--no-bg);color:var(--no-tx);border-radius:8px;padding:9px 12px;font-size:13px;margin-bottom:12px;"></div>
+      <div style="display:flex;gap:10px;padding-top:8px;">
+        <button class="btn btn-p" onclick="submitAddFranchise()">✓ Add Franchise</button>
+        <button class="btn" onclick="closeAddFranchiseModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- MF EDIT MODAL -->
 <div class="lead-detail-modal" id="mf-edit-modal">
@@ -1611,7 +1682,7 @@ function aTab(btn,tabId){
   const ALL_TABS=['at-dashboard','at-leads','at-newlead','at-videos','at-invest-content','at-guidelines','at-support-content','at-ops-content','at-payments','at-royalty-mgmt','at-settings','at-pay-settings','at-mf-overview','at-mf-accounts','at-mf-create','at-mf-regions','at-franchises','at-franchise-royalty'];
   ALL_TABS.forEach(id=>{const t=document.getElementById(id);if(t)t.classList.remove('active');});
   const el=document.getElementById(tabId);if(el)el.classList.add('active');
-  if(tabId==='at-leads')buildLeadTable();
+  if(tabId==='at-leads'){loadLeads(null).then(leads=>{LEADS=leads;buildLeadTable('all');});}
   if(tabId==='at-guidelines')buildGLAdmin();
   if(tabId==='at-mf-accounts'){
     loadMFAccounts().then(mf=>{MF_ACCOUNTS_DATA=mf;/* table is static HTML for now */});
@@ -1628,11 +1699,13 @@ function avTab(btn,tabId){
   const t=document.getElementById(tabId);if(t)t.style.display='block';
 }
 function filterLeads(chip,status){
-  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  // Only remove active from chips inside the leads tab
+  const leadsTab=document.getElementById('at-leads');
+  if(leadsTab)leadsTab.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
   chip.classList.add('active');
   const tbody=document.getElementById('lead-tbody');
-  if(tbody)showLoading('lead-tbody','Loading leads…');
-  loadLeads(status).then(leads=>{ LEADS=leads; buildLeadTable(status); });
+  if(tbody){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">Loading leads…</td></tr>';}
+  loadLeads(status==='all'?null:status).then(leads=>{ LEADS=leads; buildLeadTable(status); });
 }
 function buildLeadTable(statusFilter){
   const tbody=document.getElementById('lead-tbody');if(!tbody)return;tbody.innerHTML='';
@@ -1711,23 +1784,52 @@ function addGuideline(){
   }
 }
 function delGL(i){
+  const g=GUIDELINES_OBJ[i];
+  if(!g){alert('Guideline not found.');return;}
   if(confirm('Delete this guideline?')){
-    // Find the row in DB — reload after
-    loadGuidelines().then(()=>{});  // ensure fresh
-    // For now splice local and reload; in production use guideline IDs
-    GUIDELINES.splice(i,1);
-    buildGLAdmin();
-    // TODO: call deleteGuideline(guidelineId) once IDs are tracked in GUIDELINES array
-    alert('✓ Guideline deleted.');
+    if(g.id){
+      deleteGuideline(g.id).then(ok=>{
+        if(ok){
+          GUIDELINES_OBJ.splice(i,1);
+          GUIDELINES.splice(i,1);
+          buildGLAdmin();
+          ['hindi','telugu','punjabi'].forEach(lang=>{
+            const ids={hindi:'gl-hindi-list',telugu:'gl-telugu-list',punjabi:'gl-punjabi-list'};
+            const c=document.getElementById(ids[lang]);
+            if(c&&c.children.length>0)buildGLTranslations(lang);
+          });
+          alert('✓ Guideline deleted.');
+        }
+      });
+    } else {
+      GUIDELINES_OBJ.splice(i,1);
+      GUIDELINES.splice(i,1);
+      buildGLAdmin();
+      alert('✓ Guideline deleted.');
+    }
   }
 }
 function editGL(i){
-  const txt=prompt('Edit guideline:',GUIDELINES[i]);
-  if(txt){
-    GUIDELINES[i]=txt;
-    buildGLAdmin();
-    // TODO: update guideline by ID in DB once IDs tracked in GUIDELINES array
-    alert('✓ Guideline updated locally. Re-save from DB for persistence.');
+  const g=GUIDELINES_OBJ[i];
+  const currentText=g?(typeof g==='object'?g.text:g):(GUIDELINES[i]||'');
+  const txt=prompt('Edit guideline:',currentText);
+  if(txt&&txt.trim()){
+    const newText=txt.trim();
+    if(g&&g.id){
+      sb.from('guidelines').update({text:newText}).eq('id',g.id).then(({error})=>{
+        if(!error){
+          if(typeof GUIDELINES_OBJ[i]==='object')GUIDELINES_OBJ[i].text=newText;
+          GUIDELINES[i]=newText;
+          buildGLAdmin();
+          alert('✓ Guideline updated!');
+        } else {alert('Failed to update: '+error.message);}
+      });
+    } else {
+      if(typeof GUIDELINES_OBJ[i]==='object')GUIDELINES_OBJ[i].text=newText;
+      GUIDELINES[i]=newText;
+      buildGLAdmin();
+      alert('✓ Guideline updated.');
+    }
   }
 }
 
@@ -1785,7 +1887,7 @@ function saveVideo(){
 
 function buildLangCoverage(){
   const g=document.getElementById('lang-coverage-grid');if(!g)return;
-  const langs=['English','Telugu','Hindi','Tamil','Kannada','Malayalam'];
+  const langs=['English','Telugu','Hindi','Punjabi'];
   const steps=['Vision','Salon','Investment','ROI','Support','Ops','Staff','Royalty'];
   let html='<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;">';
   html+='<tr><th style="padding:8px;text-align:left;border-bottom:0.5px solid var(--bdr);color:var(--hnt);">Language</th>';
@@ -1864,8 +1966,12 @@ function previewQR(input){
   reader.onload=e=>{
     const img=document.getElementById('qr-preview-img');
     const ph=document.getElementById('qr-placeholder');
+    const pImg=document.getElementById('preview-qr-img');
+    const pPh=document.getElementById('preview-qr-ph');
     if(img){img.src=e.target.result;img.style.display='block';}
     if(ph)ph.style.display='none';
+    if(pImg){pImg.src=e.target.result;pImg.style.display='block';}
+    if(pPh)pPh.style.display='none';
   };
   reader.readAsDataURL(file);
 }
@@ -1873,10 +1979,22 @@ function previewQRUrl(url){
   if(!url)return;
   const img=document.getElementById('qr-preview-img');
   const ph=document.getElementById('qr-placeholder');
+  const pImg=document.getElementById('preview-qr-img');
+  const pPh=document.getElementById('preview-qr-ph');
   if(img){img.src=url;img.style.display='block';}
   if(ph)ph.style.display='none';
+  if(pImg){pImg.src=url;pImg.style.display='block';}
+  if(pPh)pPh.style.display='none';
 }
 function savePaySettings(){
+  const qrUrlInput=document.getElementById('qr-url');
+  const qrImgEl=document.getElementById('qr-preview-img');
+  // Prefer the typed URL; fall back to data-url from file upload stored in img src
+  let qrUrl=(qrUrlInput||{}).value||'';
+  if(!qrUrl&&qrImgEl&&qrImgEl.src&&!qrImgEl.src.endsWith(window.location.href)){
+    // Only store if it's a real URL (not data:) — data URIs are too large for DB
+    if(!qrImgEl.src.startsWith('data:'))qrUrl=qrImgEl.src;
+  }
   const fields={
     primary_upi_id:(document.getElementById('upi-id')||{}).value||'',
     registered_name:(document.getElementById('upi-name')||{}).value||'',
@@ -1886,12 +2004,22 @@ function savePaySettings(){
     bank_account_name:(document.getElementById('bank-name')||{}).value||'',
     bank_account_no:(document.getElementById('bank-acc')||{}).value||'',
     bank_ifsc:(document.getElementById('bank-ifsc')||{}).value||'',
-    bank_branch:(document.getElementById('bank-branch')||{}).value||''
+    bank_branch:(document.getElementById('bank-branch')||{}).value||'',
+    qr_code_url:qrUrl
   };
   savePaymentSettingsToDB(fields).then(ok=>{
     if(ok){
       const prev=document.getElementById('preview-upi');
       if(prev)prev.textContent=fields.primary_upi_id||'budgetbarber@paytm';
+      const prevName=document.getElementById('preview-reg-name');
+      if(prevName)prevName.textContent=fields.registered_name||'Budget Barber Pvt Ltd';
+      // If QR URL was set, show it in preview
+      if(fields.qr_code_url){
+        const pImg=document.getElementById('preview-qr-img');
+        const pPh=document.getElementById('preview-qr-ph');
+        if(pImg){pImg.src=fields.qr_code_url;pImg.style.display='block';}
+        if(pPh)pPh.style.display='none';
+      }
       alert('✓ Payment settings saved and published to franchise app!');
     }
   });
@@ -1902,6 +2030,13 @@ document.addEventListener('DOMContentLoaded',function(){
     upiInput.addEventListener('input',function(){
       const p=document.getElementById('preview-upi');
       if(p)p.textContent=upiInput.value||'budgetbarber@paytm';
+    });
+  }
+  const nameInput=document.getElementById('upi-name');
+  if(nameInput){
+    nameInput.addEventListener('input',function(){
+      const p=document.getElementById('preview-reg-name');
+      if(p)p.textContent=nameInput.value||'Budget Barber Pvt Ltd';
     });
   }
 });
@@ -1942,10 +2077,51 @@ function buildFranchiseTable(filter){
     });
   });
 }
+// ── FIX 2: CREATE LEAD WITH VALIDATION ──
+function doCreateLead(){
+  const name=(document.getElementById('nl-name')||{}).value||'';
+  const phone=(document.getElementById('nl-phone')||{}).value||'';
+  const email=(document.getElementById('nl-email')||{}).value||'';
+  const city=(document.getElementById('nl-city')||{}).value||'';
+  const source=(document.getElementById('nl-source')||{}).value||'';
+  const lang=(document.getElementById('nl-lang')||{}).value||'';
+  const pin=(document.getElementById('nl-pin')||{}).value||'';
+  const note=(document.getElementById('nl-note')||{}).value||'';
+  const errEl=document.getElementById('nl-err');
+  const missing=[];
+  if(!name.trim())missing.push('Full Name');
+  if(!phone.trim())missing.push('Phone Number');
+  if(!email.trim())missing.push('Email Address');
+  if(!city.trim())missing.push('City');
+  if(!source)missing.push('Lead Source');
+  if(!lang)missing.push('Preferred Language');
+  if(!pin.trim()||pin.length<6)missing.push('6-Digit PIN (must be 6 digits)');
+  if(missing.length){
+    errEl.textContent='❌ Please fill in: '+missing.join(', ');
+    errEl.style.display='block';
+    return;
+  }
+  errEl.style.display='none';
+  const btn=document.activeElement;
+  const origBtnText=btn&&btn.tagName==='BUTTON'?btn.textContent:'';
+  if(btn&&btn.tagName==='BUTTON'){btn.textContent='Creating…';btn.disabled=true;}
+  createLead({name:name.trim(),phone:phone.trim(),email:email.trim(),city:city.trim(),source,language:lang,pin_hash:pin,note:note.trim()}).then(ok=>{
+    if(btn&&btn.tagName==='BUTTON'){btn.textContent=origBtnText||'Create Lead & Generate Access';btn.disabled=false;}
+    if(ok){
+      ['nl-name','nl-phone','nl-email','nl-city','nl-pin','nl-note'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+      document.getElementById('nl-source').value='';
+      document.getElementById('nl-lang').value='';
+      alert('✓ Lead created for '+name+'! They can now log in with phone + PIN ('+pin+').');
+      aTab(null,'at-leads');
+    }
+  });
+}
+
 function filterFranchises(chip,status){
-  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  const franchiseTab=document.getElementById('at-franchises');
+  if(franchiseTab)franchiseTab.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
   chip.classList.add('active');
-  buildFranchiseTable(status);
+  buildFranchiseTable(status==='all'?null:status);
 }
 function openFranchiseDetail(id){
   const f=FRANCHISES.find(x=>x.id===id);if(!f)return;
@@ -2084,11 +2260,19 @@ async function createLead(data){
     name:data.name, phone:data.phone, email:data.email||null,
     city:data.city, language:data.language||'English',
     model_interest:data.model||'Not Decided', source:data.source||'Direct',
+    pin_hash:data.pin_hash||null,
     status:'new', current_step:0,
     created_by_type:'admin',
     created_by_admin: adminSession?.id || null
   });
   if(error){alert('Failed to create lead: '+error.message);return false;}
+  // Add initial note if provided
+  if(data.note&&data.note.trim()){
+    const {data:newLead}=await sb.from('leads').select('id').eq('phone',data.phone).single();
+    if(newLead){
+      await sb.from('lead_notes').insert({lead_id:newLead.id,note:data.note,added_by_type:'admin',added_by_admin:adminSession?.id||null});
+    }
+  }
   return true;
 }
 
@@ -2457,26 +2641,31 @@ ${text}`}]
 
 async function autoTranslateLang(lang){
   const ids={hindi:'gl-hindi-list',telugu:'gl-telugu-list',punjabi:'gl-punjabi-list'};
+  // Ensure the translation panel is built before translating
+  buildGLTranslations(lang);
+  await new Promise(r=>setTimeout(r,200));
   const container=document.getElementById(ids[lang]);
   const inputs=container?container.querySelectorAll('input[type=text]'):[];
-  if(!inputs.length){buildGLTranslations(lang);setTimeout(()=>autoTranslateLang(lang),300);return;}
-  const btn=event.target;btn.textContent='Translating…';btn.disabled=true;
+  if(!inputs.length){alert('No guidelines loaded. Add English guidelines first.');return;}
+  const btn=document.activeElement;
+  const origText=btn&&btn.tagName==='BUTTON'?btn.textContent:'';
+  if(btn&&btn.tagName==='BUTTON'){btn.textContent='Translating…';btn.disabled=true;}
   const glList=GUIDELINES_OBJ.length?GUIDELINES_OBJ:GUIDELINES.map((t,i)=>({id:null,text:t}));
   for(let i=0;i<inputs.length;i++){
     const src=glList[i]?(typeof glList[i]==='string'?glList[i]:glList[i].text):'';
     if(src){const t=await callTranslateAPI(src,lang);inputs[i].value=t;}
   }
-  btn.textContent='✨ Auto-Translate';btn.disabled=false;
-  alert('✓ Auto-translation complete! Review and save.');
+  if(btn&&btn.tagName==='BUTTON'){btn.textContent=origText||'✨ Auto-Translate';btn.disabled=false;}
+  alert('✓ Auto-translation complete for '+lang+'! Review and click Save.');
 }
 
 async function autoTranslateAll(){
   if(!confirm('Auto-translate all guidelines to Hindi, Telugu & Punjabi? This will overwrite existing translations.'))return;
-  const event={target:document.querySelector('#gl-en .adm-card-title')};
+  if(!GUIDELINES.length&&!GUIDELINES_OBJ.length){alert('No English guidelines found. Add guidelines first.');return;}
   const langs=['hindi','telugu','punjabi'];
   for(const lang of langs){
     buildGLTranslations(lang);
-    await new Promise(r=>setTimeout(r,100));
+    await new Promise(r=>setTimeout(r,200));
     const ids={hindi:'gl-hindi-list',telugu:'gl-telugu-list',punjabi:'gl-punjabi-list'};
     const container=document.getElementById(ids[lang]);
     const inputs=container?container.querySelectorAll('input[type=text]'):[];
@@ -2584,6 +2773,12 @@ async function saveSupportUI(lang){
 async function autoTranslateSupport(){
   if(!confirm('Auto-translate support items to Hindi, Telugu & Punjabi?'))return;
   const hl=(document.getElementById('e-sup-hl')||{}).value||'';
+  // Build lang editors first if not built
+  ['hi','te','pa'].forEach(lc=>{
+    const c=document.getElementById('support-items-editor-'+lc);
+    if(!c||!c.children.length)buildSupportEditorLang(lc);
+  });
+  await new Promise(r=>setTimeout(r,300));
   const langCodes={hindi:'hi',telugu:'te',punjabi:'pa'};
   for(const [lang,lc] of Object.entries(langCodes)){
     const hlEl=document.getElementById('e-sup-hl-'+lc);
@@ -2597,7 +2792,7 @@ async function autoTranslateSupport(){
       if(dEl&&d)dEl.value=await callTranslateAPI(d,lang);
     }
   }
-  alert('✓ Support translated! Review each tab and save.');
+  alert('✓ Support translated! Review each language tab and save.');
 }
 
 // ── SAVE OPS UI (multilingual) ──
@@ -2659,37 +2854,44 @@ async function loadOpsTranslations(lang){
 // ── AUTO-TRANSLATE OPS ──
 async function autoTranslateOps(){
   if(!confirm('Auto-translate operations to Hindi, Telugu & Punjabi?'))return;
-  const fields={
-    'e-ophrs':'salon_hours','e-opdays':'operating_days','e-opbreaks':'break_policy',
-    'e-opot':'ot_allowance','e-opwait':'max_wait_time','e-opstd':'service_standards',
-    'e-staff-initial':'staff_initial_setup','e-staff-ongoing':'staff_ongoing'
-  };
-  const langs=['hindi','telugu','punjabi'];
-  const lcMap={hindi:'hi',telugu:'te',punjabi:'pa'};
-  for(const [eid] of Object.entries(fields)){
-    const src=(document.getElementById(eid)||{}).value||'';
-    if(!src)continue;
-    for(const lang of langs){
-      const lc=lcMap[lang];
+  const btn=document.activeElement;
+  const origText=btn&&btn.tagName==='BUTTON'?btn.textContent:'';
+  if(btn&&btn.tagName==='BUTTON'){btn.textContent='Translating…';btn.disabled=true;}
+  // Load ops language tabs if empty
+  for(const lang of ['hindi','telugu','punjabi']){
+    const lc={hindi:'hi',telugu:'te',punjabi:'pa'}[lang];
+    // Ensure panels are visible by injecting values directly
+    const fields={
+      'e-ophrs':'salon_hours','e-opdays':'operating_days','e-opbreaks':'break_policy',
+      'e-opot':'ot_allowance','e-opwait':'max_wait_time','e-opstd':'service_standards',
+      'e-staff-initial':'staff_initial_setup','e-staff-ongoing':'staff_ongoing'
+    };
+    for(const [eid] of Object.entries(fields)){
+      const src=(document.getElementById(eid)||{}).value||'';
+      if(!src)continue;
       const targetId=eid+'-'+lc;
       const el=document.getElementById(targetId);
-      if(el)el.value=await callTranslateAPI(src,lang);
+      if(el){el.value=await callTranslateAPI(src,lang);}
     }
   }
-  alert('✓ Operations translated! Review each language tab and save.');
+  if(btn&&btn.tagName==='BUTTON'){btn.textContent=origText||'✨ Auto-Translate All';btn.disabled=false;}
+  alert('✓ Operations translated! Review each language tab and click Save.');
 }
 
 // ── AUTO-TRANSLATE INCLUSIONS ──
 async function autoTranslateInclusions(model){
   const src=(document.getElementById('e-i'+model+'inc')||{}).value||'';
   if(!src){alert('Enter English inclusions first.');return;}
-  const btn=event.target;btn.textContent='Translating…';btn.disabled=true;
+  const btn=document.activeElement;
+  const origText=btn&&btn.tagName==='BUTTON'?btn.textContent:'';
+  if(btn&&btn.tagName==='BUTTON'){btn.textContent='Translating…';btn.disabled=true;}
   const langs={hi:'hindi',te:'telugu',pa:'punjabi'};
   for(const [lc,lang] of Object.entries(langs)){
     const el=document.getElementById('e-i'+model+'inc-'+lc);
     if(el)el.value=await callTranslateAPI(src,lang);
   }
-  btn.textContent='✨ Auto-Translate Inclusions';btn.disabled=false;
+  if(btn&&btn.tagName==='BUTTON'){btn.textContent=origText||'✨ Auto-Translate Inclusions';btn.disabled=false;}
+  alert('✓ Inclusions translated for '+model+' Chair! Review and save.');
 }
 function savePortalSettingsUI(){
   const checkboxes=document.querySelectorAll('#at-settings .switch input[type=checkbox]');
@@ -2734,6 +2936,17 @@ function doAdminLogin(){
         const bankBranchEl=document.getElementById('bank-branch');if(bankBranchEl)bankBranchEl.value=ps.bank_branch||'';
         const bankNameEl=document.getElementById('bank-name');if(bankNameEl)bankNameEl.value=ps.bank_account_name||'';
         const prevUpi=document.getElementById('preview-upi');if(prevUpi)prevUpi.textContent=ps.primary_upi_id||'budgetbarber@paytm';
+        // Load QR code URL if saved
+        if(ps.qr_code_url){
+          const qrUrlEl=document.getElementById('qr-url');if(qrUrlEl)qrUrlEl.value=ps.qr_code_url;
+          const qrImg=document.getElementById('qr-preview-img');
+          const qrPh=document.getElementById('qr-placeholder');
+          if(qrImg){qrImg.src=ps.qr_code_url;qrImg.style.display='block';}
+          if(qrPh)qrPh.style.display='none';
+        }
+        // Load note/instructions
+        const noteEl=document.getElementById('upi-note');if(noteEl&&ps.payment_instructions)noteEl.value=ps.payment_instructions;
+        const upiId2El=document.getElementById('upi-id2');if(upiId2El&&ps.backup_upi_id)upiId2El.value=ps.backup_upi_id;
       }
     });
     loadInvestmentModels().then(models=>{
@@ -2769,6 +2982,81 @@ function doAdminLogin(){
         if(err)err.style.display='block';
       }
     });
+}
+
+// ── FIX 9: ADD FRANCHISE MODAL ──
+function openAddFranchiseModal(){
+  // Clear form
+  ['af-name','af-phone','af-email','af-city','af-launch','af-revenue'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['af-model','af-mf','af-status','af-royalty'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const royEl=document.getElementById('af-royalty');if(royEl)royEl.value='—';
+  const errEl=document.getElementById('af-err');if(errEl)errEl.style.display='none';
+  document.getElementById('add-franchise-modal').classList.add('open');
+}
+function closeAddFranchiseModal(){
+  document.getElementById('add-franchise-modal').classList.remove('open');
+}
+async function submitAddFranchise(){
+  const name=(document.getElementById('af-name')||{}).value||'';
+  const phone=(document.getElementById('af-phone')||{}).value||'';
+  const email=(document.getElementById('af-email')||{}).value||'';
+  const city=(document.getElementById('af-city')||{}).value||'';
+  const model=(document.getElementById('af-model')||{}).value||'';
+  const mfRegion=(document.getElementById('af-mf')||{}).value||'';
+  const launch=(document.getElementById('af-launch')||{}).value||'';
+  const revenue=(document.getElementById('af-revenue')||{}).value||'';
+  const status=(document.getElementById('af-status')||{}).value||'';
+  const royalty=(document.getElementById('af-royalty')||{}).value||'—';
+  const errEl=document.getElementById('af-err');
+  // Validate mandatory fields
+  const missing=[];
+  if(!name.trim())missing.push('Owner Name');
+  if(!phone.trim())missing.push('Phone Number');
+  if(!city.trim())missing.push('City');
+  if(!model)missing.push('Franchise Model');
+  if(!status)missing.push('Status');
+  if(missing.length){
+    errEl.textContent='❌ Please fill in: '+missing.join(', ');
+    errEl.style.display='block';
+    return;
+  }
+  errEl.style.display='none';
+  const btn=document.activeElement;
+  const origText=btn&&btn.tagName==='BUTTON'?btn.textContent:'';
+  if(btn&&btn.tagName==='BUTTON'){btn.textContent='Saving…';btn.disabled=true;}
+  // Look up mf_account_id by region
+  let mfAccountId=null;
+  if(mfRegion){
+    const {data:mfData}=await sb.from('master_franchise_accounts').select('id').eq('region',mfRegion).single();
+    if(mfData)mfAccountId=mfData.id;
+  }
+  // Parse launch date
+  let launchDate=null;
+  if(launch){
+    const parts=launch.split('/');
+    if(parts.length===3)launchDate=parts[2]+'-'+parts[1]+'-'+parts[0];
+  }
+  const {error}=await sb.from('franchise_outlets').insert({
+    owner_name:name.trim(),
+    phone:phone.trim(),
+    email:email.trim()||null,
+    city:city.trim(),
+    model:model,
+    status:status,
+    launch_date:launchDate||null,
+    monthly_revenue:revenue?parseFloat(revenue):null,
+    mf_account_id:mfAccountId,
+    created_at:new Date().toISOString()
+  });
+  if(btn&&btn.tagName==='BUTTON'){btn.textContent=origText||'✓ Add Franchise';btn.disabled=false;}
+  if(error){
+    errEl.textContent='❌ Failed to add franchise: '+error.message;
+    errEl.style.display='block';
+    return;
+  }
+  closeAddFranchiseModal();
+  alert('✓ Franchise added for '+name+' in '+city+'!');
+  buildFranchiseTable(null);
 }
 </script>
 </body>

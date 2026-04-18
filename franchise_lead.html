@@ -635,13 +635,13 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     <div class="card">
       <div class="sec" data-t="sec_pay_to">Pay To — Budget Barber</div>
       <div style="text-align:center;padding:12px 0 6px;">
-        <div style="width:140px;height:140px;background:var(--surf2);border:0.5px solid var(--bdr2);border-radius:12px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:10px;">
-          <div style="font-size:40px;">📱</div>
-          <div style="font-size:10px;color:var(--hnt);margin-top:4px;" data-t="lbl_scan_qr">Scan QR to Pay</div>
+        <div id="fl-qr-box" style="width:140px;height:140px;background:var(--surf2);border:0.5px solid var(--bdr2);border-radius:12px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:10px;overflow:hidden;">
+          <img id="fl-qr-img" src="" alt="QR Code" style="display:none;width:100%;height:100%;object-fit:contain;border-radius:12px;"/>
+          <div id="fl-qr-ph"><div style="font-size:40px;">📱</div><div style="font-size:10px;color:var(--hnt);margin-top:4px;" data-t="lbl_scan_qr">Scan QR to Pay</div></div>
         </div>
         <div style="font-size:12px;font-weight:700;color:var(--txt);margin-bottom:3px;" data-t="lbl_upi_id">UPI ID</div>
         <div id="disp-upi" style="font-size:16px;font-weight:800;color:var(--hi);letter-spacing:0.01em;margin-bottom:3px;">budgetbarber@paytm</div>
-        <div style="font-size:11px;color:var(--mut);margin-bottom:8px;">Budget Barber Pvt Ltd</div>
+        <div id="disp-reg-name" style="font-size:11px;color:var(--mut);margin-bottom:8px;">Budget Barber Pvt Ltd</div>
         <button onclick="copyUPI()" style="padding:5px 16px;font-size:11px;font-weight:700;border-radius:99px;border:0.5px solid var(--hi);background:#edf5f1;color:var(--hi);cursor:pointer;font-family:inherit;" id="copy-upi-btn" data-t="btn_copy_upi">📋 Copy UPI ID</button>
       </div>
       <div style="height:0.5px;background:var(--bdr);margin:12px 0;"></div>
@@ -989,6 +989,16 @@ function doLogin(){
             var upiEl=document.getElementById('disp-upi');if(upiEl)upiEl.textContent=ps.primary_upi_id||'budgetbarber@paytm';
             var bankAccEl=document.getElementById('disp-bank-acc');if(bankAccEl)bankAccEl.textContent=ps.bank_account_no||'Contact Admin';
             var bankIfscEl=document.getElementById('disp-bank-ifsc');if(bankIfscEl)bankIfscEl.textContent=ps.bank_ifsc||'Contact Admin';
+            // Show registered name
+            var regNameEl=document.getElementById('disp-reg-name');
+            if(regNameEl)regNameEl.textContent=ps.registered_name||'Budget Barber Pvt Ltd';
+            // Show QR code if saved
+            if(ps.qr_code_url){
+              var qrImg=document.getElementById('fl-qr-img');
+              var qrPh=document.getElementById('fl-qr-ph');
+              if(qrImg){qrImg.src=ps.qr_code_url;qrImg.style.display='block';}
+              if(qrPh)qrPh.style.display='none';
+            }
           }
         });
       } else {
