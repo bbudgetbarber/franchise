@@ -2576,25 +2576,55 @@ function createMFLogin(){
 
 // ── LEADS ──
 async function loadLeads(statusFilter){
-  let query = sb.from('leads').select(`
-    id, name, phone, email, city, language, model_interest, source,
+  // Plain columns only — no embedded FK join. The embedded
+  // master_franchise_accounts(...) join requires a working foreign-key
+  // relationship; if it's missing, ambiguous, or blocked by RLS the whole
+  // query returns an error and the table looked empty.
+  const baseCols = `id, name, phone, email, city, language, model_interest, source,
     status, current_step, guidelines_accepted, pin_hash, created_at, updated_at,
-    assigned_mf_id, master_franchise_accounts(name, region)
-  `).order('created_at', {ascending:false});
+    assigned_mf_id`;
+
+  let query = sb.from('leads').select(baseCols).order('created_at', {ascending:false});
   if(statusFilter && statusFilter !== 'all') query = query.eq('status', statusFilter);
   const {data, error} = await query;
-  if(error){console.error('loadLeads:', error);return [];}
+  if(error){
+    console.error('loadLeads error:', error.message, error.details || '', error.hint || '');
+    alert('Failed to load leads: '+error.message+(error.hint?'\nHint: '+error.hint:''));
+    return [];
+  }
+  const leads = data || [];
+  console.log('loadLeads: fetched', leads.length, 'rows');
+
+  // Build MF lookup map separately so a missing FK relationship cannot
+  // break the leads list itself.
+  let mfMap = {};
+  const mfIds = [...new Set(leads.map(l=>l.assigned_mf_id).filter(Boolean))];
+  if(mfIds.length){
+    const {data:mfRows, error:mfErr} = await sb
+      .from('master_franchise_accounts')
+      .select('id, name, region')
+      .in('id', mfIds);
+    if(mfErr){
+      console.warn('loadLeads: MF lookup failed, continuing without MF labels:', mfErr.message);
+    } else {
+      (mfRows||[]).forEach(m=>{ mfMap[m.id] = m; });
+    }
+  }
+
   // Normalise to shape expected by buildLeadTable
-  return (data||[]).map(l=>({
-    id:l.id, name:l.name, phone:l.phone, email:l.email,
-    city:l.city, step:l.current_step, status:l.status,
-    lang:l.language, model:l.model_interest||'Not Decided', source:l.source||'—',
-    assignedMfId: l.assigned_mf_id || null,
-    mf: l.master_franchise_accounts ? (l.master_franchise_accounts.name+' ('+l.master_franchise_accounts.region+')') : '—',
-    guidelinesAccepted: !!l.guidelines_accepted,
-    pinHash: l.pin_hash || '',
-    createdAt: l.created_at, updatedAt: l.updated_at
-  }));
+  return leads.map(l=>{
+    const mfRow = l.assigned_mf_id ? mfMap[l.assigned_mf_id] : null;
+    return {
+      id:l.id, name:l.name, phone:l.phone, email:l.email,
+      city:l.city, step:l.current_step, status:l.status,
+      lang:l.language, model:l.model_interest||'Not Decided', source:l.source||'—',
+      assignedMfId: l.assigned_mf_id || null,
+      mf: mfRow ? (mfRow.name+' ('+mfRow.region+')') : '—',
+      guidelinesAccepted: !!l.guidelines_accepted,
+      pinHash: l.pin_hash || '',
+      createdAt: l.created_at, updatedAt: l.updated_at
+    };
+  });
 }
 
 async function loadLeadNotes(leadId){
