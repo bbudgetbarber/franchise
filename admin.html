@@ -352,7 +352,7 @@ input:checked + .slider:before{transform:translateX(16px);}
           </div>
         </div>
         <table class="lead-table">
-          <thead><tr><th>Lead</th><th>City</th><th>Progress</th><th>Status</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Lead</th><th>City</th><th>Progress</th><th>Status</th><th>Model</th><th>MF Assigned</th><th>Actions</th></tr></thead>
           <tbody id="lead-tbody"></tbody>
         </table>
       </div>
@@ -371,6 +371,7 @@ input:checked + .slider:before{transform:translateX(16px);}
           <div class="fr"><label class="fl">City <span style="color:var(--no-tx);">*</span></label><input type="text" id="nl-city" placeholder="Hyderabad"/></div>
           <div class="fr"><label class="fl">Lead Source <span style="color:var(--no-tx);">*</span></label><select id="nl-source"><option value="">— Select Source —</option><option>Direct</option><option>Referral</option><option>Social Media</option><option>Website</option><option>Exhibition</option><option>WhatsApp</option></select></div>
           <div class="fr"><label class="fl">Preferred Language <span style="color:var(--no-tx);">*</span></label><select id="nl-lang"><option value="">— Select Language —</option><option>English</option><option>Telugu</option><option>Hindi</option><option>Punjabi</option></select></div>
+          <div class="fr"><label class="fl">Assign to Master Franchise</label><select id="nl-mf"><option value="">— Unassigned (visible only to Admin) —</option></select></div>
         </div>
         <div class="fr"><label class="fl">Set 6-Digit PIN <span style="color:var(--no-tx);">*</span></label><input type="text" id="nl-pin" placeholder="e.g. 123456" maxlength="6" style="max-width:200px;"/></div>
         <div class="fr"><label class="fl">Initial Admin Note</label><textarea id="nl-note" placeholder="Add any notes about this lead…"></textarea></div>
@@ -806,22 +807,31 @@ input:checked + .slider:before{transform:translateX(16px);}
     <!-- PAYMENT TRACKING -->
     <div id="at-payments" class="admin-tab">
       <div class="adm-page-title">Payment Tracking</div>
-      <div class="adm-page-sub">Track all token payments, milestones, and pending dues across all leads</div>
+      <div class="adm-page-sub">Token payments submitted by leads — review screenshots and verify</div>
       <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
-        <div class="stat-card"><div class="stat-num" style="color:var(--ok-tx);">₹80K</div><div class="stat-lbl">Token Payments Collected</div><div class="stat-delta" style="color:var(--ok-tx);">4 leads × ₹20K</div></div>
-        <div class="stat-card"><div class="stat-num" style="color:var(--wrn-tx);">₹7.5L</div><div class="stat-lbl">Pending Dues (30 days)</div><div class="stat-delta" style="color:var(--wrn-tx);">3 leads overdue</div></div>
-        <div class="stat-card"><div class="stat-num" style="color:var(--hi);">₹34L</div><div class="stat-lbl">Total Collected (All)</div><div class="stat-delta" style="color:var(--mut);">Across 4 projects</div></div>
+        <div class="stat-card"><div class="stat-num" id="pay-stat-pending" style="color:var(--wrn-tx);">—</div><div class="stat-lbl">Pending Verification</div></div>
+        <div class="stat-card"><div class="stat-num" id="pay-stat-verified" style="color:var(--ok-tx);">—</div><div class="stat-lbl">Verified</div></div>
+        <div class="stat-card"><div class="stat-num" id="pay-stat-total" style="color:var(--hi);">—</div><div class="stat-lbl">Total Token Collected</div></div>
+      </div>
+      <div style="padding:0 0 12px;display:flex;gap:6px;flex-wrap:wrap;">
+        <div class="filter-chip active" onclick="filterPayments(this,'all')">All</div>
+        <div class="filter-chip" onclick="filterPayments(this,'pending')">Pending</div>
+        <div class="filter-chip" onclick="filterPayments(this,'verified')">Verified</div>
+        <div class="filter-chip" onclick="filterPayments(this,'rejected')">Rejected</div>
+        <button class="btn btn-xs" style="margin-left:auto;" onclick="loadAndRenderPayments()">↻ Refresh</button>
       </div>
       <div class="adm-card" style="padding:0;overflow:hidden;">
         <table class="lead-table">
-          <thead><tr><th>Lead</th><th>Model</th><th>Token</th><th>Cheque</th><th>Cash</th><th>Marc Chairs</th><th>Total Paid</th></tr></thead>
-          <tbody>
-            <tr><td><div style="font-weight:600;">Priya Sharma</div><div style="font-size:11px;color:var(--mut);">Hyderabad</div></td><td>3 Chair</td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-wrn">Pending</span></td><td><span class="pill p-no">—</span></td><td><span class="pill p-no">—</span></td><td style="font-weight:700;">₹20,000</td></tr>
-            <tr><td><div style="font-weight:600;">Arun Reddy</div><div style="font-size:11px;color:var(--mut);">Vijayawada</div></td><td>4 Chair</td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-wrn">Pending</span></td><td><span class="pill p-no">—</span></td><td style="font-weight:700;">₹2,70,000</td></tr>
-            <tr><td><div style="font-weight:600;">Meena Iyer</div><div style="font-size:11px;color:var(--mut);">Chennai</div></td><td>3 Chair</td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-wrn">Pending</span></td><td style="font-weight:700;">₹8,70,000</td></tr>
-            <tr><td><div style="font-weight:600;">Vikram Nair</div><div style="font-size:11px;color:var(--mut);">Kochi</div></td><td>5 Chair</td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-ok">✓ Paid</span></td><td><span class="pill p-ok">✓ Paid</span></td><td style="font-weight:700;">₹14,20,000</td></tr>
-          </tbody>
+          <thead><tr><th>Lead</th><th>Step</th><th>Amount</th><th>Mode</th><th>Submitted</th><th>Status</th><th>Screenshot</th><th>Actions</th></tr></thead>
+          <tbody id="pay-tbody"><tr><td colspan="8" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">Loading…</td></tr></tbody>
         </table>
+      </div>
+      <!-- Screenshot preview modal -->
+      <div id="pay-ss-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+        <div style="background:#fff;border-radius:12px;max-width:500px;width:100%;max-height:90vh;overflow:auto;padding:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><div style="font-weight:700;">Payment Screenshot</div><button class="btn btn-xs" onclick="document.getElementById('pay-ss-modal').style.display='none';">✕</button></div>
+          <img id="pay-ss-img" src="" style="max-width:100%;display:block;border-radius:8px;border:0.5px solid var(--bdr);"/>
+        </div>
       </div>
     </div>
 
@@ -843,14 +853,14 @@ input:checked + .slider:before{transform:translateX(16px);}
         <div class="adm-card-title">Royalty Structure Settings</div>
         <div class="adm-card-sub">Global royalty rules applied to all active franchises</div>
         <div class="form-2col">
-          <div class="fr"><label class="fl">Royalty Rate</label><input type="text" value="8% of Monthly Revenue"/></div>
-          <div class="fr"><label class="fl">Due Date</label><input type="text" value="5th of every month"/></div>
-          <div class="fr"><label class="fl">Grace Period</label><input type="text" value="0 days (strict)"/></div>
-          <div class="fr"><label class="fl">On-Time Benefit</label><input type="text" value="Priority Staff Replacement"/></div>
-          <div class="fr"><label class="fl">Late Penalty (1–7 days)</label><input type="text" value="₹500 / day"/></div>
-          <div class="fr"><label class="fl">Late Penalty (8–30 days)</label><input type="text" value="₹1,000 / day"/></div>
-          <div class="fr"><label class="fl">Non-Payment (&gt;30 days)</label><input type="text" value="Franchise Review initiated"/></div>
-          <div class="fr"><label class="fl">Non-Payment (&gt;60 days)</label><input type="text" value="Agreement Termination"/></div>
+          <div class="fr"><label class="fl">Royalty Rate (%)</label><input type="number" step="0.1" id="rs-rate-pct" value="8"/></div>
+          <div class="fr"><label class="fl">Due Date</label><input type="text" id="rs-due-date" value="5th of every month"/></div>
+          <div class="fr"><label class="fl">Grace Period</label><input type="text" id="rs-grace" value="0 days (strict)"/></div>
+          <div class="fr"><label class="fl">On-Time Benefit</label><input type="text" id="rs-ontime-benefit" value="Priority Staff Replacement"/></div>
+          <div class="fr"><label class="fl">Late Penalty (1–7 days)</label><input type="text" id="rs-late-1-7" value="₹500 / day"/></div>
+          <div class="fr"><label class="fl">Late Penalty (8–30 days)</label><input type="text" id="rs-late-8-30" value="₹1,000 / day"/></div>
+          <div class="fr"><label class="fl">Non-Payment (&gt;30 days)</label><input type="text" id="rs-np-30" value="Franchise Review initiated"/></div>
+          <div class="fr"><label class="fl">Non-Payment (&gt;60 days)</label><input type="text" id="rs-np-60" value="Agreement Termination"/></div>
         </div>
         <button class="btn btn-p" onclick="saveRoyaltyStructureUI()">Save Royalty Structure</button>
       </div>
@@ -1582,19 +1592,28 @@ input:checked + .slider:before{transform:translateX(16px);}
       </div>
       <div id="ldm-overview" class="admin-tab active">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
-          <div class="card" style="margin:0;"><div class="sec">Contact</div><div class="irow"><span class="ilbl">Phone</span><span class="ival">+91 98765 43210</span></div><div class="irow" style="border:none;"><span class="ilbl">Email</span><span class="ival" style="font-size:12px;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3745565d52445f77525a565e5b1954585a">[email&#160;protected]</a></span></div></div>
-          <div class="card" style="margin:0;"><div class="sec">Lead Info</div><div class="irow"><span class="ilbl">City</span><span class="ival">Hyderabad</span></div><div class="irow" style="border:none;"><span class="ilbl">Source</span><span class="ival">Referral</span></div></div>
+          <div class="card" style="margin:0;"><div class="sec">Contact</div>
+            <div class="irow"><span class="ilbl">Phone</span><span class="ival" id="ldm-phone">—</span></div>
+            <div class="irow" style="border:none;"><span class="ilbl">Email</span><span class="ival" id="ldm-email" style="font-size:12px;">—</span></div>
+          </div>
+          <div class="card" style="margin:0;"><div class="sec">Lead Info</div>
+            <div class="irow"><span class="ilbl">City</span><span class="ival" id="ldm-city">—</span></div>
+            <div class="irow"><span class="ilbl">Source</span><span class="ival" id="ldm-source">—</span></div>
+            <div class="irow" style="border:none;"><span class="ilbl">MF Assigned</span><span class="ival" id="ldm-mf" style="font-size:12px;">—</span></div>
+          </div>
         </div>
         <div class="card"><div class="sec">Current Progress</div>
-          <div class="irow"><span class="ilbl">Current Step</span><span class="ival">Step 5 — ROI Video</span></div>
-          <div class="irow"><span class="ilbl">Language Selected</span><span class="ival">Telugu</span></div>
-          <div class="irow"><span class="ilbl">Videos Watched</span><span class="ival">4 of 8</span></div>
-          <div class="irow"><span class="ilbl">Guidelines Accepted</span><span class="ival" style="color:var(--no-tx);">Not yet</span></div>
-          <div class="irow" style="border:none;"><span class="ilbl">Last Active</span><span class="ival">2 mins ago</span></div>
-          <div class="pbwrap"><div class="pbfill" style="width:45%;"></div></div>
-          <div style="font-size:11px;color:var(--hnt);margin-top:4px;">45% of onboarding complete</div>
+          <div class="irow"><span class="ilbl">Current Step</span><span class="ival" id="ldm-step">—</span></div>
+          <div class="irow"><span class="ilbl">Language Selected</span><span class="ival" id="ldm-lang">—</span></div>
+          <div class="irow"><span class="ilbl">Guidelines Accepted</span><span class="ival" id="ldm-gl-accept">—</span></div>
+          <div class="irow" style="border:none;"><span class="ilbl">Last Active</span><span class="ival" id="ldm-updated">—</span></div>
+          <div class="pbwrap"><div class="pbfill" id="ldm-pbfill" style="width:0%;"></div></div>
+          <div style="font-size:11px;color:var(--hnt);margin-top:4px;" id="ldm-pblabel">0% of onboarding complete</div>
         </div>
-        <div class="card"><div class="sec">Interested Model</div><div class="irow"><span class="ilbl">Model</span><span><span class="pill p-inf">3 Chair</span></span></div><div class="irow" style="border:none;"><span class="ilbl">Investment</span><span class="ival">₹8,50,000</span></div></div>
+        <div class="card"><div class="sec">Interested Model</div>
+          <div class="irow"><span class="ilbl">Model</span><span><span class="pill p-inf" id="ldm-model-pill">—</span></span></div>
+          <div class="irow" style="border:none;"><span class="ilbl">Token Status</span><span id="ldm-token-status">—</span></div>
+        </div>
       </div>
       <div id="ldm-journey" class="admin-tab">
         <div class="card"><div class="sec">Onboarding Journey</div>
@@ -1624,20 +1643,30 @@ input:checked + .slider:before{transform:translateX(16px);}
       </div>
       <div id="ldm-control" class="admin-tab">
         <div class="card"><div class="sec">Lead Controls</div>
-          <div class="fr"><label class="fl">Jump Lead to Step</label>
-            <select><option>Step 1 — Language</option><option>Step 2 — Vision</option><option>Step 3 — Salon 360°</option><option>Step 4 — Investment</option><option>Step 5 — ROI</option><option>Step 6 — Support</option><option>Step 7 — Operations</option><option>Step 8 — Staff</option><option>Step 9 — Royalty</option><option>Step 10 — Interest Check</option><option>Guidelines</option><option>Token Payment</option><option>Project Dashboard</option></select>
+          <div class="fr"><label class="fl">Assign to Master Franchise</label>
+            <select id="ldm-mf-sel"><option value="">— Unassigned —</option></select>
           </div>
-          <button class="btn btn-i btn-f" style="margin-bottom:10px;" onclick="alert('✓ Lead jumped to step!')">Jump to Step</button>
+          <button class="btn btn-i btn-f" style="margin-bottom:10px;" onclick="saveLeadMFAssignment()">Save MF Assignment</button>
+          <div style="height:0.5px;background:var(--bdr);margin:14px 0;"></div>
+          <div class="fr"><label class="fl">Set Model Interest</label>
+            <select id="ldm-model-sel"><option>Not Decided</option><option>3 Chair</option><option>4 Chair</option><option>5 Chair</option></select>
+          </div>
+          <button class="btn btn-i btn-f" style="margin-bottom:10px;" onclick="saveLeadModelInterest()">Save Model</button>
+          <div style="height:0.5px;background:var(--bdr);margin:14px 0;"></div>
+          <div class="fr"><label class="fl">Jump Lead to Step</label>
+            <select id="ldm-jump-sel"><option value="0">Step 0 — Pre-Language</option><option value="1">Step 1 — Language</option><option value="2">Step 2 — Vision</option><option value="3">Step 3 — Salon 360°</option><option value="4">Step 4 — Investment</option><option value="5">Step 5 — ROI</option><option value="6">Step 6 — Support</option><option value="7">Step 7 — Operations</option><option value="8">Step 8 — Staff</option><option value="9">Step 9 — Royalty</option><option value="10">Step 10 — Interest Check / Done</option></select>
+          </div>
+          <button class="btn btn-i btn-f" style="margin-bottom:10px;" onclick="saveLeadJumpStep()">Jump to Step</button>
           <div style="height:0.5px;background:var(--bdr);margin:14px 0;"></div>
           <div class="fr"><label class="fl">Change Lead Status</label>
-            <select><option>Active — In Progress</option><option>Interested — Awaiting Payment</option><option>Project Active</option><option>Closed — Not Interested</option><option>On Hold</option></select>
+            <select id="ldm-status-sel"><option value="new">New</option><option value="in-progress">In Progress</option><option value="project">Project Active</option><option value="closed">Closed</option></select>
           </div>
-          <button class="btn btn-p btn-f" style="margin-bottom:10px;" onclick="alert('✓ Status updated!')">Update Status</button>
+          <button class="btn btn-p btn-f" style="margin-bottom:10px;" onclick="saveLeadStatusFromModal()">Update Status</button>
           <div style="height:0.5px;background:var(--bdr);margin:14px 0;"></div>
-          <div class="fr"><label class="fl">Reset PIN</label><input type="text" placeholder="Enter new 6-digit PIN" maxlength="6"/></div>
-          <button class="btn btn-w btn-f" style="margin-bottom:10px;" onclick="alert('✓ PIN reset!')">Reset Lead PIN</button>
+          <div class="fr"><label class="fl">Reset PIN</label><input type="text" id="ldm-pin-inp" placeholder="Enter new 6-digit PIN" maxlength="6"/></div>
+          <button class="btn btn-w btn-f" style="margin-bottom:10px;" onclick="saveLeadPinReset()">Reset Lead PIN</button>
           <div style="height:0.5px;background:var(--bdr);margin:14px 0;"></div>
-          <button class="btn btn-d btn-f" onclick="if(confirm('Delete this lead?'))closeLDM();">Delete Lead</button>
+          <button class="btn btn-d btn-f" onclick="deleteLeadFromModal()">Delete Lead</button>
         </div>
       </div>
     </div>
@@ -1672,6 +1701,28 @@ let LEADS = [];
 // GUIDELINES loaded from Supabase — see loadGuidelines()
 let GUIDELINES = [];
 
+// ── PASSWORD HASHING ──
+// SHA-256 client-side hashing — better than plaintext but NOT sufficient on its own.
+// TODO (production): replace with server-side bcrypt/argon2 via a Supabase Edge Function
+// or move auth to Supabase Auth entirely. Until then, password_hash columns will hold
+// hex-encoded SHA-256 of (password + APP_PWD_SALT).
+const APP_PWD_SALT = 'bb-portal-v1-salt'; // change once and reset all stored hashes
+async function hashPassword(plain){
+  if(plain==null)return null;
+  // Backward-compat: if stored value looks like our 64-char hex hash, treat as already hashed
+  const enc=new TextEncoder().encode(APP_PWD_SALT+'|'+String(plain));
+  const buf=await crypto.subtle.digest('SHA-256',enc);
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function looksHashed(s){return typeof s==='string' && /^[a-f0-9]{64}$/.test(s);}
+async function verifyPassword(plainEntered, storedHashOrPlain){
+  if(storedHashOrPlain==null)return false;
+  // Legacy plaintext fallback: if the stored value isn't 64 hex chars, do a direct compare
+  if(!looksHashed(storedHashOrPlain))return plainEntered===storedHashOrPlain;
+  const h=await hashPassword(plainEntered);
+  return h===storedHashOrPlain;
+}
+
 function aTab(btn,tabId){
   document.querySelectorAll('.adm-nav-item').forEach(b=>b.classList.remove('active'));
   // find the nav item that matches this tabId
@@ -1685,11 +1736,14 @@ function aTab(btn,tabId){
   if(tabId==='at-leads'){loadLeads(null).then(leads=>{LEADS=leads;buildLeadTable('all');});}
   if(tabId==='at-guidelines')buildGLAdmin();
   if(tabId==='at-mf-accounts'){
-    loadMFAccounts().then(mf=>{MF_ACCOUNTS_DATA=mf;/* table is static HTML for now */});
+    loadMFAccounts().then(mf=>{MF_ACCOUNTS_DATA=mf;populateMFDropdowns();/* table is static HTML for now */});
   }
   if(tabId==='at-franchises')buildFranchiseTable();
   if(tabId==='at-invest-content'){buildPayStepsEditor();const p=document.getElementById('ic-pay3');if(p)p.style.display='block';}
   if(tabId==='at-support-content')buildSupportEditor();
+  if(tabId==='at-payments')loadAndRenderPayments();
+  if(tabId==='at-royalty-mgmt')loadRoyaltyStructureUI();
+  if(tabId==='at-newlead')populateMFDropdowns();
 }
 function avTab(btn,tabId){
   const allIds=['av-upload','av-manage','av-lang','ic3','ic4','ic5','ic-roi','ic-royalty','ic-payments'];
@@ -1711,34 +1765,335 @@ function buildLeadTable(statusFilter){
   const tbody=document.getElementById('lead-tbody');if(!tbody)return;tbody.innerHTML='';
   const statusMap={'new':{lbl:'New',cls:'p-inf'},'in-progress':{lbl:'In Progress',cls:'p-wrn'},'project':{lbl:'Project Active',cls:'p-ok'},'closed':{lbl:'Closed',cls:'p-no'}};
   const filtered=(!statusFilter||statusFilter==='all')?LEADS:LEADS.filter(l=>l.status===statusFilter);
-  if(filtered.length===0){const tr=document.createElement('tr');tr.innerHTML='<td colspan="5" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">No leads found for this filter.</td>';tbody.appendChild(tr);return;}
+  if(filtered.length===0){const tr=document.createElement('tr');tr.innerHTML='<td colspan="7" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">No leads found for this filter.</td>';tbody.appendChild(tr);return;}
   filtered.forEach(l=>{
     const st=statusMap[l.status]||{lbl:l.status,cls:'p-inf'};
     const tr=document.createElement('tr');
+    const stepDisp=Math.min(l.step||0,10);
     tr.innerHTML=`<td><div style="font-weight:600;">${l.name}</div><div style="font-size:11px;color:var(--mut);">${l.phone}</div></td>
       <td>${l.city}</td>
-      <td><div style="font-size:13px;">Step ${l.step}/10</div><div style="font-size:11px;color:var(--mut);">${l.lang}</div></td>
+      <td><div style="font-size:13px;">Step ${stepDisp}/10</div><div style="font-size:11px;color:var(--mut);">${l.lang}</div></td>
       <td><span class="pill ${st.cls}">${st.lbl}</span></td>
+      <td>${l.model||'—'}</td>
+      <td style="font-size:12px;color:var(--mut);">${l.mf||'—'}</td>
       <td><div class="act-btns">
-        <button class="btn btn-xs btn-i" onclick="openLDM(${l.id})">View</button>
-        <button class="btn btn-xs btn-d" onclick="closeLdBtn(${l.id})">Close</button>
+        <button class="btn btn-xs btn-i" onclick="openLDM('${l.id}')">View</button>
+        <button class="btn btn-xs btn-d" onclick="closeLdBtn('${l.id}')">Close</button>
       </div></td>`;
     tbody.appendChild(tr);
   });
 }
+// Module-level: which lead is currently open in the detail modal
+let CURRENT_LEAD_ID = null;
+
 function openLDM(id){
   const l=LEADS.find(x=>x.id===id);if(!l)return;
+  CURRENT_LEAD_ID = id;
+  // Header
   document.getElementById('ldm-name').textContent=l.name;
-  document.getElementById('ldm-meta').textContent=l.phone+' · '+l.city+' · '+l.model;
+  document.getElementById('ldm-meta').textContent=l.phone+' · '+l.city+' · '+(l.model||'Not Decided');
   const stMap={'new':'p-inf','in-progress':'p-wrn','project':'p-ok','closed':'p-no'};
   const pill=document.getElementById('ldm-pill');
   pill.className='pill '+(stMap[l.status]||'p-inf');
-  pill.textContent=l.status.replace('-',' ').replace(/\b\w/g,c=>c.toUpperCase());
+  pill.textContent=(l.status||'new').replace('-',' ').replace(/\b\w/g,c=>c.toUpperCase());
+  // Populate Overview tab with live data (replaces static placeholders)
+  buildLDMOverview(l);
+  // Populate Notes tab
+  buildLDMNotes(id);
+  // Populate Project (payments) tab
+  buildLDMProject(id);
+  // Populate Controls tab selectors
+  const mfSel=document.getElementById('ldm-mf-sel');
+  if(mfSel)mfSel.value=l.assignedMfId||'';
+  const stSel=document.getElementById('ldm-status-sel');
+  if(stSel)stSel.value=l.status||'new';
+  const mdSel=document.getElementById('ldm-model-sel');
+  if(mdSel)mdSel.value=l.model||'Not Decided';
+  const jpSel=document.getElementById('ldm-jump-sel');
+  if(jpSel)jpSel.value=String(Math.min(l.step||0,10));
+  const pinInp=document.getElementById('ldm-pin-inp');
+  if(pinInp)pinInp.value='';
+  // Show modal & reset to Overview tab
   document.getElementById('lead-modal').classList.add('open');
   document.querySelectorAll('.ldm-body .adm-tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelector('.ldm-body .adm-tab-btn').classList.add('active');
+  const firstBtn=document.querySelector('.ldm-body .adm-tab-btn');
+  if(firstBtn)firstBtn.classList.add('active');
   document.querySelectorAll('.ldm-body .admin-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('ldm-overview').classList.add('active');
+}
+
+function buildLDMOverview(l){
+  const ov=document.getElementById('ldm-overview');if(!ov)return;
+  const stepDisp=Math.min(l.step||0,10);
+  const pctDone=Math.round((stepDisp/10)*100);
+  const glAcc = l.guidelinesAccepted ? '<span style="color:var(--ok-tx);">✓ Yes</span>' : '<span style="color:var(--no-tx);">Not yet</span>';
+  ov.innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+      <div class="card" style="margin:0;"><div class="sec">Contact</div>
+        <div class="irow"><span class="ilbl">Phone</span><span class="ival">${l.phone||'—'}</span></div>
+        <div class="irow" style="border:none;"><span class="ilbl">Email</span><span class="ival" style="font-size:12px;">${l.email||'—'}</span></div>
+      </div>
+      <div class="card" style="margin:0;"><div class="sec">Lead Info</div>
+        <div class="irow"><span class="ilbl">City</span><span class="ival">${l.city||'—'}</span></div>
+        <div class="irow" style="border:none;"><span class="ilbl">Source</span><span class="ival">${l.source||'—'}</span></div>
+      </div>
+    </div>
+    <div class="card"><div class="sec">Current Progress</div>
+      <div class="irow"><span class="ilbl">Current Step</span><span class="ival">Step ${stepDisp} / 10</span></div>
+      <div class="irow"><span class="ilbl">Language Selected</span><span class="ival">${l.lang||'—'}</span></div>
+      <div class="irow"><span class="ilbl">Status</span><span class="ival">${(l.status||'new').replace('-',' ')}</span></div>
+      <div class="irow"><span class="ilbl">Guidelines Accepted</span><span class="ival">${glAcc}</span></div>
+      <div class="irow" style="border:none;"><span class="ilbl">Last Updated</span><span class="ival">${l.updatedAt?new Date(l.updatedAt).toLocaleString('en-IN'):'—'}</span></div>
+      <div class="pbwrap"><div class="pbfill" style="width:${pctDone}%;"></div></div>
+      <div style="font-size:11px;color:var(--hnt);margin-top:4px;">${pctDone}% of onboarding complete</div>
+    </div>
+    <div class="card"><div class="sec">Master Franchise</div>
+      <div class="irow" style="border:none;"><span class="ilbl">Assigned</span><span class="ival">${l.mf||'— Unassigned —'}</span></div>
+    </div>
+    <div class="card"><div class="sec">Interested Model</div>
+      <div class="irow" style="border:none;"><span class="ilbl">Model</span><span><span class="pill p-inf">${l.model||'Not Decided'}</span></span></div>
+    </div>`;
+}
+
+function buildLDMNotes(leadId){
+  const ov=document.getElementById('ldm-notes');if(!ov)return;
+  ov.innerHTML=`
+    <div class="card"><div class="sec">Admin Notes</div>
+      <div id="ldm-notes-log" style="min-height:60px;"><div style="color:var(--hnt);font-size:12px;">Loading notes…</div></div>
+    </div>
+    <div class="fr"><label class="fl">Add New Note</label><textarea id="ldm-new-note" class="note-input" placeholder="Add a note about this lead…"></textarea></div>
+    <button class="btn btn-p" onclick="saveLeadNoteFromModal()">Save Note</button>`;
+  loadLeadNotes(leadId).then(notes=>{
+    const log=document.getElementById('ldm-notes-log');if(!log)return;
+    if(!notes.length){log.innerHTML='<div style="color:var(--hnt);font-size:12px;">No notes yet.</div>';return;}
+    log.innerHTML=notes.map(n=>{
+      const dt=n.created_at?new Date(n.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+      return `<div class="activity-item"><div class="ai-dot"></div><div class="ai-info"><div class="ai-txt">${escapeHtml(n.note||'')}</div><div class="ai-time">${dt} · ${n.added_by_type||'system'}</div></div></div>`;
+    }).join('');
+  });
+}
+
+function buildLDMProject(leadId){
+  const ov=document.getElementById('ldm-project');if(!ov)return;
+  ov.innerHTML=`
+    <div class="card"><div class="sec">Token Payment Records</div>
+      <div id="ldm-pay-log" style="min-height:60px;"><div style="color:var(--hnt);font-size:12px;">Loading payments…</div></div>
+    </div>`;
+  sb.from('payments').select('id,step_name,amount,mode,screenshot_url,status,created_at,verified_at,notes')
+    .eq('lead_id',leadId).order('created_at',{ascending:false}).then(({data,error})=>{
+      const log=document.getElementById('ldm-pay-log');if(!log)return;
+      if(error){log.innerHTML='<div style="color:var(--no-tx);font-size:12px;">Could not load: '+error.message+'</div>';return;}
+      if(!data||!data.length){log.innerHTML='<div style="color:var(--hnt);font-size:12px;">No payments recorded yet.</div>';return;}
+      log.innerHTML=data.map(p=>{
+        const stCls={pending:'p-wrn',verified:'p-ok',rejected:'p-no'}[p.status]||'p-inf';
+        const dt=p.created_at?new Date(p.created_at).toLocaleString('en-IN'):'';
+        const ss=p.screenshot_url?`<a href="${p.screenshot_url}" target="_blank" style="color:var(--hi);font-size:12px;">View Screenshot ↗</a>`:'<span style="color:var(--hnt);font-size:12px;">No screenshot</span>';
+        const actBtns=p.status==='pending'?
+          `<div style="margin-top:8px;display:flex;gap:6px;">
+            <button class="btn btn-xs btn-s" onclick="verifyPayment('${p.id}','verified')">✓ Verify</button>
+            <button class="btn btn-xs btn-d" onclick="verifyPayment('${p.id}','rejected')">✗ Reject</button>
+          </div>`:'';
+        return `<div style="padding:10px 0;border-bottom:0.5px solid var(--bdr);">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div><strong>${p.step_name||'Payment'}</strong> · ₹${Number(p.amount||0).toLocaleString('en-IN')} · ${p.mode||'—'}</div>
+            <span class="pill ${stCls}">${p.status||'—'}</span>
+          </div>
+          <div style="font-size:12px;color:var(--mut);margin-top:4px;">${dt}</div>
+          <div style="margin-top:6px;">${ss}</div>
+          ${actBtns}
+        </div>`;
+      }).join('');
+    });
+}
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+// ── LEAD CONTROL ACTIONS — backed by Supabase ──
+function saveLeadMFAssignment(){
+  if(!CURRENT_LEAD_ID){alert('No lead selected.');return;}
+  const sel=document.getElementById('ldm-mf-sel');
+  const mfId=sel?sel.value||null:null;
+  sb.from('leads').update({assigned_mf_id:mfId||null, updated_at:new Date().toISOString()})
+    .eq('id',CURRENT_LEAD_ID).then(({error})=>{
+      if(error){alert('Failed: '+error.message);return;}
+      alert('✓ MF assignment updated!');
+      loadLeads(null).then(leads=>{LEADS=leads;buildLeadTable('all');});
+    });
+}
+function saveLeadModelInterest(){
+  if(!CURRENT_LEAD_ID){alert('No lead selected.');return;}
+  const sel=document.getElementById('ldm-model-sel');
+  const model=sel?sel.value:'Not Decided';
+  sb.from('leads').update({model_interest:model, updated_at:new Date().toISOString()})
+    .eq('id',CURRENT_LEAD_ID).then(({error})=>{
+      if(error){alert('Failed: '+error.message);return;}
+      const l=LEADS.find(x=>x.id===CURRENT_LEAD_ID);if(l)l.model=model;
+      buildLeadTable('all');
+      alert('✓ Model interest updated!');
+    });
+}
+function saveLeadJumpStep(){
+  if(!CURRENT_LEAD_ID){alert('No lead selected.');return;}
+  const sel=document.getElementById('ldm-jump-sel');
+  const step=parseInt(sel?sel.value:'0',10);
+  if(isNaN(step)||step<0||step>10){alert('Invalid step.');return;}
+  if(!confirm('Force this lead to step '+step+'? They will resume here on next login.'))return;
+  sb.from('leads').update({current_step:step, updated_at:new Date().toISOString()})
+    .eq('id',CURRENT_LEAD_ID).then(({error})=>{
+      if(error){alert('Failed: '+error.message);return;}
+      const l=LEADS.find(x=>x.id===CURRENT_LEAD_ID);if(l)l.step=step;
+      buildLeadTable('all');
+      alert('✓ Lead moved to step '+step+'.');
+    });
+}
+function saveLeadStatusFromModal(){
+  if(!CURRENT_LEAD_ID){alert('No lead selected.');return;}
+  const sel=document.getElementById('ldm-status-sel');
+  const status=sel?sel.value:'new';
+  updateLeadStatus(CURRENT_LEAD_ID,status).then(ok=>{
+    if(!ok)return;
+    const l=LEADS.find(x=>x.id===CURRENT_LEAD_ID);if(l)l.status=status;
+    buildLeadTable('all');
+    const pill=document.getElementById('ldm-pill');
+    const stMap={'new':'p-inf','in-progress':'p-wrn','project':'p-ok','closed':'p-no'};
+    if(pill){pill.className='pill '+(stMap[status]||'p-inf');pill.textContent=status.replace('-',' ').replace(/\b\w/g,c=>c.toUpperCase());}
+    alert('✓ Status updated!');
+  });
+}
+function saveLeadPinReset(){
+  if(!CURRENT_LEAD_ID){alert('No lead selected.');return;}
+  const inp=document.getElementById('ldm-pin-inp');
+  const pin=(inp?inp.value:'').trim();
+  if(pin.length!==6||!/^\d{6}$/.test(pin)){alert('PIN must be exactly 6 digits.');return;}
+  sb.from('leads').update({pin_hash:pin, updated_at:new Date().toISOString()})
+    .eq('id',CURRENT_LEAD_ID).then(({error})=>{
+      if(error){alert('Failed: '+error.message);return;}
+      if(inp)inp.value='';
+      alert('✓ PIN reset! New PIN: '+pin);
+    });
+}
+function deleteLeadFromModal(){
+  if(!CURRENT_LEAD_ID){alert('No lead selected.');return;}
+  const l=LEADS.find(x=>x.id===CURRENT_LEAD_ID);
+  if(!l)return;
+  if(!confirm('Permanently delete lead "'+l.name+'"? This also removes their notes, progress and payment records. This cannot be undone.'))return;
+  deleteLead(CURRENT_LEAD_ID).then(ok=>{
+    if(!ok)return;
+    LEADS=LEADS.filter(x=>x.id!==CURRENT_LEAD_ID);
+    CURRENT_LEAD_ID=null;
+    buildLeadTable('all');
+    closeLDM();
+    alert('✓ Lead deleted.');
+  });
+}
+function saveLeadNoteFromModal(){
+  if(!CURRENT_LEAD_ID){alert('No lead selected.');return;}
+  const ta=document.getElementById('ldm-new-note');
+  const note=(ta?ta.value:'').trim();
+  if(!note){alert('Please type a note.');return;}
+  addLeadNote(CURRENT_LEAD_ID,note).then(ok=>{
+    if(!ok)return;
+    if(ta)ta.value='';
+    buildLDMNotes(CURRENT_LEAD_ID);
+  });
+}
+function verifyPayment(payId, newStatus){
+  if(!confirm('Mark this payment as '+newStatus+'?'))return;
+  sb.from('payments').update({
+    status:newStatus,
+    verified_by_admin:adminSession?.id||null,
+    verified_at:new Date().toISOString()
+  }).eq('id',payId).then(({error})=>{
+    if(error){alert('Failed: '+error.message);return;}
+    alert('✓ Payment marked as '+newStatus+'.');
+    if(CURRENT_LEAD_ID)buildLDMProject(CURRENT_LEAD_ID);
+    // Refresh the payments admin tab if it's mounted
+    if(typeof buildPaymentsTable==='function')buildPaymentsTable();
+  });
+}
+
+// ── PAYMENTS TAB (admin verification) ──
+let PAYMENTS_DATA = [];
+let PAYMENTS_FILTER = 'all';
+
+function loadAndRenderPayments(){
+  const tbody=document.getElementById('pay-tbody');
+  if(tbody)tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">Loading…</td></tr>';
+  sb.from('payments')
+    .select('id,lead_id,step_name,amount,mode,screenshot_url,status,created_at,verified_at,notes,leads(name,phone,city)')
+    .order('created_at',{ascending:false})
+    .then(({data,error})=>{
+      if(error){
+        if(tbody)tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--no-tx);font-size:13px;">Failed to load: '+error.message+'</td></tr>';
+        return;
+      }
+      PAYMENTS_DATA = data||[];
+      buildPaymentsTable();
+      updatePaymentsStats();
+    });
+}
+function updatePaymentsStats(){
+  const pendCount = PAYMENTS_DATA.filter(p=>p.status==='pending').length;
+  const verCount  = PAYMENTS_DATA.filter(p=>p.status==='verified').length;
+  const total     = PAYMENTS_DATA.filter(p=>p.status==='verified').reduce((s,p)=>s+Number(p.amount||0),0);
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('pay-stat-pending', pendCount);
+  set('pay-stat-verified', verCount);
+  set('pay-stat-total', '₹'+total.toLocaleString('en-IN'));
+}
+function filterPayments(chip, status){
+  const tab=document.getElementById('at-payments');
+  if(tab)tab.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  if(chip)chip.classList.add('active');
+  PAYMENTS_FILTER = status;
+  buildPaymentsTable();
+}
+function buildPaymentsTable(){
+  const tbody=document.getElementById('pay-tbody');if(!tbody)return;
+  const list = PAYMENTS_FILTER==='all' ? PAYMENTS_DATA : PAYMENTS_DATA.filter(p=>p.status===PAYMENTS_FILTER);
+  if(!list.length){
+    tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">No payments found.</td></tr>';
+    return;
+  }
+  const stMap={pending:'p-wrn',verified:'p-ok',rejected:'p-no'};
+  tbody.innerHTML=list.map(p=>{
+    const lead = p.leads || {};
+    const dt = p.created_at ? new Date(p.created_at).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+    const ssBtn = p.screenshot_url
+      ? `<button class="btn btn-xs btn-i" onclick="openPaymentScreenshot('${p.screenshot_url.replace(/'/g,'%27')}')">View</button>`
+      : '<span style="color:var(--hnt);font-size:11px;">None</span>';
+    const acts = p.status==='pending' ?
+      `<button class="btn btn-xs btn-s" onclick="verifyPayment('${p.id}','verified')">✓ Verify</button>
+       <button class="btn btn-xs btn-d" onclick="verifyPayment('${p.id}','rejected')">✗ Reject</button>`
+      : `<button class="btn btn-xs" onclick="openLDM('${p.lead_id}')">View Lead</button>`;
+    return `<tr>
+      <td><div style="font-weight:600;">${escapeHtml(lead.name||'Unknown')}</div><div style="font-size:11px;color:var(--mut);">${escapeHtml(lead.phone||'')}</div></td>
+      <td>${escapeHtml(p.step_name||'—')}</td>
+      <td>₹${Number(p.amount||0).toLocaleString('en-IN')}</td>
+      <td>${escapeHtml(p.mode||'—')}</td>
+      <td style="font-size:12px;">${dt}</td>
+      <td><span class="pill ${stMap[p.status]||'p-inf'}">${escapeHtml(p.status||'—')}</span></td>
+      <td>${ssBtn}</td>
+      <td><div class="act-btns">${acts}</div></td>
+    </tr>`;
+  }).join('');
+}
+function openPaymentScreenshot(url){
+  const modal=document.getElementById('pay-ss-modal');
+  const img=document.getElementById('pay-ss-img');
+  if(img)img.src=url;
+  if(modal)modal.style.display='flex';
+}
+
+// ── MF DROPDOWN POPULATOR ──
+function populateMFDropdowns(){
+  if(!Array.isArray(MF_ACCOUNTS_DATA)||!MF_ACCOUNTS_DATA.length)return;
+  const opts='<option value="">— Unassigned —</option>'+
+    MF_ACCOUNTS_DATA.map(m=>`<option value="${m.id}">${escapeHtml(m.name)} (${escapeHtml(m.region||'')})</option>`).join('');
+  ['nl-mf','ldm-mf-sel'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){const cur=el.value;el.innerHTML=opts;el.value=cur||'';}
+  });
 }
 function closeLDM(){document.getElementById('lead-modal').classList.remove('open');}
 function ldmTab(btn,tabId){
@@ -2085,6 +2440,7 @@ function doCreateLead(){
   const city=(document.getElementById('nl-city')||{}).value||'';
   const source=(document.getElementById('nl-source')||{}).value||'';
   const lang=(document.getElementById('nl-lang')||{}).value||'';
+  const mfId=(document.getElementById('nl-mf')||{}).value||'';
   const pin=(document.getElementById('nl-pin')||{}).value||'';
   const note=(document.getElementById('nl-note')||{}).value||'';
   const errEl=document.getElementById('nl-err');
@@ -2105,13 +2461,20 @@ function doCreateLead(){
   const btn=document.activeElement;
   const origBtnText=btn&&btn.tagName==='BUTTON'?btn.textContent:'';
   if(btn&&btn.tagName==='BUTTON'){btn.textContent='Creating…';btn.disabled=true;}
-  createLead({name:name.trim(),phone:phone.trim(),email:email.trim(),city:city.trim(),source,language:lang,pin_hash:pin,note:note.trim()}).then(ok=>{
+  createLead({
+    name:name.trim(),phone:phone.trim(),email:email.trim(),city:city.trim(),
+    source,language:lang,pin_hash:pin,note:note.trim(),
+    assigned_mf_id: mfId || null
+  }).then(ok=>{
     if(btn&&btn.tagName==='BUTTON'){btn.textContent=origBtnText||'Create Lead & Generate Access';btn.disabled=false;}
     if(ok){
       ['nl-name','nl-phone','nl-email','nl-city','nl-pin','nl-note'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-      document.getElementById('nl-source').value='';
-      document.getElementById('nl-lang').value='';
+      const ns=document.getElementById('nl-source');if(ns)ns.value='';
+      const nl=document.getElementById('nl-lang');if(nl)nl.value='';
+      const nm=document.getElementById('nl-mf');if(nm)nm.value='';
       alert('✓ Lead created for '+name+'! They can now log in with phone + PIN ('+pin+').');
+      // Refresh leads list
+      loadLeads(null).then(leads=>{LEADS=leads;buildLeadTable('all');});
       aTab(null,'at-leads');
     }
   });
@@ -2202,7 +2565,7 @@ function createMFLogin(){
   createMFAccountInDB({name:n,email:e,phone:ph,region:r,cities:c,password:p}).then(ok=>{
     if(ok){
       alert('✓ Master Franchise login created for '+n+' ('+r+')!\nCredentials sent to: '+e);
-      loadMFAccounts().then(mf=>{MF_ACCOUNTS_DATA=mf;});
+      loadMFAccounts().then(mf=>{MF_ACCOUNTS_DATA=mf;populateMFDropdowns();});
     }
   });
 }
@@ -2215,7 +2578,7 @@ function createMFLogin(){
 async function loadLeads(statusFilter){
   let query = sb.from('leads').select(`
     id, name, phone, email, city, language, model_interest, source,
-    status, current_step, guidelines_accepted, created_at, updated_at,
+    status, current_step, guidelines_accepted, pin_hash, created_at, updated_at,
     assigned_mf_id, master_franchise_accounts(name, region)
   `).order('created_at', {ascending:false});
   if(statusFilter && statusFilter !== 'all') query = query.eq('status', statusFilter);
@@ -2225,8 +2588,12 @@ async function loadLeads(statusFilter){
   return (data||[]).map(l=>({
     id:l.id, name:l.name, phone:l.phone, email:l.email,
     city:l.city, step:l.current_step, status:l.status,
-    lang:l.language, model:l.model_interest||'—', source:l.source,
-    mf: l.master_franchise_accounts?.name || '—'
+    lang:l.language, model:l.model_interest||'Not Decided', source:l.source||'—',
+    assignedMfId: l.assigned_mf_id || null,
+    mf: l.master_franchise_accounts ? (l.master_franchise_accounts.name+' ('+l.master_franchise_accounts.region+')') : '—',
+    guidelinesAccepted: !!l.guidelines_accepted,
+    pinHash: l.pin_hash || '',
+    createdAt: l.created_at, updatedAt: l.updated_at
   }));
 }
 
@@ -2261,6 +2628,7 @@ async function createLead(data){
     city:data.city, language:data.language||'English',
     model_interest:data.model||'Not Decided', source:data.source||'Direct',
     pin_hash:data.pin_hash||null,
+    assigned_mf_id: data.assigned_mf_id || null,
     status:'new', current_step:0,
     created_by_type:'admin',
     created_by_admin: adminSession?.id || null
@@ -2310,8 +2678,14 @@ async function deleteGuideline(id){
 async function loadVideos(){
   const {data,error} = await sb.from('videos').select('step_key, language, title, video_url').eq('is_active',true);
   if(error){console.error('loadVideos:',error);return;}
+  // Two-pass to deterministically prefer English:
+  // Pass 1: take any language (fallback)
   (data||[]).forEach(v=>{
-    if(v.language==='English' || !APP_VIDEOS[v.step_key]) APP_VIDEOS[v.step_key] = v.video_url;
+    if(!APP_VIDEOS[v.step_key]) APP_VIDEOS[v.step_key] = v.video_url;
+  });
+  // Pass 2: overwrite with English where available (preferred)
+  (data||[]).forEach(v=>{
+    if(v.language==='English') APP_VIDEOS[v.step_key] = v.video_url;
   });
 }
 
@@ -2415,7 +2789,7 @@ async function loadMFAccounts(){
 
 async function saveMFAccountToDB(id, fields){
   const update = {
-    name:fields.name, phone:fields.phone, email:fields.email,
+    name:fields.name, phone:fields.phone, email:(fields.email||'').trim().toLowerCase(),
     region:fields.region, cities:fields.cities, status:fields.status,
     perm_view_leads:fields.perms.leads, perm_create_leads:fields.perms.createLeads,
     perm_edit_leads:fields.perms.editLeads, perm_videos:fields.perms.videos,
@@ -2425,16 +2799,22 @@ async function saveMFAccountToDB(id, fields){
     perm_royalty_edit:fields.perms.royaltyEdit,
     updated_at:new Date().toISOString()
   };
-  if(fields.newPassword) update.password_hash = fields.newPassword; // hash server-side in production
+  if(fields.newPassword){
+    // Hash before storing (SHA-256 + salt; see hashPassword)
+    update.password_hash = await hashPassword(fields.newPassword);
+  }
   const {error} = await sb.from('master_franchise_accounts').update(update).eq('id', id);
   if(error){alert('Failed to save MF account: '+error.message);return false;}
   return true;
 }
 
 async function createMFAccountInDB(fields){
+  // Normalize email to lowercase (MF login does .eq email lowercase) and hash password
+  const emailNorm = (fields.email||'').trim().toLowerCase();
+  const pwHash = await hashPassword(fields.password);
   const {error} = await sb.from('master_franchise_accounts').insert({
-    name:fields.name, phone:fields.phone, email:fields.email,
-    password_hash: fields.password, // hash server-side in production
+    name:fields.name, phone:fields.phone, email:emailNorm,
+    password_hash: pwHash,
     region:fields.region, cities:fields.cities, status:'Active',
     perm_view_leads:true, perm_create_leads:true, perm_edit_leads:true,
     perm_videos:false, perm_invest:false, perm_guidelines:true,
@@ -2541,17 +2921,30 @@ function saveROIUI(modelName){
 }
 function saveRoyaltyStructureUI(){
   sb.from('royalty_settings').select('id').limit(1).single().then(({data})=>{
+    const v=(id,d='')=>(document.getElementById(id)||{}).value||d;
     const fields={
-      royalty_rate_pct:parseFloat(document.querySelector('[value="8% of Monthly Revenue"]')?.value||'8')||8,
-      ontime_benefit: document.querySelector('[value="Priority Staff Replacement"]')?.value||'',
-      late_penalty_1_7: document.querySelector('[value="₹500 / day"]')?.value||'',
-      late_penalty_8_30: document.querySelector('[value="₹1,000 / day"]')?.value||'',
-      updated_by: adminSession?.id||null
+      royalty_rate_pct: parseFloat(v('rs-rate-pct','8'))||8,
+      ontime_benefit:   v('rs-ontime-benefit',''),
+      late_penalty_1_7: v('rs-late-1-7',''),
+      late_penalty_8_30:v('rs-late-8-30',''),
+      updated_by: adminSession?.id||null,
+      updated_at: new Date().toISOString()
     };
     const op = data
       ? sb.from('royalty_settings').update(fields).eq('id',data.id)
       : sb.from('royalty_settings').insert(fields);
     op.then(({error})=>{if(!error)alert('✓ Royalty structure saved!');else alert('Error: '+error.message);});
+  });
+}
+// Load saved royalty settings into the structure form on tab open
+function loadRoyaltyStructureUI(){
+  sb.from('royalty_settings').select('*').limit(1).single().then(({data})=>{
+    if(!data)return;
+    const set=(id,val)=>{const el=document.getElementById(id);if(el&&val!=null)el.value=val;};
+    set('rs-rate-pct', data.royalty_rate_pct);
+    set('rs-ontime-benefit', data.ontime_benefit);
+    set('rs-late-1-7', data.late_penalty_1_7);
+    set('rs-late-8-30', data.late_penalty_8_30);
   });
 }
 // ── LANGUAGE TAB SWITCHER ──
@@ -2619,27 +3012,48 @@ async function saveGuidelineTranslations(lang){
 }
 
 // ── AUTO-TRANSLATE via Claude API ──
-async function callTranslateAPI(text, targetLang){
-  const langNames={hindi:'Hindi',telugu:'Telugu',punjabi:'Punjabi'};
-  const tl=langNames[targetLang]||targetLang;
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        messages:[{role:'user',content:`Translate the following text to ${tl}. Return ONLY the translated text, no explanation, no quotes.
+// Direct browser calls to api.anthropic.com are blocked by CORS and require
+// an API key. Configure a Supabase Edge Function URL below to enable
+// auto-translate. Leave empty to disable (button will show a warning).
+//   Recommended Edge Function contract:
+//     POST { text: string, targetLang: 'hindi'|'telugu'|'punjabi' }
+//     -> { translated: string }
+const TRANSLATE_PROXY_URL = ''; // e.g. 'https://lplaxibcbbpuyioqhwhz.functions.supabase.co/translate'
 
-${text}`}]
-      })
+function isTranslateConfigured(){return !!(TRANSLATE_PROXY_URL && TRANSLATE_PROXY_URL.trim());}
+
+async function callTranslateAPI(text, targetLang){
+  if(!isTranslateConfigured()){
+    console.warn('Translate proxy not configured. Returning original text.');
+    return text;
+  }
+  try{
+    const res=await fetch(TRANSLATE_PROXY_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json',
+               'apikey':SUPABASE_ANON_KEY,
+               'Authorization':'Bearer '+SUPABASE_ANON_KEY},
+      body:JSON.stringify({text, targetLang})
     });
+    if(!res.ok){
+      console.error('Translate proxy returned',res.status);
+      return text;
+    }
     const data=await res.json();
-    return (data.content&&data.content[0]&&data.content[0].text)||text;
+    return data.translated || data.text || text;
   }catch(e){console.error('Translate error:',e);return text;}
 }
 
+function warnTranslateNotConfigured(){
+  alert('⚠️ Auto-translate is not configured.\n\n'+
+    'Browsers cannot call api.anthropic.com directly (CORS + API key required).\n\n'+
+    'To enable: deploy a Supabase Edge Function that proxies translations, '+
+    'then set TRANSLATE_PROXY_URL near the top of admin.html.\n\n'+
+    'Until then, please translate manually using the language tabs.');
+}
+
 async function autoTranslateLang(lang){
+  if(!isTranslateConfigured()){warnTranslateNotConfigured();return;}
   const ids={hindi:'gl-hindi-list',telugu:'gl-telugu-list',punjabi:'gl-punjabi-list'};
   // Ensure the translation panel is built before translating
   buildGLTranslations(lang);
@@ -2660,6 +3074,7 @@ async function autoTranslateLang(lang){
 }
 
 async function autoTranslateAll(){
+  if(!isTranslateConfigured()){warnTranslateNotConfigured();return;}
   if(!confirm('Auto-translate all guidelines to Hindi, Telugu & Punjabi? This will overwrite existing translations.'))return;
   if(!GUIDELINES.length&&!GUIDELINES_OBJ.length){alert('No English guidelines found. Add guidelines first.');return;}
   const langs=['hindi','telugu','punjabi'];
@@ -2771,6 +3186,7 @@ async function saveSupportUI(lang){
 
 // ── AUTO-TRANSLATE SUPPORT ──
 async function autoTranslateSupport(){
+  if(!isTranslateConfigured()){warnTranslateNotConfigured();return;}
   if(!confirm('Auto-translate support items to Hindi, Telugu & Punjabi?'))return;
   const hl=(document.getElementById('e-sup-hl')||{}).value||'';
   // Build lang editors first if not built
@@ -2853,6 +3269,7 @@ async function loadOpsTranslations(lang){
 
 // ── AUTO-TRANSLATE OPS ──
 async function autoTranslateOps(){
+  if(!isTranslateConfigured()){warnTranslateNotConfigured();return;}
   if(!confirm('Auto-translate operations to Hindi, Telugu & Punjabi?'))return;
   const btn=document.activeElement;
   const origText=btn&&btn.tagName==='BUTTON'?btn.textContent:'';
@@ -2880,6 +3297,7 @@ async function autoTranslateOps(){
 
 // ── AUTO-TRANSLATE INCLUSIONS ──
 async function autoTranslateInclusions(model){
+  if(!isTranslateConfigured()){warnTranslateNotConfigured();return;}
   const src=(document.getElementById('e-i'+model+'inc')||{}).value||'';
   if(!src){alert('Enter English inclusions first.');return;}
   const btn=document.activeElement;
@@ -2924,7 +3342,7 @@ function doAdminLogin(){
     loadLeads().then(leads=>{LEADS=leads;buildLeadTable();});
     loadVideos();
     loadGuidelines().then(g=>{GUIDELINES=g;});
-    loadMFAccounts().then(mf=>{MF_ACCOUNTS_DATA=mf;});
+    loadMFAccounts().then(mf=>{MF_ACCOUNTS_DATA=mf;populateMFDropdowns();});
     loadFranchises().then(f=>{FRANCHISES=f;});
     loadPaymentSettings().then(ps=>{
       if(ps){
@@ -2974,9 +3392,10 @@ function doAdminLogin(){
     .eq('username',user.trim().toLowerCase())
     .eq('is_active',true)
     .single()
-    .then(({data,error})=>{
+    .then(async ({data,error})=>{
       if(error||!data){if(err)err.style.display='block';return;}
-      if(data.password_hash===pass){
+      const ok = await verifyPassword(pass, data.password_hash);
+      if(ok){
         onSuccess(data.id,data.username,data.role);
       } else {
         if(err)err.style.display='block';

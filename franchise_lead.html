@@ -595,7 +595,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
     <div class="stitle">Franchise Guidelines</div>
     <div class="ssub">Read and accept each guideline. All must be checked to proceed.</div>
     <div class="card"><div class="sec">All Guidelines <span id="glc" class="nbadge">0/12</span></div><div id="gllist"></div></div>
-    <button class="btn btn-p btn-f" id="glbtn" style="opacity:.4;pointer-events:none;" onclick="fstep('s-confirm')">Accept All &amp; Continue →</button>
+    <button class="btn btn-p btn-f" id="glbtn" style="opacity:.4;pointer-events:none;" onclick="acceptGuidelines()">Accept All &amp; Continue →</button>
   </div></div>
 </div>
 
@@ -927,14 +927,14 @@ async function submitPayment(screenshotDataUrl){
     recorded_by_type:'lead'
   });
   if(error){console.error('submitPayment:',error);return false;}
-  // Update lead status to project
+  // Update lead status to project (current_step capped at total steps)
   await sb.from('leads').update({
     status:'project',
-    current_step:12,
+    current_step:10,
     updated_at:new Date().toISOString()
   }).eq('id',leadSession.id);
   leadSession.status='project';
-  leadSession.current_step=12;
+  leadSession.current_step=10;
   return true;
 }
 
@@ -977,7 +977,7 @@ function doLogin(){
         return;
       }
       if(data.pin_hash===pin){
-        leadSession={id:data.id,name:data.name,current_step:data.current_step||0,status:data.status};
+        leadSession={id:data.id,name:data.name,current_step:data.current_step||0,status:data.status,model_interest:data.model_interest||null};
         if(errEl)errEl.style.display='none';
         if(data.language){selLangV=data.language;}
         var targetStep=data.current_step>0?STEPS[Math.min(data.current_step,STEPS.length-1)]:'lang';
@@ -1050,11 +1050,14 @@ function doReg(){
 function doPay(){
   var imgEl=document.getElementById('scr-img');
   var screenshotData=imgEl&&imgEl.src&&imgEl.src.startsWith('data:')?imgEl.src:null;
+  var btn=document.activeElement;
+  var origText=btn&&btn.tagName==='BUTTON'?btn.textContent:'';
+  if(btn&&btn.tagName==='BUTTON'){btn.textContent='Submitting…';btn.disabled=true;}
   submitPayment(screenshotData).then(function(ok){
+    if(btn&&btn.tagName==='BUTTON'){btn.textContent=origText||'Submit Payment';btn.disabled=false;}
     if(ok){fs('s-project');}
     else{
-      // Still navigate even if DB write failed — show project screen
-      fs('s-project');
+      alert('⚠️ Could not save your payment record. Please check your connection and try again, or contact support if the issue persists.');
     }
   });
 }
@@ -1144,6 +1147,21 @@ function stab(btn,tabId){
   btn.classList.add('active');
   ['i3','i4','i5','r3','r4','r5'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});
   const t=document.getElementById(tabId);if(t)t.style.display='block';
+  // Persist user's model interest to DB (only when picking from investment 'i*' or ROI 'r*' tabs)
+  if(leadSession&&leadSession.id){
+    const modelMap={i3:'3 Chair',i4:'4 Chair',i5:'5 Chair',r3:'3 Chair',r4:'4 Chair',r5:'5 Chair'};
+    const selectedModel=modelMap[tabId];
+    if(selectedModel && leadSession.model_interest !== selectedModel){
+      leadSession.model_interest = selectedModel;
+      sb.from('leads').update({
+        model_interest: selectedModel,
+        updated_at: new Date().toISOString()
+      }).eq('id', leadSession.id).then(function(){});
+      // Update Final Confirmation page badge if visible
+      const confPill=document.querySelector('#s-confirm .pill.p-inf');
+      if(confPill)confPill.textContent=selectedModel;
+    }
+  }
 }
 function smtab(btn,tabId){
   document.querySelectorAll('.mnbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
@@ -1175,6 +1193,17 @@ function tck(el,grp){
   if(grp==='cf'){cfChecked=document.querySelectorAll('#cflist .cbox.chk').length;const btn=document.getElementById('cfbtn');if(btn){const ok=cfChecked===CONFIRM_ITEMS.length;btn.style.opacity=ok?'1':'0.4';btn.style.pointerEvents=ok?'auto':'none';}}
 }
 function ugc(){const e=document.getElementById('glc');if(e)e.textContent=glChecked+'/'+GUIDELINES.length;}
+
+// ── ACCEPT GUIDELINES — persists to DB ──
+function acceptGuidelines(){
+  if(leadSession&&leadSession.id){
+    sb.from('leads').update({
+      guidelines_accepted:true,
+      updated_at:new Date().toISOString()
+    }).eq('id',leadSession.id).then(function(){});
+  }
+  fstep('s-confirm');
+}
 
 // ── LOGOUT ──
 function doLogout(){if(confirm('Logout from Franchise Portal?'))window.location='index.html';}
