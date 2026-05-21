@@ -728,12 +728,25 @@ function doFTLogin(){
     .select('id, name, email, phone, role, region, cities, status, head_id, password_hash')
     .eq('email', user)
     .eq('status', 'Active')
-    .single()
+    .maybeSingle()
     .then(async ({data, error})=>{
-      if(error || !data){ err.style.display='block'; return; }
+      if(error){
+        console.error('[FT login] DB error:', error);
+        err.textContent = 'Login error: '+(error.message||'unknown')+
+          ' — check that franchise_team_schema.sql has been run.';
+        err.style.display='block'; return;
+      }
+      if(!data){
+        console.warn('[FT login] No matching active row for email:', user);
+        err.textContent = 'No active account found for "'+user+'". '+
+          'Did you run the SQL migration? Email must match exactly.';
+        err.style.display='block'; return;
+      }
       // Plain or hashed match (support both during migration)
       const hashed = await hashPassword(pass);
       if(data.password_hash !== pass && data.password_hash !== hashed){
+        console.warn('[FT login] Password mismatch for', user);
+        err.textContent = 'Wrong password. (Demo password is case-sensitive.)';
         err.style.display='block'; return;
       }
       err.style.display='none';
