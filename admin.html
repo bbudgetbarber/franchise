@@ -276,7 +276,7 @@ input:checked + .slider:before{transform:translateX(16px);}
     <a href="index.html" style="text-decoration:none;display:block;margin-bottom:6px;">
       <button class="btn btn-sm btn-f" style="background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.55);border-color:rgba(255,255,255,0.12);">🏠 Back to Home</button>
     </a>
-    <button class="btn btn-sm btn-f" style="background:rgba(163,45,45,0.18);color:#f28b8b;border-color:rgba(163,45,45,0.3);" onclick="if(confirm('Logout from Admin Portal?'))window.location='index.html'">⎋ Logout</button>
+    <button class="btn btn-sm btn-f" style="background:rgba(163,45,45,0.18);color:#f28b8b;border-color:rgba(163,45,45,0.3);" onclick="if(confirm('Logout from Admin Portal?')){adminLogout();}">⎋ Logout</button>
   </div>
 </div>
 
@@ -294,34 +294,47 @@ input:checked + .slider:before{transform:translateX(16px);}
 
     <!-- DASHBOARD -->
     <div id="at-dashboard" class="admin-tab active">
-      <div class="adm-page-title">Dashboard</div>
-      <div class="adm-page-sub">Overview of all franchise leads and portal activity</div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:22px;flex-wrap:wrap;">
+        <div>
+          <div class="adm-page-title">Dashboard</div>
+          <div class="adm-page-sub">Overview of all franchise leads and portal activity</div>
+        </div>
+        <button class="btn" onclick="refreshDashboard()">↻ Refresh</button>
+      </div>
       <div class="stat-grid">
-        <div class="stat-card"><div class="stat-num" style="color:var(--hi);">18</div><div class="stat-lbl">Total Leads</div><div class="stat-delta" style="color:var(--ok-tx);">↑ 3 this week</div></div>
-        <div class="stat-card"><div class="stat-num" style="color:var(--ok-tx);">4</div><div class="stat-lbl">Active Projects</div><div class="stat-delta" style="color:var(--ok-tx);">Token paid</div></div>
-        <div class="stat-card"><div class="stat-num" style="color:var(--wrn-tx);">9</div><div class="stat-lbl">In Progress</div><div class="stat-delta" style="color:var(--mut);">Watching videos</div></div>
-        <div class="stat-card"><div class="stat-num" style="color:var(--no-tx);">5</div><div class="stat-lbl">Closed</div><div class="stat-delta" style="color:var(--mut);">Not interested</div></div>
+        <div class="stat-card"><div class="stat-num" id="db-stat-total" style="color:var(--hi);">—</div><div class="stat-lbl">Total Leads</div><div class="stat-delta" id="db-stat-total-delta" style="color:var(--mut);">All time</div></div>
+        <div class="stat-card"><div class="stat-num" id="db-stat-projects" style="color:var(--ok-tx);">—</div><div class="stat-lbl">Active Projects</div><div class="stat-delta" style="color:var(--mut);">Token paid</div></div>
+        <div class="stat-card"><div class="stat-num" id="db-stat-progress" style="color:var(--wrn-tx);">—</div><div class="stat-lbl">In Progress</div><div class="stat-delta" style="color:var(--mut);">Walking the funnel</div></div>
+        <div class="stat-card"><div class="stat-num" id="db-stat-closed" style="color:var(--no-tx);">—</div><div class="stat-lbl">Closed</div><div class="stat-delta" style="color:var(--mut);">Not interested / lost</div></div>
+      </div>
+      <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);">
+        <div class="stat-card"><div class="stat-num" id="db-stat-new" style="color:var(--inf-tx);">—</div><div class="stat-lbl">New Leads</div><div class="stat-delta" id="db-stat-new-delta" style="color:var(--mut);">Awaiting follow-up</div></div>
+        <div class="stat-card"><div class="stat-num" id="db-stat-unassigned" style="color:var(--wrn-tx);">—</div><div class="stat-lbl">Unassigned</div><div class="stat-delta" style="color:var(--mut);">No MF yet</div></div>
+        <div class="stat-card"><div class="stat-num" id="db-stat-mf" style="color:var(--hi);">—</div><div class="stat-lbl">Master Franchises</div><div class="stat-delta" style="color:var(--mut);">Active partners</div></div>
+        <div class="stat-card"><div class="stat-num" id="db-stat-revenue" style="color:var(--ok-tx);">—</div><div class="stat-lbl">Token Revenue</div><div class="stat-delta" style="color:var(--mut);">Verified payments</div></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
         <div class="adm-card" style="margin:0;">
           <div class="adm-card-title">Recent Activity</div>
           <div class="adm-card-sub">Latest franchise lead actions</div>
-          <div class="activity-item"><div class="ai-dot"></div><div class="ai-info"><div class="ai-txt"><strong>Rajesh Kumar</strong> completed Vision Video</div><div class="ai-time">2 mins ago</div></div></div>
-          <div class="activity-item"><div class="ai-dot" style="background:var(--ok-tx);"></div><div class="ai-info"><div class="ai-txt"><strong>Priya Sharma</strong> paid token ₹20,000</div><div class="ai-time">1 hr ago</div></div></div>
-          <div class="activity-item"><div class="ai-dot" style="background:var(--no-tx);"></div><div class="ai-info"><div class="ai-txt"><strong>Suresh Babu</strong> marked Not Interested</div><div class="ai-time">3 hrs ago</div></div></div>
-          <div class="activity-item"><div class="ai-dot" style="background:var(--inf-tx);"></div><div class="ai-info"><div class="ai-txt"><strong>Arun Reddy</strong> accepted all guidelines</div><div class="ai-time">5 hrs ago</div></div></div>
-          <div class="activity-item" style="border:none;"><div class="ai-dot" style="background:var(--wrn-tx);"></div><div class="ai-info"><div class="ai-txt"><strong>Meena Iyer</strong> registered as new lead</div><div class="ai-time">Yesterday</div></div></div>
+          <div id="db-activity"><div style="font-size:13px;color:var(--hnt);padding:8px 0;">Loading…</div></div>
         </div>
         <div class="adm-card" style="margin:0;">
-          <div class="adm-card-title">Video Completion Rates</div>
-          <div class="adm-card-sub">% of leads who watched each video</div>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Vision Video</span><span style="font-weight:700;">94%</span></div><div class="pbwrap" style="margin:0;"><div class="pbfill" style="width:94%;"></div></div></div>
-            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Salon 360°</span><span style="font-weight:700;">88%</span></div><div class="pbwrap" style="margin:0;"><div class="pbfill" style="width:88%;"></div></div></div>
-            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Investment</span><span style="font-weight:700;">76%</span></div><div class="pbwrap" style="margin:0;"><div class="pbfill" style="width:76%;"></div></div></div>
-            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>ROI</span><span style="font-weight:700;">71%</span></div><div class="pbwrap" style="margin:0;"><div class="pbfill" style="width:71%;"></div></div></div>
-            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>Royalty</span><span style="font-weight:700;">58%</span></div><div class="pbwrap" style="margin:0;"><div class="pbfill" style="width:58%;"></div></div></div>
-          </div>
+          <div class="adm-card-title">Leads by State</div>
+          <div class="adm-card-sub">Geographic distribution</div>
+          <div id="db-by-state"><div style="font-size:13px;color:var(--hnt);padding:8px 0;">Loading…</div></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div class="adm-card" style="margin:0;">
+          <div class="adm-card-title">Funnel Progress</div>
+          <div class="adm-card-sub">% of leads who have reached each step</div>
+          <div id="db-funnel"><div style="font-size:13px;color:var(--hnt);padding:8px 0;">Loading…</div></div>
+        </div>
+        <div class="adm-card" style="margin:0;">
+          <div class="adm-card-title">Leads by Source</div>
+          <div class="adm-card-sub">Where leads are coming from</div>
+          <div id="db-by-source"><div style="font-size:13px;color:var(--hnt);padding:8px 0;">Loading…</div></div>
         </div>
       </div>
       <div class="adm-card">
@@ -1784,6 +1797,7 @@ function aTab(btn,tabId){
   const ALL_TABS=['at-dashboard','at-leads','at-newlead','at-videos','at-invest-content','at-guidelines','at-support-content','at-ops-content','at-payments','at-royalty-mgmt','at-settings','at-pay-settings','at-mf-overview','at-mf-accounts','at-mf-create','at-mf-regions','at-franchises','at-franchise-royalty'];
   ALL_TABS.forEach(id=>{const t=document.getElementById(id);if(t)t.classList.remove('active');});
   const el=document.getElementById(tabId);if(el)el.classList.add('active');
+  if(tabId==='at-dashboard') refreshDashboard();
   if(tabId==='at-leads'){loadLeads(null).then(leads=>{LEADS=leads;buildLeadTable(currentLeadFilters);});}
   if(tabId==='at-guidelines')buildGLAdmin();
   if(tabId==='at-mf-accounts'){
@@ -2724,6 +2738,187 @@ function createMFLogin(){
 // ── SUPABASE DATA FUNCTIONS ──
 // ════════════════════════════════════════════
 
+// ── DASHBOARD ──
+function timeAgo(iso){
+  if(!iso) return '';
+  const d = new Date(iso);
+  const s = Math.floor((Date.now() - d.getTime())/1000);
+  if(s<60) return 'just now';
+  const m = Math.floor(s/60);
+  if(m<60) return m+' min'+(m>1?'s':'')+' ago';
+  const h = Math.floor(m/60);
+  if(h<24) return h+' hr'+(h>1?'s':'')+' ago';
+  const dd = Math.floor(h/24);
+  if(dd<7) return dd+' day'+(dd>1?'s':'')+' ago';
+  return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+}
+
+async function refreshDashboard(){
+  // Make sure MF + leads data are loaded
+  try {
+    if(!Array.isArray(MF_ACCOUNTS_DATA) || !MF_ACCOUNTS_DATA.length){
+      MF_ACCOUNTS_DATA = await loadMFAccounts();
+    }
+    if(!Array.isArray(LEADS) || !LEADS.length){
+      LEADS = await loadLeads();
+    }
+  } catch(e){ console.error('Dashboard preload failed:', e); }
+
+  const leads = Array.isArray(LEADS) ? LEADS : [];
+  const total = leads.length;
+  const counts = {new:0, 'in-progress':0, project:0, closed:0};
+  let unassigned = 0;
+  const stateCounts = {};
+  const sourceCounts = {};
+  const stepReach = new Array(11).fill(0); // index = step number 0..10
+
+  const weekAgo = Date.now() - 7*24*60*60*1000;
+  let newThisWeek = 0;
+
+  leads.forEach(l=>{
+    if(counts[l.status] !== undefined) counts[l.status]++;
+    if(!l.assignedMfId) unassigned++;
+    const st = l.state && l.state!=='—' ? l.state : 'Unknown';
+    stateCounts[st] = (stateCounts[st]||0) + 1;
+    const src = l.source && l.source!=='—' ? l.source : 'Direct';
+    sourceCounts[src] = (sourceCounts[src]||0) + 1;
+    const stp = Math.max(0, Math.min(10, parseInt(l.step||0,10)));
+    // a lead at step N has "reached" steps 0..N
+    for(let i=0;i<=stp;i++) stepReach[i]++;
+    if(l.createdAt && new Date(l.createdAt).getTime() >= weekAgo) newThisWeek++;
+  });
+
+  // ── Top-row stats
+  const setText = (id,v)=>{ const e=document.getElementById(id); if(e) e.textContent = v; };
+  setText('db-stat-total', total);
+  setText('db-stat-total-delta', newThisWeek>0 ? ('↑ '+newThisWeek+' this week') : 'No new leads this week');
+  setText('db-stat-projects', counts.project);
+  setText('db-stat-progress', counts['in-progress']);
+  setText('db-stat-closed', counts.closed);
+  setText('db-stat-new', counts.new);
+  setText('db-stat-unassigned', unassigned);
+
+  // MF count (active)
+  const mfActive = (MF_ACCOUNTS_DATA||[]).filter(m=>String(m.status||'').toLowerCase()==='active').length;
+  setText('db-stat-mf', mfActive);
+
+  // ── Token revenue: sum verified payments
+  try {
+    const {data:pays} = await sb.from('payments').select('amount,status').eq('status','verified');
+    const sum = (pays||[]).reduce((a,p)=>a + (parseFloat(p.amount)||0), 0);
+    setText('db-stat-revenue', '₹'+(sum>=100000 ? (sum/100000).toFixed(1)+'L' : sum.toLocaleString('en-IN')));
+  } catch(e){
+    setText('db-stat-revenue', '₹0');
+  }
+
+  // ── Recent Activity: latest 5 lead_notes + latest 5 leads, merged & sorted
+  const actEl = document.getElementById('db-activity');
+  if(actEl){
+    const items = [];
+    // Recent leads (created)
+    const recentLeads = [...leads].sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0)).slice(0,5);
+    recentLeads.forEach(l=>{
+      items.push({
+        ts: l.createdAt,
+        dot: 'var(--inf-tx)',
+        text: '<strong>'+escapeHtml(l.name||'Lead')+'</strong> registered ('+escapeHtml(l.city||'')+(l.state&&l.state!=='—'?', '+escapeHtml(l.state):'')+')'
+      });
+    });
+    // Recent notes
+    try {
+      const {data:notes} = await sb.from('lead_notes')
+        .select('note,created_at,added_by_type,lead_id,leads(name)')
+        .order('created_at',{ascending:false}).limit(8);
+      (notes||[]).forEach(n=>{
+        const leadName = n.leads?.name || 'A lead';
+        items.push({
+          ts: n.created_at,
+          dot: 'var(--hi)',
+          text: '<strong>'+escapeHtml(leadName)+'</strong> · '+escapeHtml((n.note||'').slice(0,80))+((n.note||'').length>80?'…':'')
+        });
+      });
+    } catch(e){ console.warn('activity notes failed:', e.message); }
+    // Recent verified payments
+    try {
+      const {data:vpays} = await sb.from('payments')
+        .select('amount,verified_at,leads(name)')
+        .eq('status','verified').order('verified_at',{ascending:false}).limit(5);
+      (vpays||[]).forEach(p=>{
+        items.push({
+          ts: p.verified_at,
+          dot: 'var(--ok-tx)',
+          text: '<strong>'+escapeHtml(p.leads?.name||'Lead')+'</strong> paid ₹'+(parseFloat(p.amount)||0).toLocaleString('en-IN')
+        });
+      });
+    } catch(e){}
+    // Sort merged
+    items.sort((a,b)=>new Date(b.ts||0)-new Date(a.ts||0));
+    const top = items.slice(0,8);
+    if(!top.length){
+      actEl.innerHTML = '<div style="font-size:13px;color:var(--hnt);padding:8px 0;">No recent activity yet.</div>';
+    } else {
+      actEl.innerHTML = top.map((it,i)=>{
+        const last = i===top.length-1;
+        return '<div class="activity-item"'+(last?' style="border:none;"':'')+'>'+
+          '<div class="ai-dot" style="background:'+it.dot+';"></div>'+
+          '<div class="ai-info"><div class="ai-txt">'+it.text+'</div>'+
+          '<div class="ai-time">'+timeAgo(it.ts)+'</div></div></div>';
+      }).join('');
+    }
+  }
+
+  // ── Leads by State
+  const byStateEl = document.getElementById('db-by-state');
+  if(byStateEl){
+    const rows = Object.entries(stateCounts).sort((a,b)=>b[1]-a[1]);
+    if(!rows.length){
+      byStateEl.innerHTML = '<div style="font-size:13px;color:var(--hnt);padding:8px 0;">No leads yet.</div>';
+    } else {
+      const max = rows[0][1];
+      byStateEl.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px;">'+
+        rows.map(([s,n])=>{
+          const pct = max>0 ? Math.round((n/max)*100) : 0;
+          return '<div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>'+escapeHtml(s)+'</span><span style="font-weight:700;">'+n+'</span></div>'+
+            '<div class="pbwrap" style="margin:0;"><div class="pbfill" style="width:'+pct+'%;"></div></div></div>';
+        }).join('')+'</div>';
+    }
+  }
+
+  // ── Funnel Progress (% of leads at each step)
+  const funnelEl = document.getElementById('db-funnel');
+  if(funnelEl){
+    const labels = ['Registered (0)','Vision Video (1)','Salon 360° (2)','Investment (3)','ROI (4)','Operations (5)','Royalty (6)','Guidelines (7)','Payment (8)','Agreement (9)','Project Active (10)'];
+    if(total===0){
+      funnelEl.innerHTML = '<div style="font-size:13px;color:var(--hnt);padding:8px 0;">No leads yet.</div>';
+    } else {
+      funnelEl.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px;">'+
+        labels.map((lbl,i)=>{
+          const n = stepReach[i] || 0;
+          const pct = total>0 ? Math.round((n/total)*100) : 0;
+          return '<div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>'+lbl+'</span><span style="font-weight:700;">'+pct+'% ('+n+')</span></div>'+
+            '<div class="pbwrap" style="margin:0;"><div class="pbfill" style="width:'+pct+'%;"></div></div></div>';
+        }).join('')+'</div>';
+    }
+  }
+
+  // ── Leads by Source
+  const bySrcEl = document.getElementById('db-by-source');
+  if(bySrcEl){
+    const rows = Object.entries(sourceCounts).sort((a,b)=>b[1]-a[1]);
+    if(!rows.length){
+      bySrcEl.innerHTML = '<div style="font-size:13px;color:var(--hnt);padding:8px 0;">No leads yet.</div>';
+    } else {
+      const max = rows[0][1];
+      bySrcEl.innerHTML = '<div style="display:flex;flex-direction:column;gap:10px;">'+
+        rows.map(([s,n])=>{
+          const pct = max>0 ? Math.round((n/max)*100) : 0;
+          return '<div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;"><span>'+escapeHtml(s)+'</span><span style="font-weight:700;">'+n+'</span></div>'+
+            '<div class="pbwrap" style="margin:0;"><div class="pbfill" style="width:'+pct+'%;"></div></div></div>';
+        }).join('')+'</div>';
+    }
+  }
+}
+
 // ── CITY → STATE MAPPING ──
 // Normalized (lowercase, trimmed) city name → state. Extend freely.
 const CITY_STATE_MAP = {
@@ -3642,68 +3837,123 @@ function savePortalSettingsUI(){
 }
 
 // ── ADMIN LOGIN ──
+const ADMIN_SESSION_KEY = 'bb_admin_session_v1';
+// Session expires after 24 hours
+const ADMIN_SESSION_TTL_MS = 24*60*60*1000;
+
+function persistAdminSession(sess){
+  try {
+    const payload = {
+      id: sess.id, username: sess.username, role: sess.role,
+      ts: Date.now()
+    };
+    localStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(payload));
+  } catch(e){ console.warn('Could not persist session:', e); }
+}
+
+function clearAdminSession(){
+  try { localStorage.removeItem(ADMIN_SESSION_KEY); } catch(e){}
+}
+
+function readPersistedSession(){
+  try {
+    const raw = localStorage.getItem(ADMIN_SESSION_KEY);
+    if(!raw) return null;
+    const obj = JSON.parse(raw);
+    if(!obj || !obj.id || !obj.username) return null;
+    if(Date.now() - (obj.ts||0) > ADMIN_SESSION_TTL_MS){
+      clearAdminSession();
+      return null;
+    }
+    return obj;
+  } catch(e){ return null; }
+}
+
+function adminLogout(){
+  clearAdminSession();
+  adminSession = null;
+  // Reset UI
+  const main = document.getElementById('admin-main-wrap');
+  if(main) main.style.display='none';
+  const login = document.getElementById('admin-login-screen');
+  if(login) login.style.display='flex';
+  // Clear form
+  const u=document.getElementById('adm-user'); if(u) u.value='';
+  const p=document.getElementById('adm-pass'); if(p) p.value='';
+  // Reset in-memory data so old user's data isn't visible if a different user logs in
+  LEADS = []; MF_ACCOUNTS_DATA = []; GUIDELINES = []; FRANCHISES = [];
+}
+
+// Single entry point used by both fresh logins and restored sessions
+function adminPostLogin(id, username, role){
+  adminSession = {id:id, username:username, role:role};
+  persistAdminSession(adminSession);
+  const err = document.getElementById('adm-err');
+  if(err) err.style.display='none';
+  const loginEl = document.getElementById('admin-login-screen');
+  if(loginEl) loginEl.style.display='none';
+  const mainEl = document.getElementById('admin-main-wrap');
+  if(mainEl) mainEl.style.display='flex';
+
+  // Load MF accounts FIRST so leads + dashboard can use them
+  loadMFAccounts().then(mf=>{
+    MF_ACCOUNTS_DATA = mf;
+    populateMFDropdowns();
+    return loadLeads();
+  }).then(leads=>{
+    LEADS = leads || [];
+    buildLeadTable(currentLeadFilters);
+    refreshDashboard();
+  }).catch(e=>console.error('post-login load failed:', e));
+
+  loadVideos();
+  loadGuidelines().then(g=>{GUIDELINES=g;});
+  loadFranchises().then(f=>{FRANCHISES=f;});
+  loadPaymentSettings().then(ps=>{
+    if(ps){
+      const upiEl=document.getElementById('upi-id');if(upiEl)upiEl.value=ps.primary_upi_id||'';
+      const upiNameEl=document.getElementById('upi-name');if(upiNameEl)upiNameEl.value=ps.registered_name||'';
+      const amtEl=document.getElementById('upi-amount');if(amtEl)amtEl.value=ps.token_amount||20000;
+      const bankAccEl=document.getElementById('bank-acc');if(bankAccEl)bankAccEl.value=ps.bank_account_no||'';
+      const bankIfscEl=document.getElementById('bank-ifsc');if(bankIfscEl)bankIfscEl.value=ps.bank_ifsc||'';
+      const bankBranchEl=document.getElementById('bank-branch');if(bankBranchEl)bankBranchEl.value=ps.bank_branch||'';
+      const bankNameEl=document.getElementById('bank-name');if(bankNameEl)bankNameEl.value=ps.bank_account_name||'';
+      const prevUpi=document.getElementById('preview-upi');if(prevUpi)prevUpi.textContent=ps.primary_upi_id||'budgetbarber@paytm';
+      if(ps.qr_code_url){
+        const qrUrlEl=document.getElementById('qr-url');if(qrUrlEl)qrUrlEl.value=ps.qr_code_url;
+        const qrImg=document.getElementById('qr-preview-img');
+        const qrPh=document.getElementById('qr-placeholder');
+        if(qrImg){qrImg.src=ps.qr_code_url;qrImg.style.display='block';}
+        if(qrPh)qrPh.style.display='none';
+      }
+      const noteEl=document.getElementById('upi-note');if(noteEl&&ps.payment_instructions)noteEl.value=ps.payment_instructions;
+      const upiId2El=document.getElementById('upi-id2');if(upiId2El&&ps.backup_upi_id)upiId2El.value=ps.backup_upi_id;
+    }
+  });
+  loadInvestmentModels().then(models=>{
+    models.forEach(m=>{
+      const s=m.model_name==='3 Chair'?'3':m.model_name==='4 Chair'?'4':'5';
+      const aEl=document.getElementById('e-a'+s+'c');if(aEl)aEl.value=m.area_sqft||'';
+      const pEl=document.getElementById('e-p'+s+'c');if(pEl)pEl.value=m.display_price||'';
+      const feeEl=document.getElementById('e-i'+s+'fee');if(feeEl)feeEl.value=m.franchise_fee||'';
+      const intEl=document.getElementById('e-i'+s+'int');if(intEl)intEl.value=m.interior_setup||'';
+    });
+  });
+  loadOperationsContent().then(ops=>{
+    if(ops){
+      const hrsEl=document.getElementById('e-ophrs');if(hrsEl)hrsEl.value=ops.salon_hours||'';
+      const daysEl=document.getElementById('e-opdays');if(daysEl)daysEl.value=ops.operating_days||'';
+      const breaksEl=document.getElementById('e-opbreaks');if(breaksEl)breaksEl.value=ops.break_policy||'';
+      const otEl=document.getElementById('e-opot');if(otEl)otEl.value=ops.ot_allowance||'';
+      const stdEl=document.getElementById('e-opstd');if(stdEl)stdEl.value=ops.service_standards||'';
+    }
+  });
+}
+
 function doAdminLogin(){
   var user=(document.getElementById('adm-user')||{}).value||'';
   var pass=(document.getElementById('adm-pass')||{}).value||'';
   var err=document.getElementById('adm-err');
-
-  function onSuccess(id,username,role){
-    adminSession={id:id,username:username,role:role};
-    if(err)err.style.display='none';
-    document.getElementById('admin-login-screen').style.display='none';
-    document.getElementById('admin-main-wrap').style.display='flex';
-    // Load MF accounts FIRST so leads can show MF labels and auto-assign correctly
-    loadMFAccounts().then(mf=>{
-      MF_ACCOUNTS_DATA=mf;
-      populateMFDropdowns();
-      // Now load leads
-      loadLeads().then(leads=>{LEADS=leads;buildLeadTable(currentLeadFilters);});
-    });
-    loadVideos();
-    loadGuidelines().then(g=>{GUIDELINES=g;});
-    loadFranchises().then(f=>{FRANCHISES=f;});
-    loadPaymentSettings().then(ps=>{
-      if(ps){
-        const upiEl=document.getElementById('upi-id');if(upiEl)upiEl.value=ps.primary_upi_id||'';
-        const upiNameEl=document.getElementById('upi-name');if(upiNameEl)upiNameEl.value=ps.registered_name||'';
-        const amtEl=document.getElementById('upi-amount');if(amtEl)amtEl.value=ps.token_amount||20000;
-        const bankAccEl=document.getElementById('bank-acc');if(bankAccEl)bankAccEl.value=ps.bank_account_no||'';
-        const bankIfscEl=document.getElementById('bank-ifsc');if(bankIfscEl)bankIfscEl.value=ps.bank_ifsc||'';
-        const bankBranchEl=document.getElementById('bank-branch');if(bankBranchEl)bankBranchEl.value=ps.bank_branch||'';
-        const bankNameEl=document.getElementById('bank-name');if(bankNameEl)bankNameEl.value=ps.bank_account_name||'';
-        const prevUpi=document.getElementById('preview-upi');if(prevUpi)prevUpi.textContent=ps.primary_upi_id||'budgetbarber@paytm';
-        // Load QR code URL if saved
-        if(ps.qr_code_url){
-          const qrUrlEl=document.getElementById('qr-url');if(qrUrlEl)qrUrlEl.value=ps.qr_code_url;
-          const qrImg=document.getElementById('qr-preview-img');
-          const qrPh=document.getElementById('qr-placeholder');
-          if(qrImg){qrImg.src=ps.qr_code_url;qrImg.style.display='block';}
-          if(qrPh)qrPh.style.display='none';
-        }
-        // Load note/instructions
-        const noteEl=document.getElementById('upi-note');if(noteEl&&ps.payment_instructions)noteEl.value=ps.payment_instructions;
-        const upiId2El=document.getElementById('upi-id2');if(upiId2El&&ps.backup_upi_id)upiId2El.value=ps.backup_upi_id;
-      }
-    });
-    loadInvestmentModels().then(models=>{
-      models.forEach(m=>{
-        const s=m.model_name==='3 Chair'?'3':m.model_name==='4 Chair'?'4':'5';
-        const aEl=document.getElementById('e-a'+s+'c');if(aEl)aEl.value=m.area_sqft||'';
-        const pEl=document.getElementById('e-p'+s+'c');if(pEl)pEl.value=m.display_price||'';
-        const feeEl=document.getElementById('e-i'+s+'fee');if(feeEl)feeEl.value=m.franchise_fee||'';
-        const intEl=document.getElementById('e-i'+s+'int');if(intEl)intEl.value=m.interior_setup||'';
-      });
-    });
-    loadOperationsContent().then(ops=>{
-      if(ops){
-        const hrsEl=document.getElementById('e-ophrs');if(hrsEl)hrsEl.value=ops.salon_hours||'';
-        const daysEl=document.getElementById('e-opdays');if(daysEl)daysEl.value=ops.operating_days||'';
-        const breaksEl=document.getElementById('e-opbreaks');if(breaksEl)breaksEl.value=ops.break_policy||'';
-        const otEl=document.getElementById('e-opot');if(otEl)otEl.value=ops.ot_allowance||'';
-        const stdEl=document.getElementById('e-opstd');if(stdEl)stdEl.value=ops.service_standards||'';
-      }
-    });
-  }
 
   sb.from('admin_users')
     .select('id,username,password_hash,role,is_active')
@@ -3714,12 +3964,38 @@ function doAdminLogin(){
       if(error||!data){if(err)err.style.display='block';return;}
       const ok = await verifyPassword(pass, data.password_hash);
       if(ok){
-        onSuccess(data.id,data.username,data.role);
+        adminPostLogin(data.id, data.username, data.role);
       } else {
         if(err)err.style.display='block';
       }
     });
 }
+
+// Try to restore a persisted session on page load. Re-validates against
+// the DB so a deactivated/deleted admin cannot keep using the portal.
+async function tryRestoreAdminSession(){
+  const saved = readPersistedSession();
+  if(!saved) return false;
+  try {
+    const {data, error} = await sb.from('admin_users')
+      .select('id,username,role,is_active')
+      .eq('id', saved.id)
+      .single();
+    if(error || !data || !data.is_active){
+      clearAdminSession();
+      return false;
+    }
+    adminPostLogin(data.id, data.username, data.role);
+    return true;
+  } catch(e){
+    console.warn('Session restore failed:', e);
+    clearAdminSession();
+    return false;
+  }
+}
+
+// Auto-restore once DOM is ready (script lives at end of body, so DOM is ready)
+tryRestoreAdminSession();
 
 // ── FIX 9: ADD FRANCHISE MODAL ──
 function openAddFranchiseModal(){
