@@ -243,7 +243,7 @@ input:checked + .slider:before{transform:translateX(16px);}
     <div class="adm-nav-item" id="nav-mft-franchises" onclick="mfTab(this,'mft-franchises')"><span class="adm-nav-icon">🏪</span>Franchises</div>
   </nav>
   <div class="admin-sidebar-footer">
-    <a href="budget_barber_franchise_lead.html" target="_blank" style="text-decoration:none;display:block;margin-bottom:6px;">
+    <a href="franchise_lead.html" target="_blank" style="text-decoration:none;display:block;margin-bottom:6px;">
       <button class="btn btn-sm btn-f" style="background:rgba(245,209,0,0.15);color:var(--brand-yellow);border-color:rgba(245,209,0,0.3);">↗ Open Franchise App</button>
     </a>
     <a href="index.html" style="text-decoration:none;display:block;margin-bottom:6px;">
@@ -711,6 +711,11 @@ input:checked + .slider:before{transform:translateX(16px);}
     </div>
     <div class="ldm-body">
       <input type="hidden" id="mf-ldm-lead-id"/>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+        <button class="btn btn-sm btn-i" onclick="quickWaFromLeadModal()">💬 WhatsApp Follow-up</button>
+        <button class="btn btn-sm" onclick="quickCallFromLeadModal()">📞 Call</button>
+        <span style="align-self:center;font-size:11px;color:var(--hnt);">Templates auto-pick based on current stage</span>
+      </div>
       <div class="adm-tabs">
         <button class="adm-tab-btn active" onclick="mfLdmTab(this,'mfldm-overview')">Overview</button>
         <button class="adm-tab-btn" onclick="mfLdmTab(this,'mfldm-progress')">Progress</button>
@@ -787,6 +792,33 @@ input:checked + .slider:before{transform:translateX(16px);}
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ── WHATSAPP FOLLOW-UP PICKER MODAL ──────────────────────────── -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="lead-detail-modal" id="wa-modal">
+  <div class="ldm-box" style="max-width:620px;">
+    <div class="ldm-hdr">
+      <div>
+        <div style="font-size:16px;font-weight:700;">💬 WhatsApp Follow-up</div>
+        <div style="font-size:12px;color:var(--mut);" id="wa-meta">—</div>
+      </div>
+      <button class="btn btn-sm" onclick="closeWaModal()">✕ Close</button>
+    </div>
+    <div class="ldm-body">
+      <div style="font-size:11px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Pick a template (stage-aware)</div>
+      <div id="wa-tpl-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Preview / Edit</div>
+      <textarea id="wa-preview" rows="9" style="width:100%;padding:10px;font-size:13px;border:0.5px solid var(--bdr2);border-radius:8px;background:var(--surf2);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;"></textarea>
+      <div style="font-size:11px;color:var(--hnt);margin-top:6px;">Edits stay in this preview — they're sent to WhatsApp when you click "Open WhatsApp".</div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;">
+        <button class="btn" onclick="closeWaModal()">Cancel</button>
+        <button class="btn btn-i" onclick="copyWaMessage()">📋 Copy</button>
+        <button class="btn btn-p" onclick="sendWaMessage()">📲 Open WhatsApp →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Supabase JS Client — must load BEFORE main script -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -810,17 +842,37 @@ let MF_FRANCHISES = [];
 async function mfLoadLeads(statusFilter){
   if(!mfSession)return[];
   let q=sb.from('leads')
-    .select('id,name,phone,email,city,language,model_interest,source,status,current_step,updated_at')
+    .select('id,name,phone,email,city,language,model_interest,source,status,current_step,updated_at,assigned_team_id,next_followup_date')
     .eq('assigned_mf_id', mfSession.id)
     .order('created_at',{ascending:false});
   if(statusFilter&&statusFilter!=='all') q=q.eq('status',statusFilter);
   const {data,error}=await q;
   if(error){console.error('mfLoadLeads:',error);return[];}
-  return (data||[]).map(l=>({
-    id:l.id,name:l.name,phone:l.phone,city:l.city,
-    step:l.current_step,status:l.status,
-    lang:l.language,model:l.model_interest||'—',source:l.source
-  }));
+  const leads = data||[];
+
+  // Best-effort team-owner lookup (degrades gracefully if table missing)
+  let teamMap = {};
+  const teamIds = [...new Set(leads.map(l=>l.assigned_team_id).filter(Boolean))];
+  if(teamIds.length){
+    const {data:tRows, error:tErr} = await sb
+      .from('franchise_team_accounts')
+      .select('id,name,role').in('id',teamIds);
+    if(!tErr) (tRows||[]).forEach(t=>{ teamMap[t.id]=t; });
+  }
+
+  return leads.map(l=>{
+    const t = l.assigned_team_id ? teamMap[l.assigned_team_id] : null;
+    return {
+      id:l.id, name:l.name, phone:l.phone, city:l.city, email:l.email,
+      step:l.current_step, status:l.status,
+      lang:l.language, language:l.language,
+      model:l.model_interest||'—', model_interest:l.model_interest||'Not Decided',
+      source:l.source, current_step:l.current_step||0,
+      assignedTeamId: l.assigned_team_id||null,
+      team: t ? (t.name+' · '+(t.role==='sales_head'?'Head':'Exec')) : '',
+      nextFollowupDate: l.next_followup_date||null
+    };
+  });
 }
 
 async function mfLoadLeadNotes(leadId){
@@ -1012,13 +1064,15 @@ function buildMFLeadTable(statusFilter){
     leads.forEach(l=>{
       const st=statusMap[l.status]||{lbl:l.status,cls:'p-inf'};
       const tr=document.createElement('tr');
-      tr.innerHTML=`<td><div style="font-weight:600;">${l.name}</div><div style="font-size:11px;color:var(--mut);">${l.phone}</div></td>
+      tr.innerHTML=`<td><div style="font-weight:600;">${l.name}</div><div style="font-size:11px;color:var(--mut);">${l.phone}</div>${l.team?'<div style="font-size:11px;color:var(--mut);margin-top:2px;">Team: '+l.team+'</div>':''}</td>
         <td>${l.city}</td>
         <td><div style="font-size:13px;">Step ${Math.min(l.step||0,10)}/10</div><div style="font-size:11px;color:var(--mut);">${l.lang}</div></td>
         <td><span class="pill ${st.cls}">${st.lbl}</span></td>
         <td>${l.model}</td><td>${l.source}</td>
         <td><div class="act-btns">
           <button class="btn btn-xs btn-i" onclick="openMFLDM('${l.id}')">View</button>
+          <a class="btn btn-xs" href="tel:${l.phone||''}" title="Call">📞</a>
+          <button class="btn btn-xs" onclick="openWaPicker('${l.id}')" title="WhatsApp follow-up">💬</button>
           <button class="btn btn-xs btn-d" onclick="closeMFLead('${l.id}')">Close</button>
         </div></td>`;
       tbody.appendChild(tr);
@@ -1369,6 +1423,185 @@ function doMFLogin(){
         if(err)err.style.display='block';
       }
     });
+}
+
+// ════════════════════════════════════════════════════════════════
+// ── WHATSAPP FOLLOW-UP TEMPLATES (MF portal) ───────────────────
+// ════════════════════════════════════════════════════════════════
+// Same engine as the Admin / Team portals. Auto-picks a stage-aware
+// template that nudges the lead toward the final token payment.
+
+let BB_WA_CACHE = { tokenAmount:null, upi:null, investModels:null };
+let WA_CURRENT_LEAD = null;
+
+async function bbWaLoadSettings(){
+  if(BB_WA_CACHE.tokenAmount !== null) return;
+  try {
+    const {data:ps} = await sb.from('payment_settings').select('token_amount,upi_id').limit(1).single();
+    if(ps){ BB_WA_CACHE.tokenAmount = ps.token_amount || 20000; BB_WA_CACHE.upi = ps.upi_id || 'budgetbarber@upi'; }
+    else  { BB_WA_CACHE.tokenAmount = 20000; BB_WA_CACHE.upi = 'budgetbarber@upi'; }
+  } catch(e){ BB_WA_CACHE.tokenAmount=20000; BB_WA_CACHE.upi='budgetbarber@upi'; }
+  try {
+    const {data:im} = await sb.from('investment_models').select('model_name,total_investment,monthly_roi');
+    BB_WA_CACHE.investModels = im || [];
+  } catch(e){ BB_WA_CACHE.investModels = []; }
+}
+
+function bbInr(n){ return '₹'+Number(n||0).toLocaleString('en-IN'); }
+
+function bbPickTemplate(lead){
+  const st = (lead.status||'').toLowerCase();
+  const step = lead.current_step || lead.step || 0;
+  if(st==='closed_won' || st==='project') return 'welcome';
+  if(st==='closed' || st==='closed_lost') return 'reengage';
+  if(st==='handover')     return 'handover';
+  if(st==='agreement')    return 'agreement';
+  if(st==='payment')      return 'token_reminder';
+  if(st==='negotiation')  return 'negotiation';
+  if(step >= 9)           return 'token_reminder';
+  if(step >= 7)           return 'negotiation';
+  if(step >= 4)           return 'demo';
+  if(step >= 1)           return 'discovery';
+  return 'inquiry';
+}
+
+function bbBuildTemplate(key, lead){
+  const senderName = (typeof mfSession!=='undefined' && mfSession?.name) ? mfSession.name : 'Budget Barber Team';
+  const senderRole = 'Master Franchise Partner';
+  const name = lead.name || 'there';
+  const model = (lead.model_interest && lead.model_interest!=='Not Decided')
+                ? lead.model_interest
+                : (lead.model && lead.model!=='Not Decided') ? lead.model : '3 Chair / 4 Chair / 5 Chair';
+  const token = bbInr(BB_WA_CACHE.tokenAmount || 20000);
+  const upi   = BB_WA_CACHE.upi || 'budgetbarber@upi';
+  let investRow = null;
+  const modelVal = lead.model_interest || lead.model;
+  if(BB_WA_CACHE.investModels && modelVal && modelVal!=='Not Decided'){
+    investRow = BB_WA_CACHE.investModels.find(m=>m.model_name===modelVal);
+  }
+  const investTotal = investRow ? bbInr(investRow.total_investment) : '—';
+  const investRoi   = investRow ? bbInr(investRow.monthly_roi)+'/month' : '—';
+  const sign = `\n\n— ${senderName}\n${senderRole}, Budget Barber`;
+
+  const templates = {
+    inquiry: `Hi ${name}! 👋\n\nThanks for your interest in the *Budget Barber* franchise opportunity. I'm ${senderName}, your Master Franchise partner for the region — I'll be your single point of contact for this journey.\n\nTo get started, please open your personal franchise portal — it has a 10-step walkthrough including videos, investment details, ROI breakdown and FAQs.\n\n👉 *Next step:* Pick your preferred language and watch the Vision video (~3 min). Once that's done, I'll call to answer your questions.${sign}`,
+    discovery: `Hi ${name}, hope you're doing well!\n\nJust checking in to see if you've had a chance to explore the Budget Barber franchise content in your portal. Most leads finish the videos within 2 days and are ready to discuss next steps.\n\n*A quick discovery call (~15 min)* will help us understand your city, budget and timeline so we can recommend the right model — 3 / 4 / 5 chair.\n\nCan we schedule a call today or tomorrow?${sign}`,
+    demo: `Hi ${name},\n\nGreat that you're exploring the Budget Barber opportunity! Now is a perfect time to walk through the *demo videos* — Vision, Salon 360°, Investment & ROI — all available on your portal in your chosen language.\n\nAfter the demo, we'll discuss the model you like best. Most leads choose *${model}*.\n\n*Next:* Finish the demo videos, then I'll send the Investment & ROI sheet so we can align on the right model for your city.${sign}`,
+    site_visit: `Hi ${name},\n\nReady for the next step? I'd love to host you for a *site visit* at the nearest operational Budget Barber outlet in our region so you can experience the brand first-hand.\n\n• Meet the team in person\n• See real-time daily operations\n• Get answers to your final questions\n\nReply with a date/time that suits you and I'll confirm the location.\n\n*After the visit, the only step remaining is the token payment of ${token} to block your city.*${sign}`,
+    negotiation: `Hi ${name},\n\nGreat conversation so far on the *${model}* model.\n\n📌 *Investment summary*\n• Total project cost: ${investTotal}\n• Estimated ROI: ${investRoi}\n• Token (refundable on agreement signing): ${token}\n\nThe token amount blocks your city exclusively in our region and locks today's pricing. Once paid, we move to site finalisation, agreement signing and fit-out.\n\n*Next step:* Confirm the model and pay the token of ${token} via UPI to *${upi}*. Send the screenshot to me on this number once done 🙏${sign}`,
+    token_reminder: `Hi ${name},\n\nFriendly nudge — your franchise journey is *one step away* from being locked in! 🚀\n\nTo block your city and lock today's pricing for the *${model}* model, please pay the token amount of *${token}*.\n\n💳 *UPI ID:* ${upi}\n📝 Mode: UPI / Bank Transfer / Cheque\n\nOnce paid, share the screenshot here and I'll record it immediately. Your dashboard will update within minutes and we'll move straight to agreement signing.${sign}`,
+    token_received: `Hi ${name}, 🎉\n\n*Token payment of ${token} received and verified!*\n\nYour city is now officially blocked for the *${model}* Budget Barber outlet. Welcome to the family! 🙌\n\n*Next 3 steps:*\n1️⃣ Franchise agreement sign-off\n2️⃣ Site finalisation & lease support\n3️⃣ Interior, fit-out & staff training\n\nI'll personally support you through every step in our region.${sign}`,
+    agreement: `Hi ${name},\n\nThanks for paying the token — the *franchise agreement draft* is being shared with you on email/WhatsApp.\n\nPlease:\n• Review with your legal advisor (~2-3 days)\n• Sign all pages and share scanned copy back\n• Original to be couriered to our HQ\n\nOnce signed, we trigger the *full investment schedule* and begin site fit-out.${sign}`,
+    handover: `Hi ${name},\n\n*Handover phase in progress* 🚀\n\n✅ Token received\n✅ Agreement signed\n🔄 Site finalisation & interior\n🔄 Equipment delivery\n🔄 Staff hiring & training at HQ\n\nWe're aligning the launch date — I'll share the exact date this week.${sign}`,
+    welcome: `Hi ${name}, 🎉\n\n*Congratulations on your Budget Barber outlet going LIVE!*\n\nFrom here, I'll be your dedicated point of contact for daily operations, royalty, marketing campaigns, staff replacement and supply chain. Welcome to the family! 💈✨${sign}`,
+    reengage: `Hi ${name},\n\nIt's been a while since we last connected on your Budget Barber franchise inquiry. We've recently updated our *investment models, ROI sheets and city-blocking policy* — and the token amount remains the most affordable entry into a national chain.\n\nWould you like a quick 10-min refresher call this week?${sign}`,
+    custom: `Hi ${name},\n\n${sign}`
+  };
+  return templates[key] || templates.inquiry;
+}
+
+const BB_WA_TEMPLATE_LIST = [
+  {key:'inquiry',        label:'1 · Inquiry — Intro & portal link'},
+  {key:'discovery',      label:'2 · Discovery — Schedule a call'},
+  {key:'demo',           label:'3 · Demo — Push to finish videos'},
+  {key:'site_visit',     label:'4 · Site Visit — Invite to outlet'},
+  {key:'negotiation',    label:'5 · Negotiation — Investment summary'},
+  {key:'token_reminder', label:'6 · Token Reminder — Pay & lock city ⭐'},
+  {key:'token_received', label:'7 · Token Received — Confirmation'},
+  {key:'agreement',      label:'8 · Agreement — Sign-off instructions'},
+  {key:'handover',       label:'9 · Handover — Fit-out progress'},
+  {key:'welcome',        label:'10 · Welcome — Outlet live 🎉'},
+  {key:'reengage',       label:'⚡ Re-engage closed-lost lead'},
+  {key:'custom',         label:'✍ Custom — Empty template'}
+];
+
+async function openWaPicker(leadId){
+  const l = (MF_LEADS||[]).find(x=>x.id===leadId);
+  if(!l){ alert('Lead not found.'); return; }
+  WA_CURRENT_LEAD = {
+    id: l.id, name: l.name, phone: l.phone, city: l.city,
+    model_interest: l.model_interest || l.model || 'Not Decided',
+    model: l.model || 'Not Decided',
+    language: l.language || l.lang || 'English',
+    current_step: l.current_step || l.step || 0,
+    step: l.step || 0,
+    status: l.status
+  };
+  await bbWaLoadSettings();
+  const recommendedKey = bbPickTemplate(WA_CURRENT_LEAD);
+  const list = document.getElementById('wa-tpl-list');
+  list.innerHTML = BB_WA_TEMPLATE_LIST.map(t=>{
+    const isRec = t.key===recommendedKey;
+    return `<button class="btn btn-sm ${isRec?'btn-p':''}" style="text-align:left;justify-content:flex-start;width:100%;"
+              onclick="selectWaTemplate('${t.key}')">${isRec?'⭐ ':''}${t.label}</button>`;
+  }).join('');
+  document.getElementById('wa-preview').value = bbBuildTemplate(recommendedKey, WA_CURRENT_LEAD);
+  document.getElementById('wa-meta').textContent =
+    `${WA_CURRENT_LEAD.name||'—'} · ${WA_CURRENT_LEAD.phone||'—'} · ${WA_CURRENT_LEAD.city||'—'} · Step ${WA_CURRENT_LEAD.step}/10`;
+  document.getElementById('wa-modal').classList.add('open');
+}
+
+function selectWaTemplate(key){
+  if(!WA_CURRENT_LEAD) return;
+  document.getElementById('wa-preview').value = bbBuildTemplate(key, WA_CURRENT_LEAD);
+  document.querySelectorAll('#wa-tpl-list .btn').forEach(b=>b.classList.remove('btn-p'));
+  const tpl = BB_WA_TEMPLATE_LIST.find(t=>t.key===key);
+  if(tpl){
+    [...document.querySelectorAll('#wa-tpl-list .btn')].forEach(b=>{
+      if(b.textContent.includes(tpl.label.replace(/^⭐ /,''))) b.classList.add('btn-p');
+    });
+  }
+}
+
+function closeWaModal(){
+  document.getElementById('wa-modal').classList.remove('open');
+  WA_CURRENT_LEAD = null;
+}
+
+function sendWaMessage(){
+  if(!WA_CURRENT_LEAD){ alert('No lead selected.'); return; }
+  const text = (document.getElementById('wa-preview').value||'').trim();
+  if(!text){ alert('Message is empty.'); return; }
+  let phone = (WA_CURRENT_LEAD.phone||'').replace(/\D/g,'');
+  if(phone.length===10) phone = '91'+phone;
+  if(!phone){ alert('No phone number on this lead.'); return; }
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+  try {
+    const note = `WhatsApp follow-up sent (MF): ${text.split('\n')[0].slice(0,80)}…`;
+    sb.from('lead_notes').insert({
+      lead_id: WA_CURRENT_LEAD.id, note,
+      added_by_type: 'mf',
+      added_by_mf: mfSession?.id || null
+    });
+  } catch(e){ console.warn('WA log skipped:',e); }
+  window.open(url, '_blank');
+  closeWaModal();
+}
+
+function copyWaMessage(){
+  const text = document.getElementById('wa-preview').value||'';
+  if(!text){ alert('Nothing to copy.'); return; }
+  navigator.clipboard?.writeText(text).then(
+    ()=>alert('✓ Copied to clipboard.'),
+    ()=>{
+      const ta = document.getElementById('wa-preview');
+      ta.select(); document.execCommand('copy');
+      alert('Copied (fallback).');
+    }
+  );
+}
+
+function quickWaFromLeadModal(){
+  const lid = document.getElementById('mf-ldm-lead-id')?.value;
+  if(!lid){ alert('No lead open.'); return; }
+  openWaPicker(lid);
+}
+function quickCallFromLeadModal(){
+  const lid = document.getElementById('mf-ldm-lead-id')?.value;
+  if(!lid) return;
+  const l = (MF_LEADS||[]).find(x=>x.id===lid);
+  if(!l || !l.phone){ alert('No phone number for this lead.'); return; }
+  window.location.href = 'tel:'+l.phone;
 }
 </script>
 </body>

@@ -263,6 +263,10 @@ input:checked + .slider:before{transform:translateX(16px);}
     <div class="adm-nav-item" onclick="aTab(this,'at-mf-accounts')"><span class="adm-nav-icon">👥</span>MF Accounts</div>
     <div class="adm-nav-item" onclick="aTab(this,'at-mf-create')"><span class="adm-nav-icon">➕</span>Create MF Login</div>
     <div class="adm-nav-item" onclick="aTab(this,'at-mf-regions')"><span class="adm-nav-icon">🗺</span>Regions</div>
+    <div class="adm-nav-group">Franchise Team</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-team-accounts')"><span class="adm-nav-icon">📋</span>Team Accounts</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-team-create')"><span class="adm-nav-icon">➕</span>Create Sales Head</div>
+    <div class="adm-nav-item" onclick="aTab(this,'at-team-performance')"><span class="adm-nav-icon">🏆</span>Team Performance</div>
     <div class="adm-nav-group">Franchises</div>
     <div class="adm-nav-item" onclick="aTab(this,'at-franchises')"><span class="adm-nav-icon">🏪</span>All Franchises</div>
     <div class="adm-nav-item" onclick="aTab(this,'at-franchise-royalty')"><span class="adm-nav-icon">📈</span>Franchise Royalty</div>
@@ -270,7 +274,7 @@ input:checked + .slider:before{transform:translateX(16px);}
     <div class="adm-nav-item" onclick="aTab(this,'at-settings')"><span class="adm-nav-icon">⚙</span>Portal Settings</div>
   </nav>
   <div class="admin-sidebar-footer">
-    <a href="budget_barber_franchise_lead.html" target="_blank" style="text-decoration:none;display:block;margin-bottom:6px;">
+    <a href="franchise_lead.html" target="_blank" style="text-decoration:none;display:block;margin-bottom:6px;">
       <button class="btn btn-sm btn-f" style="background:rgba(245,209,0,0.15);color:var(--brand-yellow);border-color:rgba(245,209,0,0.3);">↗ Open Franchise App</button>
     </a>
     <a href="index.html" style="text-decoration:none;display:block;margin-bottom:6px;">
@@ -1129,6 +1133,135 @@ input:checked + .slider:before{transform:translateX(16px);}
       </div>
     </div>
 
+    <!-- FRANCHISE TEAM — ACCOUNTS -->
+    <div id="at-team-accounts" class="admin-tab">
+      <div class="adm-page-title">Franchise Team — Accounts</div>
+      <div class="adm-page-sub">All Sales Heads and Sales Executives across regions. Each region is led by one Sales Head; executives report to that Head.</div>
+
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num" id="team-stat-heads" style="color:var(--hi);">—</div><div class="stat-lbl">Sales Heads</div><div class="stat-delta" style="color:var(--mut);">One per active region</div></div>
+        <div class="stat-card"><div class="stat-num" id="team-stat-execs" style="color:var(--inf-tx);">—</div><div class="stat-lbl">Sales Executives</div><div class="stat-delta" style="color:var(--mut);">Across all regions</div></div>
+        <div class="stat-card"><div class="stat-num" id="team-stat-active" style="color:var(--ok-tx);">—</div><div class="stat-lbl">Active Members</div><div class="stat-delta" style="color:var(--mut);">Status = Active</div></div>
+        <div class="stat-card"><div class="stat-num" id="team-stat-leads-assigned" style="color:var(--wrn-tx);">—</div><div class="stat-lbl">Leads w/ Team Owner</div><div class="stat-delta" style="color:var(--mut);">assigned_team_id ≠ null</div></div>
+      </div>
+
+      <div class="adm-card">
+        <div class="adm-card-title">Filter</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Role</label>
+            <select id="team-filt-role" onchange="buildTeamTable()">
+              <option value="all">All Roles</option>
+              <option value="sales_head">Sales Head</option>
+              <option value="sales_executive">Sales Executive</option>
+            </select>
+          </div>
+          <div class="fr"><label class="fl">Region</label>
+            <select id="team-filt-region" onchange="buildTeamTable()"><option value="all">All Regions</option></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="adm-card" style="padding:0;overflow:hidden;">
+        <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr style="background:var(--surf2);">
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Name</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Role</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Email</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Phone</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Region</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Cities</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Head</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Leads</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Status</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Actions</th>
+          </tr></thead>
+          <tbody id="team-accounts-tbody"><tr><td colspan="10" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">Loading…</td></tr></tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- FRANCHISE TEAM — CREATE SALES HEAD -->
+    <div id="at-team-create" class="admin-tab">
+      <div class="adm-page-title">Create Sales Head Login</div>
+      <div class="adm-page-sub">Only the Admin can create Sales Heads. Each Sales Head can then create their own Sales Executives from within the Team Portal.</div>
+
+      <div class="adm-card" style="max-width:680px;">
+        <div class="adm-card-title">New Sales Head Account</div>
+        <div class="adm-card-sub">Sales Heads see all leads in their assigned region and can route them to executives.</div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Full Name *</label><input type="text" id="th-name" placeholder="e.g. Ramesh Kumar"/></div>
+          <div class="fr"><label class="fl">Phone *</label><input type="tel" id="th-phone" placeholder="+91…"/></div>
+        </div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Email (Login ID) *</label><input type="email" id="th-email" placeholder="name@team.budgetbarber"/></div>
+          <div class="fr"><label class="fl">Initial Password *</label><input type="text" id="th-pass" placeholder="Min 8 chars"/></div>
+        </div>
+        <div class="form-2col">
+          <div class="fr"><label class="fl">Region *</label>
+            <select id="th-region"><option value="">— Select Region —</option></select>
+          </div>
+          <div class="fr"><label class="fl">Cities (comma separated)</label><input type="text" id="th-cities" placeholder="e.g. Hyderabad, Secunderabad"/></div>
+        </div>
+        <button class="btn btn-p" onclick="createSalesHead()">+ Create Sales Head</button>
+        <div id="th-err" style="display:none;margin-top:10px;color:var(--no-tx);font-size:12px;"></div>
+      </div>
+
+      <div class="adm-card" style="background:#fef9e7;border-color:#f0d970;">
+        <div class="adm-card-title">📌 How the team hierarchy works</div>
+        <ul style="font-size:13px;line-height:1.8;color:var(--mut);padding-left:18px;">
+          <li>One <strong>Sales Head</strong> per region (created here by Admin).</li>
+          <li>Each Head adds <strong>Sales Executives</strong> from their portal — they're auto-scoped to the Head's region.</li>
+          <li>Heads can assign / reassign any unassigned lead in their region to any executive.</li>
+          <li>Executives only see leads where <code>assigned_team_id = themselves</code>.</li>
+          <li>WhatsApp follow-ups are stage-aware and trigger the lead toward the final token payment.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FRANCHISE TEAM — PERFORMANCE -->
+    <div id="at-team-performance" class="admin-tab">
+      <div class="adm-page-title">Team Performance — Cross-Region</div>
+      <div class="adm-page-sub">Month-to-date metrics for every executive, grouped by region.</div>
+
+      <div class="adm-card">
+        <div class="adm-card-title">Region Comparison</div>
+        <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr style="background:var(--surf2);">
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Region</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Sales Head</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Executives</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Active Leads</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Won (MTD)</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Lost (MTD)</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Conversion</th>
+          </tr></thead>
+          <tbody id="team-perf-region-tbody"><tr><td colspan="7" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">Loading…</td></tr></tbody>
+        </table>
+        </div>
+      </div>
+
+      <div class="adm-card">
+        <div class="adm-card-title">Per-Executive Performance</div>
+        <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr style="background:var(--surf2);">
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Executive</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Region</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Total Leads</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Active</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Won</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Lost</th>
+            <th style="text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;color:var(--hnt);">Conversion</th>
+          </tr></thead>
+          <tbody id="team-perf-exec-tbody"><tr><td colspan="7" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">Loading…</td></tr></tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
     <!-- FRANCHISES TAB -->
     <div id="at-franchises" class="admin-tab">
       <div class="adm-page-title">All Franchises</div>
@@ -1455,6 +1588,11 @@ input:checked + .slider:before{transform:translateX(16px);}
       </div>
     </div>
     <div class="ldm-body">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+        <button class="btn btn-sm btn-i" onclick="quickWaFromLeadModal()">💬 WhatsApp Follow-up</button>
+        <button class="btn btn-sm" onclick="quickCallFromLeadModal()">📞 Call</button>
+        <span style="align-self:center;font-size:11px;color:var(--hnt);">Templates auto-pick based on current stage</span>
+      </div>
       <div class="adm-tabs" style="margin-bottom:16px;">
         <button class="adm-tab-btn active" onclick="ldmTab(this,'ldm-overview')">Overview</button>
         <button class="adm-tab-btn" onclick="ldmTab(this,'ldm-journey')">Journey</button>
@@ -1520,6 +1658,17 @@ input:checked + .slider:before{transform:translateX(16px);}
           </div>
           <button class="btn btn-i btn-f" style="margin-bottom:10px;" onclick="saveLeadMFAssignment()">Save MF Assignment</button>
           <div style="height:0.5px;background:var(--bdr);margin:14px 0;"></div>
+          <div class="fr"><label class="fl">Assign to Franchise Team Member</label>
+            <select id="ldm-team-sel"><option value="">— Unassigned —</option></select>
+            <div style="font-size:11px;color:var(--hnt);margin-top:4px;">Sales Head or Executive who owns this lead.</div>
+          </div>
+          <button class="btn btn-i btn-f" style="margin-bottom:10px;" onclick="saveLeadTeamAssignment()">Save Team Assignment</button>
+          <div style="height:0.5px;background:var(--bdr);margin:14px 0;"></div>
+          <div class="fr"><label class="fl">Next Follow-up Date</label>
+            <input type="date" id="ldm-followup-inp"/>
+          </div>
+          <button class="btn btn-i btn-f" style="margin-bottom:10px;" onclick="saveLeadFollowup()">Save Follow-up Date</button>
+          <div style="height:0.5px;background:var(--bdr);margin:14px 0;"></div>
           <div class="fr"><label class="fl">Set Model Interest</label>
             <select id="ldm-model-sel"><option>Not Decided</option><option>3 Chair</option><option>4 Chair</option><option>5 Chair</option></select>
           </div>
@@ -1540,6 +1689,33 @@ input:checked + .slider:before{transform:translateX(16px);}
           <div style="height:0.5px;background:var(--bdr);margin:14px 0;"></div>
           <button class="btn btn-d btn-f" onclick="deleteLeadFromModal()">Delete Lead</button>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ── WHATSAPP FOLLOW-UP PICKER MODAL ──────────────────────────── -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="lead-detail-modal" id="wa-modal">
+  <div class="ldm-box" style="max-width:620px;">
+    <div class="ldm-hdr">
+      <div>
+        <div style="font-size:16px;font-weight:700;">💬 WhatsApp Follow-up</div>
+        <div style="font-size:12px;color:var(--mut);" id="wa-meta">—</div>
+      </div>
+      <button class="btn btn-sm" onclick="closeWaModal()">✕ Close</button>
+    </div>
+    <div class="ldm-body">
+      <div style="font-size:11px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Pick a template (stage-aware)</div>
+      <div id="wa-tpl-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Preview / Edit</div>
+      <textarea id="wa-preview" rows="9" style="width:100%;padding:10px;font-size:13px;border:0.5px solid var(--bdr2);border-radius:8px;background:var(--surf2);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;"></textarea>
+      <div style="font-size:11px;color:var(--hnt);margin-top:6px;">Edits stay in this preview — they're sent to WhatsApp when you click "Open WhatsApp".</div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;">
+        <button class="btn" onclick="closeWaModal()">Cancel</button>
+        <button class="btn btn-i" onclick="copyWaMessage()">📋 Copy</button>
+        <button class="btn btn-p" onclick="sendWaMessage()">📲 Open WhatsApp →</button>
       </div>
     </div>
   </div>
@@ -1602,7 +1778,7 @@ function aTab(btn,tabId){
     const oc=b.getAttribute('onclick')||'';
     if(oc.includes("'"+tabId+"'"))b.classList.add('active');
   });
-  const ALL_TABS=['at-dashboard','at-leads','at-newlead','at-videos','at-invest-content','at-guidelines','at-support-content','at-ops-content','at-payments','at-royalty-mgmt','at-settings','at-pay-settings','at-mf-overview','at-mf-accounts','at-mf-create','at-mf-regions','at-franchises','at-franchise-royalty'];
+  const ALL_TABS=['at-dashboard','at-leads','at-newlead','at-videos','at-invest-content','at-guidelines','at-support-content','at-ops-content','at-payments','at-royalty-mgmt','at-settings','at-pay-settings','at-mf-overview','at-mf-accounts','at-mf-create','at-mf-regions','at-team-accounts','at-team-create','at-team-performance','at-franchises','at-franchise-royalty'];
   ALL_TABS.forEach(id=>{const t=document.getElementById(id);if(t)t.classList.remove('active');});
   const el=document.getElementById(tabId);if(el)el.classList.add('active');
   if(tabId==='at-dashboard') refreshDashboard();
@@ -1613,6 +1789,9 @@ function aTab(btn,tabId){
     loadMFAccounts().then(mf=>{MF_ACCOUNTS_DATA=mf;populateMFDropdowns();renderMFAccountsTable();});
   }
   if(tabId==='at-mf-regions') renderMFRegions();
+  if(tabId==='at-team-accounts'){ loadTeamAccounts().then(()=>{buildTeamFilters();buildTeamStats();buildTeamTable();}); }
+  if(tabId==='at-team-create'){ populateTeamRegionDropdown(); }
+  if(tabId==='at-team-performance'){ loadTeamAccounts().then(()=>renderTeamPerformance()); }
   if(tabId==='at-franchises'){ buildFranchiseTable(); loadFranchises().then(f=>{FRANCHISES=f;renderFranchisesStats();}); }
   if(tabId==='at-franchise-royalty') renderFranchiseRoyalty();
   if(tabId==='at-invest-content'){buildPayStepsEditor();const p=document.getElementById('ic-pay3');if(p)p.style.display='block';}
@@ -1741,7 +1920,10 @@ function buildLeadTable(arg){
     const mfDisp = l.mf && l.mf!=='—'
       ? '<span style="font-size:12px;">'+escapeHtml(l.mf)+'</span>'
       : '<span class="pill p-wrn">Unassigned</span>';
-    tr.innerHTML=`<td><div style="font-weight:600;">${escapeHtml(l.city||'—')}</div><div style="font-size:11px;color:var(--mut);">${escapeHtml(l.name||'')} · ${escapeHtml(l.phone||'')}</div></td>
+    const teamDisp = l.team && l.team!=='—'
+      ? '<div style="font-size:11px;color:var(--mut);margin-top:2px;">Team: '+escapeHtml(l.team)+'</div>'
+      : '';
+    tr.innerHTML=`<td><div style="font-weight:600;">${escapeHtml(l.city||'—')}</div><div style="font-size:11px;color:var(--mut);">${escapeHtml(l.name||'')} · ${escapeHtml(l.phone||'')}</div>${teamDisp}</td>
       <td>${escapeHtml(l.state||'—')}</td>
       <td>${escapeHtml(l.lang||'—')}</td>
       <td>${escapeHtml(l.source||'—')}</td>
@@ -1753,6 +1935,8 @@ function buildLeadTable(arg){
       <td style="font-size:12px;color:var(--mut);">${fmtDate(l.updatedAt)}</td>
       <td><div class="act-btns">
         <button class="btn btn-xs btn-i" onclick="openLDM('${l.id}')">View</button>
+        <a class="btn btn-xs" href="tel:${escapeHtml(l.phone||'')}" title="Call">📞</a>
+        <button class="btn btn-xs" onclick="openWaPicker('${l.id}')" title="WhatsApp follow-up">💬</button>
         <button class="btn btn-xs btn-d" onclick="closeLdBtn('${l.id}')">Close</button>
       </div></td>`;
     tbody.appendChild(tr);
@@ -1780,6 +1964,11 @@ function openLDM(id){
   // Populate Controls tab selectors
   const mfSel=document.getElementById('ldm-mf-sel');
   if(mfSel)mfSel.value=l.assignedMfId||'';
+  populateTeamDropdownLDM();
+  const tmSel=document.getElementById('ldm-team-sel');
+  if(tmSel)tmSel.value=l.assignedTeamId||'';
+  const fuInp=document.getElementById('ldm-followup-inp');
+  if(fuInp)fuInp.value=l.nextFollowupDate?String(l.nextFollowupDate).slice(0,10):'';
   const stSel=document.getElementById('ldm-status-sel');
   if(stSel)stSel.value=l.status||'new';
   const mdSel=document.getElementById('ldm-model-sel');
@@ -2833,7 +3022,7 @@ async function loadLeads(statusFilter){
   // query returns an error and the table looked empty.
   const baseCols = `id, name, phone, email, city, language, model_interest, source,
     status, current_step, guidelines_accepted, pin_hash, created_at, updated_at,
-    assigned_mf_id`;
+    assigned_mf_id, assigned_team_id, next_followup_date`;
 
   let query = sb.from('leads').select(baseCols).order('created_at', {ascending:false});
   if(statusFilter && statusFilter !== 'all') query = query.eq('status', statusFilter);
@@ -2862,9 +3051,26 @@ async function loadLeads(statusFilter){
     }
   }
 
+  // Build team-member lookup map. Best-effort — if franchise_team_accounts
+  // table doesn't exist yet (migration not run), we silently skip team labels.
+  let teamMap = {};
+  const teamIds = [...new Set(leads.map(l=>l.assigned_team_id).filter(Boolean))];
+  if(teamIds.length){
+    const {data:tRows, error:tErr} = await sb
+      .from('franchise_team_accounts')
+      .select('id, name, role, region')
+      .in('id', teamIds);
+    if(tErr){
+      console.warn('loadLeads: team lookup failed (table missing?):', tErr.message);
+    } else {
+      (tRows||[]).forEach(t=>{ teamMap[t.id] = t; });
+    }
+  }
+
   // Normalise to shape expected by buildLeadTable
   return leads.map(l=>{
     const mfRow = l.assigned_mf_id ? mfMap[l.assigned_mf_id] : null;
+    const tmRow = l.assigned_team_id ? teamMap[l.assigned_team_id] : null;
     return {
       id:l.id, name:l.name, phone:l.phone, email:l.email,
       city:l.city, state: getStateForCity(l.city) || '—',
@@ -2873,6 +3079,15 @@ async function loadLeads(statusFilter){
       assignedMfId: l.assigned_mf_id || null,
       mf: mfRow ? (mfRow.name+' ('+mfRow.region+')') : '—',
       mfRegion: mfRow ? mfRow.region : null,
+      assignedTeamId: l.assigned_team_id || null,
+      team: tmRow ? (tmRow.name+' · '+(tmRow.role==='sales_head'?'Head':'Exec')) : '—',
+      teamRole: tmRow ? tmRow.role : null,
+      teamRegion: tmRow ? tmRow.region : null,
+      nextFollowupDate: l.next_followup_date || null,
+      // for WhatsApp picker — keep snake_case copies too
+      model_interest: l.model_interest || 'Not Decided',
+      language: l.language || 'English',
+      current_step: l.current_step || 0,
       guidelinesAccepted: !!l.guidelines_accepted,
       pinHash: l.pin_hash || '',
       createdAt: l.created_at, updatedAt: l.updated_at
@@ -4315,6 +4530,477 @@ async function submitAddFranchise(){
   closeAddFranchiseModal();
   alert('✓ Franchise added for '+name+' in '+city+'!');
   buildFranchiseTable(null);
+}
+
+// ════════════════════════════════════════════════════════════════
+// ── FRANCHISE TEAM MANAGEMENT (admin) ───────────────────────────
+// ════════════════════════════════════════════════════════════════
+// Backed by `franchise_team_accounts` table. Admin can:
+//   • View all heads + execs across regions
+//   • Create new Sales Heads (one per region)
+//   • Toggle status (Active / Inactive)
+//   • Assign leads to a specific team member from the lead modal
+//
+// Heads can manage their own executives from the Team Portal — admin
+// can still see and edit them here as a safety net.
+
+let TEAM_ACCOUNTS = [];
+
+async function loadTeamAccounts(){
+  const {data, error} = await sb.from('franchise_team_accounts')
+    .select('id, name, email, phone, role, region, cities, status, head_id, created_at')
+    .order('region', {ascending:true})
+    .order('role',   {ascending:false}) // head first
+    .order('created_at', {ascending:true});
+  if(error){
+    console.error('loadTeamAccounts:', error);
+    TEAM_ACCOUNTS = [];
+    const tb=document.getElementById('team-accounts-tbody');
+    if(tb) tb.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:20px;color:var(--no-tx);font-size:13px;">Could not load team accounts — check that <code>franchise_team_accounts</code> table exists. (${error.message})</td></tr>`;
+    return;
+  }
+  TEAM_ACCOUNTS = data || [];
+}
+
+function buildTeamStats(){
+  const heads  = TEAM_ACCOUNTS.filter(t=>t.role==='sales_head').length;
+  const execs  = TEAM_ACCOUNTS.filter(t=>t.role==='sales_executive').length;
+  const active = TEAM_ACCOUNTS.filter(t=>t.status==='Active').length;
+  const assignedLeads = (LEADS||[]).filter(l=>l.assignedTeamId).length;
+  const el = id => document.getElementById(id);
+  if(el('team-stat-heads'))  el('team-stat-heads').textContent  = heads;
+  if(el('team-stat-execs'))  el('team-stat-execs').textContent  = execs;
+  if(el('team-stat-active')) el('team-stat-active').textContent = active;
+  if(el('team-stat-leads-assigned')) el('team-stat-leads-assigned').textContent = assignedLeads;
+}
+
+function buildTeamFilters(){
+  const sel = document.getElementById('team-filt-region');
+  if(!sel) return;
+  const regions = [...new Set(TEAM_ACCOUNTS.map(t=>t.region).filter(Boolean))].sort();
+  sel.innerHTML = '<option value="all">All Regions</option>'
+    + regions.map(r=>`<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`).join('');
+}
+
+function buildTeamTable(){
+  const tbody = document.getElementById('team-accounts-tbody');
+  if(!tbody) return;
+  const roleFilt = document.getElementById('team-filt-role')?.value || 'all';
+  const regFilt  = document.getElementById('team-filt-region')?.value || 'all';
+  let rows = TEAM_ACCOUNTS;
+  if(roleFilt!=='all') rows = rows.filter(t=>t.role===roleFilt);
+  if(regFilt!=='all')  rows = rows.filter(t=>t.region===regFilt);
+  if(!rows.length){
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">No team members match these filters. Create a Sales Head from the "Create Sales Head" tab to get started.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(t=>{
+    const roleLbl = t.role==='sales_head' ? '<span class="pill p-inf">Sales Head</span>' : '<span class="pill" style="background:var(--surf2);color:var(--mut);">Executive</span>';
+    const headRow = t.head_id ? TEAM_ACCOUNTS.find(x=>x.id===t.head_id) : null;
+    const head = t.role==='sales_head' ? '<span style="color:var(--hnt);">—</span>' : (headRow ? escapeHtml(headRow.name) : '<span style="color:var(--no-tx);">No Head</span>');
+    const leadCount = (LEADS||[]).filter(l=>l.assignedTeamId===t.id).length;
+    const statusPill = t.status==='Active'
+      ? '<span class="pill p-ok">Active</span>'
+      : '<span class="pill p-no">Inactive</span>';
+    return `<tr>
+      <td style="padding:10px 14px;"><strong>${escapeHtml(t.name||'—')}</strong></td>
+      <td style="padding:10px 14px;">${roleLbl}</td>
+      <td style="padding:10px 14px;font-size:12px;color:var(--mut);">${escapeHtml(t.email||'—')}</td>
+      <td style="padding:10px 14px;font-size:12px;">${escapeHtml(t.phone||'—')}</td>
+      <td style="padding:10px 14px;">${escapeHtml(t.region||'—')}</td>
+      <td style="padding:10px 14px;font-size:12px;color:var(--mut);">${escapeHtml(t.cities||'—')}</td>
+      <td style="padding:10px 14px;font-size:12px;">${head}</td>
+      <td style="padding:10px 14px;"><strong>${leadCount}</strong></td>
+      <td style="padding:10px 14px;">${statusPill}</td>
+      <td style="padding:10px 14px;"><div class="act-btns">
+        <button class="btn btn-xs btn-d" onclick="toggleTeamMemberStatus('${t.id}','${t.status||'Active'}')">${t.status==='Active'?'Disable':'Enable'}</button>
+        <button class="btn btn-xs" onclick="resetTeamMemberPassword('${t.id}','${escapeHtml(t.name||'').replace(/'/g,'')}')">Reset PW</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+async function toggleTeamMemberStatus(id, currStatus){
+  const next = currStatus==='Active' ? 'Inactive' : 'Active';
+  if(!confirm(`Set this team member to ${next}?`)) return;
+  const {error} = await sb.from('franchise_team_accounts')
+    .update({status: next, updated_at: new Date().toISOString()})
+    .eq('id', id);
+  if(error){ alert('Failed: '+error.message); return; }
+  await loadTeamAccounts(); buildTeamStats(); buildTeamTable();
+}
+
+async function resetTeamMemberPassword(id, name){
+  const pw = prompt(`Enter a new password for ${name} (min 8 chars). They can change it themselves after sign-in.`);
+  if(!pw) return;
+  if(pw.length < 8){ alert('Password must be at least 8 characters.'); return; }
+  const pwHash = await bbSha256('bbsalt-'+pw);
+  const {error} = await sb.from('franchise_team_accounts')
+    .update({password_hash: pwHash, updated_at: new Date().toISOString()})
+    .eq('id', id);
+  if(error){ alert('Failed: '+error.message); return; }
+  alert('✓ Password updated. Share the new password with the team member securely.');
+}
+
+// SHA-256 helper that matches the team-portal hashing
+async function bbSha256(str){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// ── Create Sales Head form ──
+function populateTeamRegionDropdown(){
+  const sel = document.getElementById('th-region');
+  if(!sel) return;
+  // pull regions from existing MF accounts so admin doesn't have to type them
+  const regions = [...new Set((MF_ACCOUNTS_DATA||[]).map(m=>m.region).filter(Boolean))].sort();
+  sel.innerHTML = '<option value="">— Select Region —</option>'
+    + regions.map(r=>`<option>${escapeHtml(r)}</option>`).join('');
+}
+
+async function createSalesHead(){
+  const name = document.getElementById('th-name').value.trim();
+  const phone = document.getElementById('th-phone').value.trim();
+  const email = document.getElementById('th-email').value.trim().toLowerCase();
+  const pass = document.getElementById('th-pass').value;
+  const region = document.getElementById('th-region').value.trim();
+  const cities = document.getElementById('th-cities').value.trim();
+  const err = document.getElementById('th-err');
+  err.style.display = 'none';
+  if(!name || !phone || !email || !pass || !region){
+    err.textContent = 'Please fill all required fields (name, phone, email, password, region).';
+    err.style.display = 'block'; return;
+  }
+  if(pass.length < 8){
+    err.textContent = 'Password must be at least 8 characters.';
+    err.style.display = 'block'; return;
+  }
+  const pwHash = await bbSha256('bbsalt-'+pass);
+  const {error} = await sb.from('franchise_team_accounts').insert({
+    name, phone, email,
+    password_hash: pwHash,
+    role: 'sales_head',
+    region, cities,
+    status: 'Active',
+    head_id: null,
+    created_by_admin: adminSession?.id || null
+  });
+  if(error){
+    err.textContent = 'Failed: '+error.message;
+    err.style.display = 'block'; return;
+  }
+  ['th-name','th-phone','th-email','th-pass','th-cities'].forEach(id=>{
+    const e=document.getElementById(id); if(e) e.value='';
+  });
+  alert('✓ Sales Head created. They can now sign in to the Franchise Team Portal.');
+  await loadTeamAccounts(); buildTeamFilters(); buildTeamStats();
+}
+
+// ── Performance rendering ──
+function renderTeamPerformance(){
+  const regionTbody = document.getElementById('team-perf-region-tbody');
+  const execTbody   = document.getElementById('team-perf-exec-tbody');
+  const allLeads = LEADS || [];
+
+  // Group by region
+  const regions = [...new Set(TEAM_ACCOUNTS.map(t=>t.region).filter(Boolean))];
+  if(regionTbody){
+    if(!regions.length){
+      regionTbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">No regions configured yet.</td></tr>';
+    } else {
+      regionTbody.innerHTML = regions.map(r=>{
+        const teamInRegion = TEAM_ACCOUNTS.filter(t=>t.region===r);
+        const head = teamInRegion.find(t=>t.role==='sales_head');
+        const execs = teamInRegion.filter(t=>t.role==='sales_executive');
+        const teamIds = teamInRegion.map(t=>t.id);
+        const regionLeads = allLeads.filter(l=>teamIds.includes(l.assignedTeamId));
+        const active = regionLeads.filter(l=>!['closed','closed_won','closed_lost'].includes(l.status)).length;
+        const now = new Date();
+        const inMonth = (d) => { if(!d) return false; const x = new Date(d); return x.getMonth()===now.getMonth() && x.getFullYear()===now.getFullYear(); };
+        const won = regionLeads.filter(l=>(l.status==='closed_won'||l.status==='project') && inMonth(l.updatedAt)).length;
+        const lost = regionLeads.filter(l=>l.status==='closed_lost' && inMonth(l.updatedAt)).length;
+        const conv = regionLeads.length ? Math.round((won/regionLeads.length)*100)+'%' : '0%';
+        return `<tr>
+          <td style="padding:10px 14px;"><strong>${escapeHtml(r)}</strong></td>
+          <td style="padding:10px 14px;">${head?escapeHtml(head.name):'<span style="color:var(--no-tx);">No Head</span>'}</td>
+          <td style="padding:10px 14px;">${execs.length}</td>
+          <td style="padding:10px 14px;">${active}</td>
+          <td style="padding:10px 14px;"><span class="pill p-ok">${won}</span></td>
+          <td style="padding:10px 14px;"><span class="pill p-no">${lost}</span></td>
+          <td style="padding:10px 14px;">${conv}</td>
+        </tr>`;
+      }).join('');
+    }
+  }
+
+  // Per executive
+  if(execTbody){
+    const execs = TEAM_ACCOUNTS.filter(t=>t.role==='sales_executive');
+    if(!execs.length){
+      execTbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">No executives yet. Sales Heads add executives from their portal.</td></tr>';
+    } else {
+      execTbody.innerHTML = execs.map(e=>{
+        const mine = allLeads.filter(l=>l.assignedTeamId===e.id);
+        const active = mine.filter(l=>!['closed','closed_won','closed_lost'].includes(l.status)).length;
+        const won = mine.filter(l=>l.status==='closed_won'||l.status==='project').length;
+        const lost = mine.filter(l=>l.status==='closed_lost').length;
+        const conv = mine.length ? Math.round((won/mine.length)*100)+'%' : '0%';
+        return `<tr>
+          <td style="padding:10px 14px;"><strong>${escapeHtml(e.name)}</strong></td>
+          <td style="padding:10px 14px;">${escapeHtml(e.region||'—')}</td>
+          <td style="padding:10px 14px;">${mine.length}</td>
+          <td style="padding:10px 14px;">${active}</td>
+          <td style="padding:10px 14px;"><span class="pill p-ok">${won}</span></td>
+          <td style="padding:10px 14px;"><span class="pill p-no">${lost}</span></td>
+          <td style="padding:10px 14px;">${conv}</td>
+        </tr>`;
+      }).join('');
+    }
+  }
+}
+
+// ── Lead-modal team dropdown ──
+function populateTeamDropdownLDM(){
+  const sel = document.getElementById('ldm-team-sel');
+  if(!sel) return;
+  const active = (TEAM_ACCOUNTS||[]).filter(t=>t.status==='Active');
+  sel.innerHTML = '<option value="">— Unassigned —</option>'
+    + active.map(t=>{
+        const tag = t.role==='sales_head' ? 'Head' : 'Exec';
+        return `<option value="${t.id}">${escapeHtml(t.name)} · ${tag} · ${escapeHtml(t.region||'—')}</option>`;
+      }).join('');
+}
+
+async function saveLeadTeamAssignment(){
+  if(!CURRENT_LEAD_ID){ alert('No lead selected.'); return; }
+  const sel = document.getElementById('ldm-team-sel');
+  const tid = sel?.value || null;
+  const {error} = await sb.from('leads')
+    .update({assigned_team_id: tid, updated_at: new Date().toISOString()})
+    .eq('id', CURRENT_LEAD_ID);
+  if(error){ alert('Failed: '+error.message); return; }
+  // Audit note
+  const targetName = tid ? (TEAM_ACCOUNTS.find(t=>t.id===tid)?.name || 'team member') : 'Unassigned';
+  await sb.from('lead_notes').insert({
+    lead_id: CURRENT_LEAD_ID,
+    note: `Lead team-assignment changed to: ${targetName} (by Admin)`,
+    added_by_type: 'admin',
+    added_by_admin: adminSession?.id || null
+  });
+  alert('✓ Team assignment saved.');
+  loadLeads(null).then(leads=>{LEADS=leads; buildLeadTable(currentLeadFilters);});
+}
+
+async function saveLeadFollowup(){
+  if(!CURRENT_LEAD_ID){ alert('No lead selected.'); return; }
+  const d = document.getElementById('ldm-followup-inp')?.value || null;
+  const {error} = await sb.from('leads')
+    .update({next_followup_date: d, updated_at: new Date().toISOString()})
+    .eq('id', CURRENT_LEAD_ID);
+  if(error){ alert('Failed: '+error.message); return; }
+  alert('✓ Follow-up date saved.');
+  loadLeads(null).then(leads=>{LEADS=leads; buildLeadTable(currentLeadFilters);});
+}
+
+// Eager-load TEAM_ACCOUNTS once the admin session is up, so the team
+// dropdown in the Lead Detail modal is ready even before the user
+// visits the Team Accounts tab.
+(function bbEagerLoadTeam(){
+  // Wait until adminSession is ready (poll a few times — cheap)
+  let tries = 0;
+  const iv = setInterval(()=>{
+    tries++;
+    if(typeof adminSession!=='undefined' && adminSession && adminSession.id){
+      clearInterval(iv);
+      loadTeamAccounts().catch(e=>console.warn('Eager team load failed:',e));
+    } else if(tries > 60){ // give up after ~30s — no session yet
+      clearInterval(iv);
+    }
+  }, 500);
+})();
+
+// ════════════════════════════════════════════════════════════════
+// ── WHATSAPP FOLLOW-UP TEMPLATES (admin portal) ────────────────
+// ════════════════════════════════════════════════════════════════
+// Same engine as the Franchise Team Portal — picks a stage-aware
+// template and drives the lead toward the final token payment.
+
+let BB_WA_CACHE = { tokenAmount:null, upi:null, investModels:null };
+let WA_CURRENT_LEAD = null;
+
+async function bbWaLoadSettings(){
+  if(BB_WA_CACHE.tokenAmount !== null) return;
+  try {
+    const {data:ps} = await sb.from('payment_settings').select('token_amount,upi_id').limit(1).single();
+    if(ps){
+      BB_WA_CACHE.tokenAmount = ps.token_amount || 20000;
+      BB_WA_CACHE.upi         = ps.upi_id || 'budgetbarber@upi';
+    } else {
+      BB_WA_CACHE.tokenAmount = 20000;
+      BB_WA_CACHE.upi         = 'budgetbarber@upi';
+    }
+  } catch(e){ BB_WA_CACHE.tokenAmount=20000; BB_WA_CACHE.upi='budgetbarber@upi'; }
+  try {
+    const {data:im} = await sb.from('investment_models').select('model_name,total_investment,monthly_roi');
+    BB_WA_CACHE.investModels = im || [];
+  } catch(e){ BB_WA_CACHE.investModels = []; }
+}
+
+function bbInr(n){ return '₹'+Number(n||0).toLocaleString('en-IN'); }
+
+function bbPickTemplate(lead){
+  const st = (lead.status||'').toLowerCase();
+  const step = lead.current_step || lead.step || 0;
+  if(st==='closed_won' || st==='project') return 'welcome';
+  if(st==='closed' || st==='closed_lost') return 'reengage';
+  if(st==='handover')     return 'handover';
+  if(st==='agreement')    return 'agreement';
+  if(st==='payment')      return 'token_reminder';
+  if(st==='negotiation')  return 'negotiation';
+  // Admin uses 0–10 step scale (lead app); 7+ ≈ late funnel
+  if(step >= 9)           return 'token_reminder';
+  if(step >= 7)           return 'negotiation';
+  if(step >= 4)           return 'demo';
+  if(step >= 1)           return 'discovery';
+  return 'inquiry';
+}
+
+function bbBuildTemplate(key, lead){
+  const senderName = (typeof adminSession!=='undefined' && adminSession?.username)
+                     ? adminSession.username : 'Budget Barber Team';
+  const senderRole = 'Admin Team';
+  const name = lead.name || 'there';
+  const model = (lead.model_interest && lead.model_interest!=='Not Decided')
+                ? lead.model_interest : (lead.model && lead.model!=='Not Decided')
+                ? lead.model : '3 Chair / 4 Chair / 5 Chair';
+  const token = bbInr(BB_WA_CACHE.tokenAmount || 20000);
+  const upi   = BB_WA_CACHE.upi || 'budgetbarber@upi';
+  let investRow = null;
+  const modelVal = lead.model_interest || lead.model;
+  if(BB_WA_CACHE.investModels && modelVal && modelVal!=='Not Decided'){
+    investRow = BB_WA_CACHE.investModels.find(m=>m.model_name===modelVal);
+  }
+  const investTotal = investRow ? bbInr(investRow.total_investment) : '—';
+  const investRoi   = investRow ? bbInr(investRow.monthly_roi)+'/month' : '—';
+  const sign = `\n\n— ${senderName}\n${senderRole}, Budget Barber`;
+
+  const templates = {
+    inquiry: `Hi ${name}! 👋\n\nThanks for your interest in the *Budget Barber* franchise opportunity. I'm reaching out from the Budget Barber HQ team.\n\nTo get started, please open your personal franchise portal — it has a 10-step walkthrough including videos, investment details, ROI breakdown and FAQs.\n\n👉 *Next step:* Pick your preferred language and watch the Vision video (~3 min). Once that's done, we'll call to answer your questions.${sign}`,
+    discovery: `Hi ${name}, hope you're doing well!\n\nJust checking in — have you had a chance to explore the Budget Barber franchise content in your portal? Most leads finish the intro videos within 2 days.\n\n*A quick discovery call (~15 min)* will help us understand your city, budget and timeline so we can recommend the right model — 3 / 4 / 5 chair.\n\nCan we schedule a call today or tomorrow? Reply with a time that suits you 🙏${sign}`,
+    demo: `Hi ${name},\n\nGreat that you're exploring the Budget Barber opportunity! Now is a perfect time to walk through the *demo videos* — Vision, Salon 360°, Investment & ROI — all available on your portal in your chosen language.\n\nAfter the demo, we'll discuss the model you like best. Most leads choose *${model}*.\n\n*Next:* Finish the demo videos, then we'll share the Investment & ROI sheet so we can align on the right model for your city.${sign}`,
+    site_visit: `Hi ${name},\n\nReady for the next step? We'd love to host you for a *site visit* at the nearest operational Budget Barber outlet so you can experience the brand first-hand.\n\n• Meet the team in person\n• See real-time daily operations\n• Get answers to your final questions\n\nReply with a date/time that suits you and we'll confirm the location and host.\n\n*After the visit, the only step remaining is the token payment of ${token} to block your city.*${sign}`,
+    negotiation: `Hi ${name},\n\nGreat conversation so far on the *${model}* model.\n\n📌 *Investment summary*\n• Total project cost: ${investTotal}\n• Estimated ROI: ${investRoi}\n• Token (refundable on agreement signing): ${token}\n\nThe token amount blocks your city exclusively and locks today's pricing. Once paid, we move to site finalisation, agreement signing and fit-out.\n\n*Next step:* Confirm the model and pay the token of ${token} via UPI to *${upi}*. Send the screenshot here once done 🙏${sign}`,
+    token_reminder: `Hi ${name},\n\nFriendly nudge — your franchise journey is *one step away* from being locked in! 🚀\n\nTo block your city and lock today's pricing for the *${model}* model, please pay the token amount of *${token}*.\n\n💳 *UPI ID:* ${upi}\n📝 Mode: UPI / Bank Transfer / Cheque\n\nOnce paid, share the screenshot here and we'll record it immediately. Your dashboard will update within minutes and we'll move straight to agreement signing.\n\nLet us know if you'd like a call to walk you through the payment.${sign}`,
+    token_received: `Hi ${name}, 🎉\n\n*Token payment of ${token} received and verified!*\n\nYour city is now officially blocked for the *${model}* Budget Barber outlet. Welcome to the family! 🙌\n\n*Next 3 steps:*\n1️⃣ Franchise agreement sign-off (we'll send the draft within 48 hrs)\n2️⃣ Site finalisation & lease support\n3️⃣ Interior, fit-out & staff training\n\nYour Master Franchise partner will be your single point of contact through the entire fit-out. Onwards!${sign}`,
+    agreement: `Hi ${name},\n\nThanks for paying the token — the *franchise agreement draft* is being shared with you on email/WhatsApp.\n\nPlease:\n• Review with your legal advisor (~2-3 days)\n• Sign all pages and share scanned copy back\n• Original to be couriered to our HQ\n\nOnce the agreement is signed, we trigger the *full investment schedule* and begin site fit-out.${sign}`,
+    handover: `Hi ${name},\n\n*Handover phase in progress* 🚀\n\nHere's where we are:\n✅ Token received\n✅ Agreement signed\n🔄 Site finalisation & interior\n🔄 Equipment delivery\n🔄 Staff hiring & training at HQ\n\nWe're aligning the launch date with the MF team. We'll share the exact date this week.${sign}`,
+    welcome: `Hi ${name}, 🎉\n\n*Congratulations on your Budget Barber outlet going LIVE!*\n\nIt's been a privilege guiding you through this journey. From here, your dedicated Master Franchise partner and our operations team will support you on daily operations, royalty, marketing, staff and supply chain.\n\nWelcome to the Budget Barber family. Wishing you record-breaking footfall! 💈✨${sign}`,
+    reengage: `Hi ${name},\n\nIt's been a while since we last connected on your Budget Barber franchise inquiry. We've recently updated our *investment models, ROI sheets and city-blocking policy* — and the token amount remains the most affordable entry into a national chain.\n\nWould you like a quick 10-min refresher call this week? Even if the timing isn't right now, we can share the new ROI sheet for the *${model}* model so you have it handy.${sign}`,
+    custom: `Hi ${name},\n\n${sign}`
+  };
+  return templates[key] || templates.inquiry;
+}
+
+const BB_WA_TEMPLATE_LIST = [
+  {key:'inquiry',        label:'1 · Inquiry — Intro & portal link'},
+  {key:'discovery',      label:'2 · Discovery — Schedule a call'},
+  {key:'demo',           label:'3 · Demo — Push to finish videos'},
+  {key:'site_visit',     label:'4 · Site Visit — Invite to outlet'},
+  {key:'negotiation',    label:'5 · Negotiation — Investment summary'},
+  {key:'token_reminder', label:'6 · Token Reminder — Pay & lock city ⭐'},
+  {key:'token_received', label:'7 · Token Received — Confirmation'},
+  {key:'agreement',      label:'8 · Agreement — Sign-off instructions'},
+  {key:'handover',       label:'9 · Handover — Fit-out progress'},
+  {key:'welcome',        label:'10 · Welcome — Outlet live 🎉'},
+  {key:'reengage',       label:'⚡ Re-engage closed-lost lead'},
+  {key:'custom',         label:'✍ Custom — Empty template'}
+];
+
+async function openWaPicker(leadId){
+  const l = (LEADS||[]).find(x=>x.id===leadId);
+  if(!l){ alert('Lead not found.'); return; }
+  WA_CURRENT_LEAD = {
+    id: l.id, name: l.name, phone: l.phone, city: l.city,
+    model_interest: l.model_interest || l.model || 'Not Decided',
+    language: l.language || l.lang || 'English',
+    current_step: (l.current_step!==undefined) ? l.current_step : (l.step||0),
+    step: l.step || 0,
+    status: l.status
+  };
+  await bbWaLoadSettings();
+  const recommendedKey = bbPickTemplate(WA_CURRENT_LEAD);
+  const list = document.getElementById('wa-tpl-list');
+  list.innerHTML = BB_WA_TEMPLATE_LIST.map(t=>{
+    const isRec = t.key===recommendedKey;
+    return `<button class="btn btn-sm ${isRec?'btn-p':''}" style="text-align:left;justify-content:flex-start;width:100%;"
+              onclick="selectWaTemplate('${t.key}')">${isRec?'⭐ ':''}${t.label}</button>`;
+  }).join('');
+  document.getElementById('wa-preview').value = bbBuildTemplate(recommendedKey, WA_CURRENT_LEAD);
+  document.getElementById('wa-meta').textContent =
+    `${WA_CURRENT_LEAD.name||'—'} · ${WA_CURRENT_LEAD.phone||'—'} · ${WA_CURRENT_LEAD.city||'—'} · Step ${WA_CURRENT_LEAD.step}/10`;
+  document.getElementById('wa-modal').classList.add('open');
+}
+
+function selectWaTemplate(key){
+  if(!WA_CURRENT_LEAD) return;
+  document.getElementById('wa-preview').value = bbBuildTemplate(key, WA_CURRENT_LEAD);
+  document.querySelectorAll('#wa-tpl-list .btn').forEach(b=>b.classList.remove('btn-p'));
+  const tpl = BB_WA_TEMPLATE_LIST.find(t=>t.key===key);
+  if(tpl){
+    [...document.querySelectorAll('#wa-tpl-list .btn')].forEach(b=>{
+      if(b.textContent.includes(tpl.label.replace(/^⭐ /,''))) b.classList.add('btn-p');
+    });
+  }
+}
+
+function closeWaModal(){
+  document.getElementById('wa-modal').classList.remove('open');
+  WA_CURRENT_LEAD = null;
+}
+
+function sendWaMessage(){
+  if(!WA_CURRENT_LEAD){ alert('No lead selected.'); return; }
+  const text = (document.getElementById('wa-preview').value||'').trim();
+  if(!text){ alert('Message is empty.'); return; }
+  let phone = (WA_CURRENT_LEAD.phone||'').replace(/\D/g,'');
+  if(phone.length===10) phone = '91'+phone;
+  if(!phone){ alert('No phone number on this lead.'); return; }
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+  // Audit
+  try {
+    const note = `WhatsApp follow-up sent (Admin): ${text.split('\n')[0].slice(0,80)}…`;
+    sb.from('lead_notes').insert({
+      lead_id: WA_CURRENT_LEAD.id, note,
+      added_by_type: 'admin',
+      added_by_admin: adminSession?.id || null
+    });
+  } catch(e){ console.warn('WA log skipped:',e); }
+  window.open(url, '_blank');
+  closeWaModal();
+}
+
+function copyWaMessage(){
+  const text = document.getElementById('wa-preview').value||'';
+  if(!text){ alert('Nothing to copy.'); return; }
+  navigator.clipboard?.writeText(text).then(
+    ()=>alert('✓ Copied to clipboard.'),
+    ()=>{
+      const ta = document.getElementById('wa-preview');
+      ta.select(); document.execCommand('copy');
+      alert('Copied (fallback).');
+    }
+  );
+}
+
+function quickWaFromLeadModal(){
+  if(!CURRENT_LEAD_ID){ alert('No lead open.'); return; }
+  openWaPicker(CURRENT_LEAD_ID);
+}
+function quickCallFromLeadModal(){
+  if(!CURRENT_LEAD_ID) return;
+  const l = (LEADS||[]).find(x=>x.id===CURRENT_LEAD_ID);
+  if(!l || !l.phone){ alert('No phone number for this lead.'); return; }
+  window.location.href = 'tel:'+l.phone;
 }
 </script>
 </body>
