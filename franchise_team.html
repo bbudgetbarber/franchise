@@ -862,29 +862,85 @@ async function loadTeam(){
 
 async function loadLeads(){
   if(!ftSession) return;
-  // Filter: Head → all leads where assigned_team_id is one of FT_TEAM ids OR null + region matches
-  //         Exec → only assigned_team_id = self
+  // Filter logic:
+  //   Sales Exec → leads where assigned_team_id = self
+  //   Sales Head → leads assigned to anyone on their team
+  //                UNION
+  //                unassigned leads (assigned_team_id IS NULL) that fall in
+  //                their region — matched by city (head's `cities` field)
+  //                OR by the head's region matching the lead's MF region.
   const baseCols = `id, name, phone, email, city, language, model_interest, source,
     status, current_step, guidelines_accepted, pin_hash, created_at, updated_at,
     assigned_mf_id, assigned_team_id, next_followup_date`;
 
-  let q = sb.from('leads').select(baseCols).order('created_at',{ascending:false});
   if(ftSession.role === 'sales_executive'){
-    q = q.eq('assigned_team_id', ftSession.id);
-  } else {
-    // Sales Head: leads owned by anyone on their team OR unassigned in their region's cities
-    const teamIds = FT_TEAM.map(t=>t.id);
-    // Supabase .in needs at least 1 id; always include self
-    if(teamIds.length===0) teamIds.push(ftSession.id);
-    q = q.in('assigned_team_id', teamIds);
+    const {data, error} = await sb.from('leads')
+      .select(baseCols)
+      .eq('assigned_team_id', ftSession.id)
+      .order('created_at',{ascending:false});
+    if(error){
+      console.error('loadLeads(exec) error:',error);
+      alert('Failed to load leads: '+error.message);
+      FT_LEADS = []; return;
+    }
+    FT_LEADS = data || [];
+    return;
   }
-  const {data, error} = await q;
-  if(error){
-    console.error('loadLeads error:',error);
-    alert('Failed to load leads: '+error.message);
+
+  // ── Sales Head path ──
+  const teamIds = FT_TEAM.map(t=>t.id);
+  if(teamIds.length===0) teamIds.push(ftSession.id);
+
+  // Cities the head owns (from their `cities` field, comma-separated).
+  // These are used to pick up unassigned leads that belong to this region.
+  const cityList = (ftSession.cities||'')
+    .split(',').map(s=>s.trim()).filter(Boolean);
+
+  // Query 1: leads already owned by someone on the team
+  const ownedP = sb.from('leads').select(baseCols)
+    .in('assigned_team_id', teamIds)
+    .order('created_at',{ascending:false});
+
+  // Query 2: unassigned leads in this head's cities
+  //   We do two separate queries instead of one .or() because Supabase's
+  //   .or() syntax with multiple .in() clauses is brittle.
+  let unassignedP;
+  if(cityList.length > 0){
+    unassignedP = sb.from('leads').select(baseCols)
+      .is('assigned_team_id', null)
+      .in('city', cityList)
+      .order('created_at',{ascending:false});
+  } else {
+    // No cities configured → still surface ALL unassigned leads in the
+    // region so the head isn't stuck with an empty list. This is a safe
+    // fallback; the head can re-assign or close anything that doesn't
+    // actually belong to them.
+    unassignedP = sb.from('leads').select(baseCols)
+      .is('assigned_team_id', null)
+      .order('created_at',{ascending:false});
+  }
+
+  const [ownedRes, unassignedRes] = await Promise.all([ownedP, unassignedP]);
+
+  if(ownedRes.error){
+    console.error('loadLeads(head, owned) error:',ownedRes.error);
+    alert('Failed to load assigned leads: '+ownedRes.error.message);
     FT_LEADS = []; return;
   }
-  FT_LEADS = data || [];
+  if(unassignedRes.error){
+    console.warn('loadLeads(head, unassigned) error — continuing with owned only:',unassignedRes.error);
+  }
+
+  // Merge + dedupe (in case any lead matched both queries)
+  const merged = [...(ownedRes.data||[]), ...(unassignedRes.data||[])];
+  const seen = new Set();
+  FT_LEADS = merged.filter(l => {
+    if(seen.has(l.id)) return false;
+    seen.add(l.id); return true;
+  });
+  console.log('[FT loadLeads] head sees',FT_LEADS.length,
+              '(owned:',ownedRes.data?.length||0,
+              'unassigned:',unassignedRes.data?.length||0,')');
 }
 
 async function loadLeadNotes(leadId){
