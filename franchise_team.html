@@ -222,7 +222,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--team-purple);backgrou
     <div class="adm-nav-group">Workspace</div>
     <div class="adm-nav-item active" data-tab="dashboard" onclick="switchFTTab('dashboard')"><span class="adm-nav-icon">📊</span> Dashboard</div>
     <div class="adm-nav-item" data-tab="leads" onclick="switchFTTab('leads')"><span class="adm-nav-icon">🎯</span> Leads</div>
-    <div class="adm-nav-item" data-tab="pipeline" onclick="switchFTTab('pipeline')"><span class="adm-nav-icon">📈</span> Pipeline</div>
     <div class="adm-nav-item" data-tab="followups" onclick="switchFTTab('followups')"><span class="adm-nav-icon">⏰</span> Follow-ups</div>
     <div class="adm-nav-item" data-tab="handover" onclick="switchFTTab('handover')"><span class="adm-nav-icon">🤝</span> Handover</div>
 
@@ -299,11 +298,23 @@ input:focus,select:focus,textarea:focus{border-color:var(--team-purple);backgrou
 
     <!-- ════════ LEADS ════════ -->
     <div class="admin-tab" id="tab-leads">
+      <!-- Stage funnel (folded in from old Pipeline tab) -->
+      <div class="adm-card">
+        <div class="adm-card-h">
+          <div>
+            <div class="adm-card-t">Stage Funnel</div>
+            <div class="adm-card-sub">Click a stage to filter the table below</div>
+          </div>
+          <button class="btn btn-xs" onclick="clearStageFunnelFilter()">Show all stages</button>
+        </div>
+        <div class="pipe" id="leads-funnel"></div>
+      </div>
+
       <div class="adm-card">
         <div class="adm-card-h">
           <div>
             <div class="adm-card-t">My Leads</div>
-            <div class="adm-card-sub" id="leads-scope-sub">Leads assigned to you</div>
+            <div class="adm-card-sub" id="leads-scope-sub">Leads assigned to you · <span id="lead-count-sub">0</span> matching</div>
           </div>
           <div class="flex-row gap-8">
             <button class="btn btn-sm" onclick="openNewLeadModal()">+ Add Lead</button>
@@ -311,8 +322,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--team-purple);backgrou
           </div>
         </div>
 
+        <!-- Filter bar — row 1 -->
         <div class="filter-bar">
-          <input type="text" class="search-input" id="lead-search" placeholder="🔍 Search by name, phone, email, city…" oninput="renderLeadTable()"/>
+          <input type="text" class="search-input" id="lead-search" placeholder="🔍 Search name, phone, email, city, note…" oninput="renderLeadTable()"/>
           <select id="lead-status-filter" onchange="renderLeadTable()">
             <option value="all">All Statuses</option>
             <option value="new">New</option>
@@ -335,54 +347,65 @@ input:focus,select:focus,textarea:focus{border-color:var(--team-purple);backgrou
             <option value="5">5 — Agreement</option>
             <option value="6">6 — Handover</option>
           </select>
+          <select id="lead-source-filter" onchange="renderLeadTable()">
+            <option value="all">All Sources</option>
+            <option value="Direct">Direct</option>
+            <option value="Website">Website</option>
+            <option value="Referral">Referral</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Facebook">Facebook</option>
+            <option value="Google Ads">Google Ads</option>
+            <option value="WhatsApp">WhatsApp</option>
+            <option value="Walk-in">Walk-in</option>
+          </select>
+        </div>
+
+        <!-- Filter bar — row 2 -->
+        <div class="filter-bar">
+          <select id="lead-model-filter" onchange="renderLeadTable()">
+            <option value="all">All Models</option>
+            <option value="Not Decided">Not Decided</option>
+            <option value="3 Chair">3 Chair</option>
+            <option value="4 Chair">4 Chair</option>
+            <option value="5 Chair">5 Chair</option>
+          </select>
+          <select id="lead-lang-filter" onchange="renderLeadTable()">
+            <option value="all">All Languages</option>
+            <option value="English">English</option>
+            <option value="Hindi">Hindi</option>
+            <option value="Telugu">Telugu</option>
+            <option value="Punjabi">Punjabi</option>
+          </select>
+          <select id="lead-owner-filter" onchange="renderLeadTable()">
+            <option value="all">All Owners</option>
+            <option value="unassigned">— Unassigned —</option>
+            <!-- team members injected at runtime -->
+          </select>
+          <select id="lead-followup-filter" onchange="renderLeadTable()">
+            <option value="all">All Follow-ups</option>
+            <option value="overdue">Overdue</option>
+            <option value="today">Due Today</option>
+            <option value="week">This Week</option>
+            <option value="none">No Follow-up Set</option>
+          </select>
+          <select id="lead-city-filter" onchange="renderLeadTable()">
+            <option value="all">All Cities</option>
+            <!-- cities injected at runtime -->
+          </select>
+          <input type="date" id="lead-created-from" onchange="renderLeadTable()" title="Created from"/>
+          <input type="date" id="lead-created-to"   onchange="renderLeadTable()" title="Created to"/>
+          <button class="btn btn-xs" onclick="clearLeadFilters()">Clear all</button>
         </div>
 
         <div class="tbl-scroll">
-          <table class="lead-table" style="min-width:1400px;">
+          <table class="lead-table" style="min-width:1700px;">
             <thead><tr>
               <th>Name</th><th>Phone</th><th>Email</th><th>City</th><th>Lang</th>
               <th>Model</th><th>Source</th><th>Stage</th><th>Status</th>
-              <th>Assigned To</th><th>Created</th><th>Actions</th>
+              <th>Assigned To</th><th>Next Follow-up</th><th>Latest Sales Comment</th>
+              <th>Created</th><th>Actions</th>
             </tr></thead>
             <tbody id="leads-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ════════ PIPELINE ════════ -->
-    <div class="admin-tab" id="tab-pipeline">
-      <div class="adm-card">
-        <div class="adm-card-h">
-          <div>
-            <div class="adm-card-t">Pipeline Overview</div>
-            <div class="adm-card-sub">Lead distribution across stages</div>
-          </div>
-        </div>
-        <div class="pipe" id="pipe-row"></div>
-      </div>
-
-      <div class="adm-card">
-        <div class="adm-card-h">
-          <div>
-            <div class="adm-card-t">Leads by Stage</div>
-            <div class="adm-card-sub">Click a stage above to drill down</div>
-          </div>
-          <select id="pipe-stage-filter" onchange="renderPipelineList()" style="width:auto;min-width:160px;">
-            <option value="all">All Stages</option>
-            <option value="0">0 — Inquiry</option>
-            <option value="1">1 — Discovery</option>
-            <option value="2">2 — Demo / Videos</option>
-            <option value="3">3 — Site Visit</option>
-            <option value="4">4 — Negotiation</option>
-            <option value="5">5 — Agreement</option>
-            <option value="6">6 — Handover</option>
-          </select>
-        </div>
-        <div class="tbl-scroll">
-          <table class="lead-table">
-            <thead><tr><th>Name</th><th>Phone</th><th>City</th><th>Stage</th><th>Days in Stage</th><th>Owner</th><th></th></tr></thead>
-            <tbody id="pipe-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -394,31 +417,101 @@ input:focus,select:focus,textarea:focus{border-color:var(--team-purple);backgrou
         <div class="adm-card-h">
           <div>
             <div class="adm-card-t">Follow-ups</div>
-            <div class="adm-card-sub">Scheduled calls and tasks</div>
+            <div class="adm-card-sub">Leads with a scheduled "Next Follow-up Date" — your call/visit calendar</div>
           </div>
-          <select id="fu-filter" onchange="renderFollowups()" style="width:auto;">
-            <option value="today">Today</option>
-            <option value="overdue">Overdue</option>
-            <option value="week">This Week</option>
-            <option value="all">All</option>
-          </select>
+          <div class="flex-row gap-8">
+            <select id="fu-filter" onchange="renderFollowups()" style="width:auto;">
+              <option value="today">Due Today</option>
+              <option value="overdue">Overdue</option>
+              <option value="week">Next 7 Days</option>
+              <option value="month">Next 30 Days</option>
+              <option value="all">All Scheduled</option>
+              <option value="none">No Follow-up Set</option>
+            </select>
+            <button class="btn btn-sm btn-p" onclick="openScheduleHelper()">📅 Schedule a Follow-up</button>
+          </div>
         </div>
+
+        <!-- How-to hint card -->
+        <div style="background:rgba(107,26,74,0.06);border-left:3px solid var(--team-purple);padding:10px 14px;border-radius:6px;margin-bottom:14px;font-size:12px;color:var(--mut);line-height:1.6;">
+          <strong style="color:var(--team-purple);">How follow-ups work:</strong>
+          Every lead has a <em>"Next Follow-up Date"</em> field. Set it from the lead's detail view, the quick-schedule button below, or after a WhatsApp/call session. Dates due today bubble up to your dashboard; overdue ones are highlighted red.
+        </div>
+
         <div id="followups-body"></div>
+      </div>
+    </div>
+
+    <!-- Quick-schedule helper modal -->
+    <div class="modal-bg" id="schedule-modal">
+      <div class="modal" style="max-width:520px;">
+        <div class="modal-h">
+          <div><div class="modal-t">📅 Schedule a Follow-up</div>
+            <div class="text-xs muted">Pick a lead and a date — saved instantly</div></div>
+          <button class="modal-x" onclick="closeScheduleHelper()">×</button>
+        </div>
+        <div class="modal-b">
+          <div class="fr"><label class="fl">Lead *</label>
+            <select id="sch-lead-id"></select>
+            <div class="text-xs muted mt-6">Only your active (non-closed) leads are listed.</div>
+          </div>
+          <div class="fr"><label class="fl">Next Follow-up Date *</label>
+            <input type="date" id="sch-date"/>
+          </div>
+          <div class="flex-row gap-8">
+            <button class="btn btn-xs" onclick="setSchedQuick(0)">Today</button>
+            <button class="btn btn-xs" onclick="setSchedQuick(1)">Tomorrow</button>
+            <button class="btn btn-xs" onclick="setSchedQuick(3)">+3 days</button>
+            <button class="btn btn-xs" onclick="setSchedQuick(7)">+1 week</button>
+            <button class="btn btn-xs" onclick="setSchedQuick(14)">+2 weeks</button>
+          </div>
+          <div class="fr mt-12"><label class="fl">Note (optional)</label>
+            <textarea id="sch-note" rows="2" placeholder="What's the purpose of this follow-up?"></textarea>
+          </div>
+        </div>
+        <div class="modal-f">
+          <button class="btn" onclick="closeScheduleHelper()">Cancel</button>
+          <button class="btn btn-p" onclick="saveScheduleFromHelper()">Save Follow-up</button>
+        </div>
       </div>
     </div>
 
     <!-- ════════ HANDOVER ════════ -->
     <div class="admin-tab" id="tab-handover">
+
+      <!-- Summary strip -->
+      <div class="stat-grid" id="ho-summary">
+        <div class="stat"><div class="stat-lbl">In Handover</div><div class="stat-num" id="ho-stat-total">0</div><div class="stat-sub">Token paid &amp; in progress</div></div>
+        <div class="stat"><div class="stat-lbl">Awaiting Site</div><div class="stat-num" id="ho-stat-site">0</div><div class="stat-sub">Site not yet finalised</div></div>
+        <div class="stat"><div class="stat-lbl">Fit-out Active</div><div class="stat-num" id="ho-stat-fitout">0</div><div class="stat-sub">Interior in progress</div></div>
+        <div class="stat"><div class="stat-lbl">Launching Soon</div><div class="stat-num" id="ho-stat-soon">0</div><div class="stat-sub">ETA ≤ 30 days</div></div>
+      </div>
+
       <div class="adm-card">
         <div class="adm-card-h">
           <div>
-            <div class="adm-card-t">Handover Pipeline</div>
-            <div class="adm-card-sub">Leads in final stages — agreement, fit-out &amp; launch</div>
+            <div class="adm-card-t">Handover &amp; Project Tracker</div>
+            <div class="adm-card-sub">Every signed lead — current status of payment, agreement, site, fit-out, equipment, staff &amp; launch ETA. Editable by Sales Executive and Sales Head.</div>
+          </div>
+          <div class="flex-row gap-8">
+            <select id="ho-status-filter" onchange="renderHandover()" style="width:auto;">
+              <option value="all">All Projects</option>
+              <option value="active">Active (not launched)</option>
+              <option value="launched">Launched</option>
+              <option value="stalled">Stalled (no update 14+ days)</option>
+            </select>
+            <button class="btn btn-sm" onclick="exportHandoverCSV()">⬇ Export CSV</button>
           </div>
         </div>
         <div class="tbl-scroll">
-          <table class="lead-table">
-            <thead><tr><th>Name</th><th>City</th><th>Model</th><th>Stage</th><th>Payment</th><th>Agreement</th><th>Launch ETA</th><th></th></tr></thead>
+          <table class="lead-table" style="min-width:1700px;">
+            <thead><tr>
+              <th>Lead</th><th>City</th><th>Model</th>
+              <th>Payment</th><th>Agreement</th><th>Site</th>
+              <th>Fit-out %</th><th>Equipment</th><th>Staff</th>
+              <th>Launch ETA</th><th>Current Status</th>
+              <th>Last Updated</th><th>Actions</th>
+            </tr></thead>
             <tbody id="handover-tbody"></tbody>
           </table>
         </div>
@@ -427,8 +520,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--team-purple);backgrou
       <div class="adm-card">
         <div class="adm-card-h">
           <div>
-            <div class="adm-card-t">Handover Checklist</div>
-            <div class="adm-card-sub">Required items before marking a lead "Handed Over"</div>
+            <div class="adm-card-t">Handover Checklist (reference)</div>
+            <div class="adm-card-sub">Required items before marking a lead "Launched"</div>
           </div>
         </div>
         <ul style="list-style:none;padding:0;font-size:13px;line-height:1.9;">
@@ -442,6 +535,100 @@ input:focus,select:focus,textarea:focus{border-color:var(--team-purple);backgrou
           <li>✅ Outlet record created in <code>franchise_outlets</code> table</li>
           <li>✅ Launch date confirmed with MF &amp; Admin</li>
         </ul>
+      </div>
+    </div>
+
+    <!-- ════════ HANDOVER DETAIL MODAL ════════ -->
+    <div class="modal-bg" id="ho-modal">
+      <div class="modal" style="max-width:760px;">
+        <div class="modal-h">
+          <div>
+            <div class="modal-t" id="ho-mod-name">Project Status</div>
+            <div class="text-xs muted" id="ho-mod-meta">—</div>
+          </div>
+          <button class="modal-x" onclick="closeHandoverModal()">×</button>
+        </div>
+        <div class="modal-b">
+
+          <div class="frow">
+            <div class="fr"><label class="fl">Payment Status</label>
+              <select id="ho-payment">
+                <option value="not_started">Not Started</option>
+                <option value="token_paid">Token Paid</option>
+                <option value="partial">Partial Investment</option>
+                <option value="full_paid">Fully Paid</option>
+              </select>
+            </div>
+            <div class="fr"><label class="fl">Agreement Status</label>
+              <select id="ho-agreement">
+                <option value="not_started">Not Started</option>
+                <option value="draft_shared">Draft Shared</option>
+                <option value="under_review">Under Review</option>
+                <option value="signed">Signed (Both Parties)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="frow">
+            <div class="fr"><label class="fl">Site Status</label>
+              <select id="ho-site">
+                <option value="not_started">Not Started</option>
+                <option value="shortlisted">Shortlisted</option>
+                <option value="finalized">Finalised</option>
+                <option value="lease_signed">Lease Signed</option>
+              </select>
+            </div>
+            <div class="fr"><label class="fl">Site Address</label>
+              <input type="text" id="ho-site-addr" placeholder="Full address once finalised"/>
+            </div>
+          </div>
+
+          <div class="frow">
+            <div class="fr"><label class="fl">Fit-out Progress (%)</label>
+              <input type="number" id="ho-fitout" min="0" max="100" step="5" placeholder="0–100"/>
+            </div>
+            <div class="fr"><label class="fl">Equipment Status</label>
+              <select id="ho-equipment">
+                <option value="not_started">Not Started</option>
+                <option value="ordered">Ordered</option>
+                <option value="delivered">Delivered</option>
+                <option value="installed">Installed</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="frow">
+            <div class="fr"><label class="fl">Staff Status</label>
+              <select id="ho-staff">
+                <option value="not_started">Not Started</option>
+                <option value="hiring">Hiring</option>
+                <option value="training">In Training (HQ)</option>
+                <option value="ready">Trained &amp; Ready</option>
+              </select>
+            </div>
+            <div class="fr"><label class="fl">Launch ETA</label>
+              <input type="date" id="ho-eta"/>
+            </div>
+          </div>
+
+          <div class="fr"><label class="fl">Current Status Note</label>
+            <textarea id="ho-status-note" rows="3" placeholder="What's happening this week? Blockers? Next milestone?"></textarea>
+            <div class="text-xs muted mt-6">Visible to Admin, MF and the rest of the sales team. Add weekly.</div>
+          </div>
+
+          <div class="fr">
+            <label class="fl">Mark as Launched (locks editing)</label>
+            <select id="ho-launched">
+              <option value="false">Not Launched Yet</option>
+              <option value="true">✅ Launched / Live</option>
+            </select>
+          </div>
+
+        </div>
+        <div class="modal-f">
+          <button class="btn" onclick="closeHandoverModal()">Cancel</button>
+          <button class="btn btn-p" onclick="saveHandoverModal()">Save Project Status</button>
+        </div>
       </div>
     </div>
 
@@ -740,7 +927,9 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let ftSession = null; // {id, name, email, phone, role, region, cities, head_id}
 let FT_LEADS = [];
 let FT_TEAM = [];   // team members (for head: list of executives in region; for exec: just self)
+let FT_LATEST_NOTES = {}; // {lead_id: {note, added_by_type, created_at}}
 let CURRENT_LEAD_ID = null;
+let CURRENT_HO_LEAD_ID = null;
 
 // ════════════════════════════════════════════════════════════════
 // ── PASSWORD HASHING (SHA-256, matches admin/MF) ───────────────
@@ -828,9 +1017,11 @@ async function onFTLoginSuccess(data){
   // Load data
   await loadTeam();      // for head: all execs in region; for exec: self only
   await loadLeads();     // scoped to user
+  await loadLatestNotes(); // latest sales comment per lead
+  populateLeadFilterDropdowns(); // owners + cities now that leads are loaded
   renderDashboard();
+  renderStageFunnel();
   renderLeadTable();
-  renderPipeline();
   renderFollowups();
   renderHandover();
   if(isHead){ renderTeam(); renderAssignSelectors(); renderPerformance(); }
@@ -860,14 +1051,15 @@ function switchFTTab(name){
   document.getElementById('tab-'+name).classList.add('active');
   document.querySelector(`.adm-nav-item[data-tab="${name}"]`)?.classList.add('active');
   const titles = {
-    dashboard:'Dashboard', leads:'Leads', pipeline:'Pipeline',
+    dashboard:'Dashboard', leads:'Leads',
     followups:'Follow-ups', handover:'Handover',
     team:'My Team', assign:'Assign Leads', performance:'Team Performance',
     profile:'My Profile'
   };
   document.getElementById('ft-page-title').textContent = titles[name]||'';
   if(name==='assign') renderAssignTable();
-  if(name==='pipeline') renderPipelineList();
+  if(name==='leads') renderStageFunnel();
+  if(name==='handover') renderHandover();
   document.getElementById('ft-sidebar')?.classList.remove('open');
 }
 
@@ -906,7 +1098,10 @@ async function loadLeads(){
   //                OR by the head's region matching the lead's MF region.
   const baseCols = `id, name, phone, email, city, language, model_interest, source,
     status, current_step, guidelines_accepted, pin_hash, created_at, updated_at,
-    assigned_mf_id, assigned_team_id, next_followup_date`;
+    assigned_mf_id, assigned_team_id, next_followup_date,
+    ho_payment_status, ho_agreement_status, ho_site_status, ho_site_address,
+    ho_fitout_pct, ho_equipment_status, ho_staff_status, ho_launch_eta,
+    ho_status_note, ho_launched, ho_updated_at, ho_updated_by_team`;
 
   if(ftSession.role === 'sales_executive'){
     const {data, error} = await sb.from('leads')
@@ -987,6 +1182,23 @@ async function loadLeadNotes(leadId){
   return data||[];
 }
 
+// Pull the single latest note for each loaded lead in one round-trip.
+// Used to populate the "Latest Sales Comment" column on the Leads table.
+async function loadLatestNotes(){
+  FT_LATEST_NOTES = {};
+  if(!FT_LEADS.length) return;
+  const ids = FT_LEADS.map(l=>l.id);
+  const {data, error} = await sb.from('lead_notes')
+    .select('lead_id, note, added_by_type, created_at')
+    .in('lead_id', ids)
+    .order('created_at', {ascending:false});
+  if(error){ console.warn('loadLatestNotes',error); return; }
+  // First match per lead_id is the latest (we ordered desc)
+  for(const n of (data||[])){
+    if(!FT_LATEST_NOTES[n.lead_id]) FT_LATEST_NOTES[n.lead_id] = n;
+  }
+}
+
 async function loadLeadPayments(leadId){
   const {data,error} = await sb.from('payments')
     .select('id, step_name, amount, mode, status, created_at, verified_at, screenshot_url, notes')
@@ -1055,30 +1267,147 @@ function renderDashboard(){
 }
 
 // ════════════════════════════════════════════════════════════════
-// ── LEAD TABLE ──────────────────────────────────────────────────
+// ── LEAD FILTERS / DROPDOWN POPULATION ──────────────────────────
+// ════════════════════════════════════════════════════════════════
+function populateLeadFilterDropdowns(){
+  // Owner dropdown (team members + unassigned)
+  const ownerSel = document.getElementById('lead-owner-filter');
+  if(ownerSel){
+    const opts = ['<option value="all">All Owners</option>',
+                  '<option value="unassigned">— Unassigned —</option>']
+      .concat(FT_TEAM.map(t=>`<option value="${t.id}">${esc(t.name)}${t.id===ftSession.id?' (me)':''}</option>`));
+    ownerSel.innerHTML = opts.join('');
+  }
+  // City dropdown — distinct cities in current lead set
+  const citySel = document.getElementById('lead-city-filter');
+  if(citySel){
+    const cities = [...new Set(FT_LEADS.map(l=>l.city).filter(Boolean))].sort();
+    citySel.innerHTML = '<option value="all">All Cities</option>' +
+      cities.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  }
+}
+
+function clearLeadFilters(){
+  ['lead-search'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['lead-status-filter','lead-step-filter','lead-source-filter','lead-model-filter',
+   'lead-lang-filter','lead-owner-filter','lead-followup-filter','lead-city-filter']
+    .forEach(id=>{ const el=document.getElementById(id); if(el) el.value='all'; });
+  ['lead-created-from','lead-created-to'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  renderLeadTable();
+}
+
+function clearStageFunnelFilter(){
+  document.getElementById('lead-step-filter').value='all';
+  renderLeadTable();
+}
+
+// ════════════════════════════════════════════════════════════════
+// ── STAGE FUNNEL (above leads table — replaces old Pipeline tab)
+// ════════════════════════════════════════════════════════════════
+function renderStageFunnel(){
+  const stages = [
+    {n:0,lbl:'Inquiry'},{n:1,lbl:'Discovery'},{n:2,lbl:'Demo'},
+    {n:3,lbl:'Site Visit'},{n:4,lbl:'Negotiation'},{n:5,lbl:'Agreement'}
+  ];
+  const row = document.getElementById('leads-funnel');
+  if(!row) return;
+  const activeStage = document.getElementById('lead-step-filter')?.value || 'all';
+  row.innerHTML = stages.map(s=>{
+    const count = FT_LEADS.filter(l => (l.current_step||0) === s.n).length;
+    const cls = String(s.n)===activeStage ? 'current' : '';
+    return `<div class="pipe-stage ${cls}" style="cursor:pointer;" onclick="document.getElementById('lead-step-filter').value='${s.n}';renderLeadTable();renderStageFunnel();">
+      <div class="pipe-stage-lbl">${s.lbl}</div>
+      <div class="pipe-stage-n">${count}</div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════════════════
+// ── LEAD TABLE (now with extra filters + latest-comment column) ─
 // ════════════════════════════════════════════════════════════════
 function renderLeadTable(){
-  const q = (document.getElementById('lead-search').value||'').toLowerCase().trim();
+  const q       = (document.getElementById('lead-search').value||'').toLowerCase().trim();
   const sFilter = document.getElementById('lead-status-filter').value;
-  const stFilter = document.getElementById('lead-step-filter').value;
+  const stFilter= document.getElementById('lead-step-filter').value;
+  const srcF    = document.getElementById('lead-source-filter').value;
+  const mdlF    = document.getElementById('lead-model-filter').value;
+  const langF   = document.getElementById('lead-lang-filter').value;
+  const ownF    = document.getElementById('lead-owner-filter').value;
+  const fuF     = document.getElementById('lead-followup-filter').value;
+  const cityF   = document.getElementById('lead-city-filter').value;
+  const dateFrom= document.getElementById('lead-created-from').value;
+  const dateTo  = document.getElementById('lead-created-to').value;
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const weekEnd = new Date(today); weekEnd.setDate(weekEnd.getDate()+7);
 
   const rows = FT_LEADS.filter(l=>{
     if(sFilter!=='all' && (l.status||'')!==sFilter) return false;
     if(stFilter!=='all' && String(l.current_step||0)!==stFilter) return false;
+    if(srcF!=='all' && (l.source||'')!==srcF) return false;
+    if(mdlF!=='all' && (l.model_interest||'')!==mdlF) return false;
+    if(langF!=='all' && (l.language||'')!==langF) return false;
+    if(cityF!=='all' && (l.city||'')!==cityF) return false;
+    if(ownF==='unassigned' && l.assigned_team_id) return false;
+    if(ownF!=='all' && ownF!=='unassigned' && l.assigned_team_id!==ownF) return false;
+
+    if(fuF !== 'all'){
+      const d = l.next_followup_date ? new Date(l.next_followup_date) : null;
+      if(fuF==='none' && d) return false;
+      if(fuF==='none' && !d) {} // pass
+      if(fuF==='overdue'){ if(!d || d >= today) return false; }
+      if(fuF==='today'){ if(!d || d.toDateString()!==today.toDateString()) return false; }
+      if(fuF==='week'){ if(!d || d < today || d > weekEnd) return false; }
+    }
+
+    if(dateFrom && new Date(l.created_at) < new Date(dateFrom)) return false;
+    if(dateTo){
+      const dt = new Date(dateTo); dt.setHours(23,59,59,999);
+      if(new Date(l.created_at) > dt) return false;
+    }
+
     if(!q) return true;
+    const latest = FT_LATEST_NOTES[l.id]?.note || '';
     return (l.name||'').toLowerCase().includes(q)
       || (l.phone||'').toLowerCase().includes(q)
       || (l.email||'').toLowerCase().includes(q)
-      || (l.city||'').toLowerCase().includes(q);
+      || (l.city||'').toLowerCase().includes(q)
+      || latest.toLowerCase().includes(q);
   });
+
+  // Update count subtitle
+  const sub = document.getElementById('lead-count-sub');
+  if(sub) sub.textContent = rows.length;
 
   const tbody = document.getElementById('leads-tbody');
   if(rows.length===0){
-    tbody.innerHTML = `<tr><td colspan="12" class="muted text-sm" style="text-align:center;padding:30px;">No leads match your filters.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="14" class="muted text-sm" style="text-align:center;padding:30px;">No leads match your filters. <button class="btn btn-xs" style="margin-left:8px;" onclick="clearLeadFilters()">Clear filters</button></td></tr>`;
     return;
   }
+
   tbody.innerHTML = rows.map(l=>{
     const owner = FT_TEAM.find(t=>t.id===l.assigned_team_id);
+    const note  = FT_LATEST_NOTES[l.id];
+    const noteSnippet = note ? (note.note||'').slice(0,80) + ((note.note||'').length>80?'…':'') : '';
+    const noteWho = note ? (
+      note.added_by_type==='team' ? '🧑‍💼 Sales' :
+      note.added_by_type==='admin'? '🛡️ Admin' :
+      note.added_by_type==='mf'   ? '🌐 MF' : 'System'
+    ) : '';
+
+    // Follow-up display + urgency colour
+    let fuDisp = '<span class="muted text-sm">—</span>';
+    if(l.next_followup_date){
+      const d = new Date(l.next_followup_date);
+      const isOverdue = d < today;
+      const isToday   = d.toDateString()===today.toDateString();
+      const cls = isOverdue?'p-no':isToday?'p-wrn':'p-inf';
+      const lbl = isOverdue?'Overdue':isToday?'Today':fmtDate(l.next_followup_date);
+      fuDisp = `<span class="pill ${cls}">${lbl}</span>`;
+    }
+
     return `<tr>
       <td><strong>${esc(l.name||'—')}</strong></td>
       <td>${esc(l.phone||'—')}</td>
@@ -1090,6 +1419,12 @@ function renderLeadTable(){
       <td>${stageLabel(l.current_step)}</td>
       <td>${statusPill(l.status)}</td>
       <td>${owner ? esc(owner.name) : '<span class="muted text-sm">Unassigned</span>'}</td>
+      <td>${fuDisp}</td>
+      <td style="max-width:260px;">
+        ${noteSnippet ? `<div class="text-xs"><strong>${noteWho}</strong> · ${fmtDate(note.created_at)}</div>
+                         <div class="text-sm" style="color:var(--mut);">${esc(noteSnippet)}</div>`
+                      : '<span class="muted text-sm">No comments yet</span>'}
+      </td>
       <td class="muted text-sm">${fmtDate(l.created_at)}</td>
       <td><div class="act-btns">
         <button class="btn btn-xs btn-p" onclick="openLeadModal('${l.id}')">Open</button>
@@ -1101,106 +1436,324 @@ function renderLeadTable(){
 }
 
 // ════════════════════════════════════════════════════════════════
-// ── PIPELINE ────────────────────────────────────────────────────
-// ════════════════════════════════════════════════════════════════
-function renderPipeline(){
-  const stages = [
-    {n:0,lbl:'Inquiry'},{n:1,lbl:'Discovery'},{n:2,lbl:'Demo'},
-    {n:3,lbl:'Site Visit'},{n:4,lbl:'Negotiation'},{n:5,lbl:'Agreement'}
-  ];
-  const row = document.getElementById('pipe-row');
-  row.innerHTML = stages.map(s=>{
-    const count = FT_LEADS.filter(l => (l.current_step||0) === s.n).length;
-    return `<div class="pipe-stage" onclick="document.getElementById('pipe-stage-filter').value='${s.n}';renderPipelineList();switchFTTab('pipeline');">
-      <div class="pipe-stage-lbl">${s.lbl}</div>
-      <div class="pipe-stage-n">${count}</div>
-    </div>`;
-  }).join('');
-  renderPipelineList();
-}
-
-function renderPipelineList(){
-  const f = document.getElementById('pipe-stage-filter').value;
-  const rows = FT_LEADS.filter(l => f==='all' || String(l.current_step||0)===f);
-  const tbody = document.getElementById('pipe-tbody');
-  if(rows.length===0){
-    tbody.innerHTML = `<tr><td colspan="7" class="muted text-sm" style="text-align:center;padding:24px;">No leads at this stage.</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = rows.map(l=>{
-    const owner = FT_TEAM.find(t=>t.id===l.assigned_team_id);
-    const days = l.updated_at ? Math.floor((Date.now() - new Date(l.updated_at).getTime())/86400000) : '—';
-    return `<tr>
-      <td><strong>${esc(l.name||'—')}</strong></td>
-      <td>${esc(l.phone||'—')}</td>
-      <td>${esc(l.city||'—')}</td>
-      <td>${stageLabel(l.current_step)}</td>
-      <td>${days} days</td>
-      <td>${owner?esc(owner.name):'<span class="muted">—</span>'}</td>
-      <td><button class="btn btn-xs btn-p" onclick="openLeadModal('${l.id}')">Open</button></td>
-    </tr>`;
-  }).join('');
-}
-
-// ════════════════════════════════════════════════════════════════
 // ── FOLLOW-UPS ──────────────────────────────────────────────────
 // ════════════════════════════════════════════════════════════════
 function renderFollowups(){
   const filter = document.getElementById('fu-filter').value;
   const today = new Date(); today.setHours(0,0,0,0);
   const week = new Date(today); week.setDate(week.getDate()+7);
+  const month = new Date(today); month.setDate(month.getDate()+30);
 
   const rows = FT_LEADS.filter(l=>{
-    if(!l.next_followup_date) return false;
-    const d = new Date(l.next_followup_date);
+    // active-only — exclude closed
+    if(['closed_won','closed_lost'].includes(l.status||'')) return false;
+
+    const hasDate = !!l.next_followup_date;
+    const d = hasDate ? new Date(l.next_followup_date) : null;
+
+    if(filter==='none')    return !hasDate;
+    if(!hasDate)           return false;
     if(filter==='today')   return d.toDateString()===today.toDateString();
     if(filter==='overdue') return d < today;
     if(filter==='week')    return d>=today && d<=week;
-    return true;
+    if(filter==='month')   return d>=today && d<=month;
+    return true; // all scheduled
+  });
+
+  // Sort by date ascending (overdue and soonest first)
+  rows.sort((a,b)=>{
+    const da = a.next_followup_date ? new Date(a.next_followup_date).getTime() : Infinity;
+    const db = b.next_followup_date ? new Date(b.next_followup_date).getTime() : Infinity;
+    return da - db;
   });
 
   const body = document.getElementById('followups-body');
   if(rows.length===0){
-    body.innerHTML = `<div class="muted text-sm" style="text-align:center;padding:24px;">No follow-ups in this view.</div>`;
+    const hintHtml = filter==='none'
+      ? `Everyone has a follow-up scheduled — well done! 🎯`
+      : `No follow-ups in this view.<br/>Open any lead and set <em>"Next Follow-up Date"</em> to add it here, or use the <strong>📅 Schedule a Follow-up</strong> button above.`;
+    body.innerHTML = `<div class="muted text-sm" style="text-align:center;padding:24px;line-height:1.7;">${hintHtml}</div>`;
     return;
   }
-  body.innerHTML = '<div class="tbl-scroll"><table class="lead-table"><thead><tr><th>Lead</th><th>Phone</th><th>City</th><th>Follow-up Date</th><th>Status</th><th></th></tr></thead><tbody>'+
+  body.innerHTML = '<div class="tbl-scroll"><table class="lead-table" style="min-width:1100px;"><thead><tr><th>Lead</th><th>Phone</th><th>City</th><th>Stage</th><th>Status</th><th>Follow-up Date</th><th>Latest Comment</th><th>Actions</th></tr></thead><tbody>'+
     rows.map(l=>{
-      const d = new Date(l.next_followup_date);
-      const isOverdue = d < today;
+      const note = FT_LATEST_NOTES[l.id];
+      const noteText = note ? esc((note.note||'').slice(0,60)+((note.note||'').length>60?'…':'')) : '<span class="muted">—</span>';
+      let dateCell = '<span class="muted">Not set</span>';
+      if(l.next_followup_date){
+        const d = new Date(l.next_followup_date);
+        const isOverdue = d < today;
+        const isToday = d.toDateString()===today.toDateString();
+        const tag = isOverdue?'<span class="pill p-no" style="margin-left:6px;">Overdue</span>'
+                  : isToday?'<span class="pill p-wrn" style="margin-left:6px;">Today</span>'
+                  : '';
+        dateCell = fmtDate(l.next_followup_date)+' '+tag;
+      }
       return `<tr>
         <td><strong>${esc(l.name||'—')}</strong></td>
         <td>${esc(l.phone||'—')}</td>
         <td>${esc(l.city||'—')}</td>
-        <td>${fmtDate(l.next_followup_date)} ${isOverdue?'<span class="pill p-no" style="margin-left:6px;">Overdue</span>':''}</td>
+        <td>${stageLabel(l.current_step)}</td>
         <td>${statusPill(l.status)}</td>
-        <td><button class="btn btn-xs btn-p" onclick="openLeadModal('${l.id}')">Open</button></td>
+        <td>${dateCell}</td>
+        <td style="max-width:240px;" class="text-sm">${noteText}</td>
+        <td><div class="act-btns">
+          <button class="btn btn-xs btn-p" onclick="openLeadModal('${l.id}')">Open</button>
+          <a class="btn btn-xs" href="tel:${esc(l.phone||'')}" title="Call">📞</a>
+          <button class="btn btn-xs" onclick="openWaPicker('${l.id}')" title="WhatsApp">💬</button>
+          <button class="btn btn-xs" onclick="openScheduleHelper('${l.id}')" title="Reschedule">📅</button>
+        </div></td>
       </tr>`;
     }).join('')+'</tbody></table></div>';
+}
+
+// ── Schedule-helper modal (quick add/edit of next_followup_date) ──
+function openScheduleHelper(leadId){
+  const sel = document.getElementById('sch-lead-id');
+  // Populate active leads only
+  const active = FT_LEADS.filter(l => !['closed_won','closed_lost'].includes(l.status||''));
+  sel.innerHTML = active.map(l=>{
+    const owner = FT_TEAM.find(t=>t.id===l.assigned_team_id);
+    return `<option value="${l.id}">${esc(l.name||'—')} · ${esc(l.city||'—')} · ${esc(owner?.name||'unassigned')}</option>`;
+  }).join('');
+  if(leadId){ sel.value = leadId; }
+  // Default date — today
+  document.getElementById('sch-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('sch-note').value = '';
+  document.getElementById('schedule-modal').classList.add('active');
+}
+function closeScheduleHelper(){
+  document.getElementById('schedule-modal').classList.remove('active');
+}
+function setSchedQuick(days){
+  const d = new Date(); d.setDate(d.getDate()+days);
+  document.getElementById('sch-date').value = d.toISOString().slice(0,10);
+}
+async function saveScheduleFromHelper(){
+  const leadId = document.getElementById('sch-lead-id').value;
+  const date   = document.getElementById('sch-date').value;
+  const note   = document.getElementById('sch-note').value.trim();
+  if(!leadId || !date){ alert('Pick a lead and a date.'); return; }
+  const {error} = await sb.from('leads')
+    .update({next_followup_date:date, updated_at:new Date().toISOString()})
+    .eq('id', leadId);
+  if(error){ alert('Failed: '+error.message); return; }
+  if(note){
+    await sb.from('lead_notes').insert({
+      lead_id:leadId,
+      note:`Follow-up scheduled for ${date}: ${note}`,
+      added_by_type:'team', added_by_team:ftSession.id
+    });
+  }
+  closeScheduleHelper();
+  await loadLeads(); await loadLatestNotes();
+  renderLeadTable(); renderFollowups(); renderDashboard(); renderStageFunnel();
 }
 
 // ════════════════════════════════════════════════════════════════
 // ── HANDOVER ────────────────────────────────────────────────────
 // ════════════════════════════════════════════════════════════════
+// A "handover project" = any lead that has reached payment / agreement /
+// handover status, OR is on stage 5+. We track per-project fields:
+//   ho_payment_status, ho_agreement_status, ho_site_status, ho_site_address,
+//   ho_fitout_pct, ho_equipment_status, ho_staff_status, ho_launch_eta,
+//   ho_status_note, ho_launched, ho_updated_at, ho_updated_by_team
+// All editable by both Sales Executive (own leads) and Sales Head (team leads).
+
+const HO_LABELS = {
+  payment:{
+    not_started:'Not Started', token_paid:'Token Paid',
+    partial:'Partial', full_paid:'Fully Paid'
+  },
+  agreement:{
+    not_started:'Not Started', draft_shared:'Draft Shared',
+    under_review:'Under Review', signed:'Signed'
+  },
+  site:{
+    not_started:'Not Started', shortlisted:'Shortlisted',
+    finalized:'Finalised', lease_signed:'Lease Signed'
+  },
+  equipment:{
+    not_started:'Not Started', ordered:'Ordered',
+    delivered:'Delivered', installed:'Installed'
+  },
+  staff:{
+    not_started:'Not Started', hiring:'Hiring',
+    training:'Training', ready:'Ready'
+  }
+};
+function hoPill(category, value){
+  const label = HO_LABELS[category]?.[value] || '—';
+  const okStates = ['full_paid','signed','lease_signed','installed','ready'];
+  const wipStates = ['token_paid','partial','draft_shared','under_review','shortlisted','finalized','ordered','delivered','hiring','training'];
+  const cls = okStates.includes(value) ? 'p-ok'
+            : wipStates.includes(value) ? 'p-wrn'
+            : 'p-no';
+  return `<span class="pill ${cls}">${label}</span>`;
+}
+
+function getHandoverLeads(){
+  return FT_LEADS.filter(l => {
+    const finalStages = ['agreement','handover','payment','closed_won'];
+    return finalStages.includes(l.status||'') || (l.current_step||0)>=5 || l.ho_payment_status==='token_paid' || l.ho_payment_status==='partial' || l.ho_payment_status==='full_paid';
+  });
+}
+
 function renderHandover(){
-  const finalStages = ['agreement','handover','payment'];
-  const rows = FT_LEADS.filter(l => finalStages.includes(l.status||'') || (l.current_step||0)>=5);
+  const all = getHandoverLeads();
+  const filter = document.getElementById('ho-status-filter')?.value || 'all';
+  const now = Date.now();
+  const fourteenDays = 14*24*3600*1000;
+
+  let rows = all;
+  if(filter==='active')   rows = all.filter(l => l.ho_launched!==true);
+  if(filter==='launched') rows = all.filter(l => l.ho_launched===true);
+  if(filter==='stalled')  rows = all.filter(l => l.ho_launched!==true && (!l.ho_updated_at || (now - new Date(l.ho_updated_at).getTime()) > fourteenDays));
+
+  // Summary stats
+  document.getElementById('ho-stat-total').textContent  = all.filter(l=>l.ho_launched!==true).length;
+  document.getElementById('ho-stat-site').textContent   = all.filter(l => l.ho_launched!==true && (!l.ho_site_status || ['not_started','shortlisted'].includes(l.ho_site_status))).length;
+  document.getElementById('ho-stat-fitout').textContent = all.filter(l => l.ho_launched!==true && Number(l.ho_fitout_pct||0)>0 && Number(l.ho_fitout_pct||0)<100).length;
+  document.getElementById('ho-stat-soon').textContent   = all.filter(l => {
+    if(l.ho_launched===true || !l.ho_launch_eta) return false;
+    const eta = new Date(l.ho_launch_eta).getTime();
+    return eta > now && (eta - now) <= 30*24*3600*1000;
+  }).length;
+
   const tbody = document.getElementById('handover-tbody');
   if(rows.length===0){
-    tbody.innerHTML = `<tr><td colspan="8" class="muted text-sm" style="text-align:center;padding:24px;">No leads in handover stage.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="13" class="muted text-sm" style="text-align:center;padding:24px;">No leads in handover stage yet.</td></tr>`;
     return;
   }
-  tbody.innerHTML = rows.map(l=>`
-    <tr>
-      <td><strong>${esc(l.name||'—')}</strong></td>
+  tbody.innerHTML = rows.map(l=>{
+    const owner = FT_TEAM.find(t=>t.id===l.assigned_team_id);
+    const pct = Number(l.ho_fitout_pct||0);
+    const etaCell = l.ho_launch_eta ? fmtDate(l.ho_launch_eta) : '<span class="muted">—</span>';
+    const launchedTag = l.ho_launched===true ? '<span class="pill p-ok" style="margin-left:6px;">LIVE</span>' : '';
+    return `<tr>
+      <td><strong>${esc(l.name||'—')}</strong>${launchedTag}<div class="text-xs muted">${owner?esc(owner.name):'unassigned'}</div></td>
       <td>${esc(l.city||'—')}</td>
       <td>${esc(l.model_interest||'—')}</td>
-      <td>${stageLabel(l.current_step)}</td>
-      <td><span class="muted text-sm">View in modal</span></td>
-      <td><span class="muted text-sm">View in modal</span></td>
-      <td class="muted">—</td>
-      <td><button class="btn btn-xs btn-p" onclick="openLeadModal('${l.id}')">Open</button></td>
-    </tr>`).join('');
+      <td>${hoPill('payment', l.ho_payment_status||'not_started')}</td>
+      <td>${hoPill('agreement', l.ho_agreement_status||'not_started')}</td>
+      <td>${hoPill('site', l.ho_site_status||'not_started')}</td>
+      <td>
+        <div style="background:var(--surf3);height:8px;border-radius:4px;overflow:hidden;width:80px;">
+          <div style="background:var(--team-purple);height:100%;width:${pct}%;"></div>
+        </div>
+        <div class="text-xs muted mt-6">${pct}%</div>
+      </td>
+      <td>${hoPill('equipment', l.ho_equipment_status||'not_started')}</td>
+      <td>${hoPill('staff', l.ho_staff_status||'not_started')}</td>
+      <td>${etaCell}</td>
+      <td style="max-width:220px;" class="text-sm">${l.ho_status_note ? esc(l.ho_status_note.slice(0,80)+(l.ho_status_note.length>80?'…':'')) : '<span class="muted">—</span>'}</td>
+      <td class="muted text-sm">${l.ho_updated_at?fmtDate(l.ho_updated_at):'—'}</td>
+      <td><div class="act-btns">
+        <button class="btn btn-xs btn-p" onclick="openHandoverModal('${l.id}')">Update Status</button>
+        <button class="btn btn-xs" onclick="openLeadModal('${l.id}')">Lead Detail</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function openHandoverModal(leadId){
+  const l = FT_LEADS.find(x=>x.id===leadId);
+  if(!l){ alert('Lead not found.'); return; }
+  CURRENT_HO_LEAD_ID = leadId;
+  const owner = FT_TEAM.find(t=>t.id===l.assigned_team_id);
+  document.getElementById('ho-mod-name').textContent = l.name || '—';
+  document.getElementById('ho-mod-meta').textContent =
+    `${l.city||'—'} · ${l.model_interest||'—'} · Owner: ${owner?owner.name:'unassigned'} · ` +
+    `Last updated ${l.ho_updated_at?fmtDateTime(l.ho_updated_at):'never'}`;
+
+  document.getElementById('ho-payment').value     = l.ho_payment_status   || 'not_started';
+  document.getElementById('ho-agreement').value   = l.ho_agreement_status || 'not_started';
+  document.getElementById('ho-site').value        = l.ho_site_status      || 'not_started';
+  document.getElementById('ho-site-addr').value   = l.ho_site_address     || '';
+  document.getElementById('ho-fitout').value      = l.ho_fitout_pct ?? 0;
+  document.getElementById('ho-equipment').value   = l.ho_equipment_status || 'not_started';
+  document.getElementById('ho-staff').value       = l.ho_staff_status     || 'not_started';
+  document.getElementById('ho-eta').value         = l.ho_launch_eta ? String(l.ho_launch_eta).slice(0,10) : '';
+  document.getElementById('ho-status-note').value = l.ho_status_note      || '';
+  document.getElementById('ho-launched').value    = l.ho_launched===true ? 'true' : 'false';
+
+  document.getElementById('ho-modal').classList.add('active');
+}
+function closeHandoverModal(){
+  document.getElementById('ho-modal').classList.remove('active');
+  CURRENT_HO_LEAD_ID = null;
+}
+async function saveHandoverModal(){
+  if(!CURRENT_HO_LEAD_ID) return;
+  const fitout = Math.max(0, Math.min(100, parseInt(document.getElementById('ho-fitout').value,10)||0));
+  const update = {
+    ho_payment_status:   document.getElementById('ho-payment').value,
+    ho_agreement_status: document.getElementById('ho-agreement').value,
+    ho_site_status:      document.getElementById('ho-site').value,
+    ho_site_address:     document.getElementById('ho-site-addr').value.trim()||null,
+    ho_fitout_pct:       fitout,
+    ho_equipment_status: document.getElementById('ho-equipment').value,
+    ho_staff_status:     document.getElementById('ho-staff').value,
+    ho_launch_eta:       document.getElementById('ho-eta').value||null,
+    ho_status_note:      document.getElementById('ho-status-note').value.trim()||null,
+    ho_launched:         document.getElementById('ho-launched').value==='true',
+    ho_updated_at:       new Date().toISOString(),
+    ho_updated_by_team:  ftSession.id,
+    updated_at:          new Date().toISOString()
+  };
+  const {error} = await sb.from('leads').update(update).eq('id', CURRENT_HO_LEAD_ID);
+  if(error){ alert('Failed to save: '+error.message+'\n\nMake sure the handover columns have been added — see the SQL migration block at the bottom of this file.'); return; }
+
+  // Add an audit note
+  const summary = [
+    `Payment: ${HO_LABELS.payment[update.ho_payment_status]}`,
+    `Agreement: ${HO_LABELS.agreement[update.ho_agreement_status]}`,
+    `Site: ${HO_LABELS.site[update.ho_site_status]}`,
+    `Fit-out: ${fitout}%`,
+    `Equipment: ${HO_LABELS.equipment[update.ho_equipment_status]}`,
+    `Staff: ${HO_LABELS.staff[update.ho_staff_status]}`,
+    update.ho_launch_eta ? `Launch ETA: ${update.ho_launch_eta}` : null,
+    update.ho_launched ? '✅ Marked LAUNCHED' : null
+  ].filter(Boolean).join(' · ');
+  await sb.from('lead_notes').insert({
+    lead_id: CURRENT_HO_LEAD_ID,
+    note: `Handover update by ${ftSession.name}: ${summary}` + (update.ho_status_note?`\n\nStatus note: ${update.ho_status_note}`:''),
+    added_by_type:'team', added_by_team:ftSession.id
+  });
+
+  closeHandoverModal();
+  await loadLeads(); await loadLatestNotes();
+  renderHandover(); renderLeadTable(); renderDashboard();
+}
+
+function exportHandoverCSV(){
+  const rows = getHandoverLeads();
+  if(!rows.length){ alert('No handover leads to export.'); return; }
+  const headers = ['Lead','City','Model','Owner','Payment','Agreement','Site','Site Address',
+                   'Fit-out %','Equipment','Staff','Launch ETA','Status Note','Launched','Last Updated'];
+  const lines = rows.map(l=>{
+    const owner = FT_TEAM.find(t=>t.id===l.assigned_team_id);
+    return [
+      l.name, l.city, l.model_interest, owner?owner.name:'',
+      HO_LABELS.payment[l.ho_payment_status||'not_started'],
+      HO_LABELS.agreement[l.ho_agreement_status||'not_started'],
+      HO_LABELS.site[l.ho_site_status||'not_started'],
+      l.ho_site_address||'',
+      l.ho_fitout_pct||0,
+      HO_LABELS.equipment[l.ho_equipment_status||'not_started'],
+      HO_LABELS.staff[l.ho_staff_status||'not_started'],
+      l.ho_launch_eta||'',
+      (l.ho_status_note||'').replace(/\n/g,' '),
+      l.ho_launched===true?'Yes':'No',
+      l.ho_updated_at||''
+    ].map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(',');
+  });
+  const csv = headers.map(h=>`"${h}"`).join(',')+'\n'+lines.join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `budget-barber-handover-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -1350,7 +1903,8 @@ async function bulkAssignSelected(){
   }));
   await sb.from('lead_notes').insert(notes);
 
-  await loadLeads(); renderAssignTable(); renderLeadTable(); renderDashboard();
+  await loadLeads(); await loadLatestNotes();
+  renderAssignTable(); renderLeadTable(); renderDashboard(); renderStageFunnel();
   alert(`Assigned ${ids.length} lead(s) to ${targetName}.`);
 }
 
@@ -1501,6 +2055,12 @@ async function addLeadNote(){
   document.getElementById('lm-new-note').value='';
   const notes = await loadLeadNotes(CURRENT_LEAD_ID);
   renderTimeline(notes);
+  // Update latest-notes cache so the Leads table reflects the new comment
+  FT_LATEST_NOTES[CURRENT_LEAD_ID] = {
+    lead_id: CURRENT_LEAD_ID, note: txt,
+    added_by_type:'team', created_at: new Date().toISOString()
+  };
+  renderLeadTable();
 }
 
 async function saveLeadModal(){
@@ -1521,8 +2081,9 @@ async function saveLeadModal(){
   const {error} = await sb.from('leads').update(update).eq('id', CURRENT_LEAD_ID);
   if(error){ alert('Failed: '+error.message); return; }
   closeLeadModal();
-  await loadLeads();
-  renderLeadTable(); renderDashboard(); renderPipeline(); renderFollowups(); renderHandover();
+  await loadLeads(); await loadLatestNotes();
+  populateLeadFilterDropdowns();
+  renderLeadTable(); renderDashboard(); renderStageFunnel(); renderFollowups(); renderHandover();
   if(ftSession.role==='sales_head'){ renderPerformance(); renderAssignTable(); }
 }
 
@@ -1564,8 +2125,9 @@ async function createNewLead(){
 
   closeNewLeadModal();
   ['nl-name','nl-phone','nl-email','nl-city','nl-note'].forEach(id=>document.getElementById(id).value='');
-  await loadLeads();
-  renderLeadTable(); renderDashboard(); renderPipeline();
+  await loadLeads(); await loadLatestNotes();
+  populateLeadFilterDropdowns();
+  renderLeadTable(); renderDashboard(); renderStageFunnel();
 }
 
 // ════════════════════════════════════════════════════════════════
