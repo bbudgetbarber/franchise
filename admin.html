@@ -338,23 +338,74 @@ input:checked + .slider:before{transform:translateX(16px);}
 
     <!-- ALL LEADS -->
     <div id="at-leads" class="admin-tab">
-      <div class="adm-page-title">All Leads</div>
-      <div class="adm-page-sub">Manage and track all franchise leads</div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:22px;flex-wrap:wrap;">
+        <div>
+          <div class="adm-page-title">All Leads</div>
+          <div class="adm-page-sub">Manage and track all franchise leads</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-i" onclick="autoAssignUnassignedLeads()" title="Assign all unassigned leads based on city → state">🪄 Auto-Assign Unassigned</button>
+          <button class="btn btn-p" onclick="aTab(null,'at-newlead')">+ Create Lead</button>
+        </div>
+      </div>
       <div class="adm-card" style="padding:0;overflow:hidden;">
-        <div style="padding:16px 20px;border-bottom:0.5px solid var(--bdr);display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-          <div class="search-box" style="flex:1;min-width:200px;margin:0;"><span class="search-icon">🔍</span><input type="text" placeholder="Search by name, phone, city…"/></div>
-          <div class="filter-row" style="margin:0;gap:6px;">
-            <div class="filter-chip active" onclick="filterLeads(this,'all')">All (18)</div>
-            <div class="filter-chip" onclick="filterLeads(this,'new')">New (3)</div>
-            <div class="filter-chip" onclick="filterLeads(this,'in-progress')">In Progress (9)</div>
-            <div class="filter-chip" onclick="filterLeads(this,'project')">Project Active (4)</div>
-            <div class="filter-chip" onclick="filterLeads(this,'closed')">Closed (5)</div>
+        <div style="padding:14px 20px;border-bottom:0.5px solid var(--bdr);">
+          <div class="search-box" style="margin:0 0 12px;"><span class="search-icon">🔍</span><input type="text" id="lead-search" placeholder="Search by name, phone, email, city…" oninput="onLeadSearchInput()"/></div>
+
+          <div style="margin-bottom:10px;">
+            <div style="font-size:10px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Status</div>
+            <div class="filter-row" style="margin:0;gap:6px;flex-wrap:wrap;">
+              <div class="filter-chip active" data-filter="status" data-value="all" onclick="setLeadFilter(this,'status','all')">All</div>
+              <div class="filter-chip" data-filter="status" data-value="new" onclick="setLeadFilter(this,'status','new')">New</div>
+              <div class="filter-chip" data-filter="status" data-value="in-progress" onclick="setLeadFilter(this,'status','in-progress')">In Progress</div>
+              <div class="filter-chip" data-filter="status" data-value="project" onclick="setLeadFilter(this,'status','project')">Project Active</div>
+              <div class="filter-chip" data-filter="status" data-value="closed" onclick="setLeadFilter(this,'status','closed')">Closed</div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:10px;">
+            <div style="font-size:10px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">State</div>
+            <div class="filter-row" id="state-filter-row" style="margin:0;gap:6px;flex-wrap:wrap;">
+              <div class="filter-chip active" data-filter="state" data-value="all" onclick="setLeadFilter(this,'state','all')">All States</div>
+              <!-- state chips injected dynamically -->
+            </div>
+          </div>
+
+          <div style="margin-bottom:10px;">
+            <div style="font-size:10px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">MF Assignment</div>
+            <div class="filter-row" style="margin:0;gap:6px;flex-wrap:wrap;">
+              <div class="filter-chip active" data-filter="mf" data-value="all" onclick="setLeadFilter(this,'mf','all')">All</div>
+              <div class="filter-chip" data-filter="mf" data-value="assigned" onclick="setLeadFilter(this,'mf','assigned')">Assigned</div>
+              <div class="filter-chip" data-filter="mf" data-value="unassigned" onclick="setLeadFilter(this,'mf','unassigned')">Unassigned</div>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--hnt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Source</div>
+            <div class="filter-row" id="source-filter-row" style="margin:0;gap:6px;flex-wrap:wrap;">
+              <div class="filter-chip active" data-filter="source" data-value="all" onclick="setLeadFilter(this,'source','all')">All Sources</div>
+              <!-- source chips injected dynamically -->
+            </div>
           </div>
         </div>
-        <table class="lead-table">
-          <thead><tr><th>Lead</th><th>City</th><th>Progress</th><th>Status</th><th>Model</th><th>MF Assigned</th><th>Actions</th></tr></thead>
+        <div style="overflow-x:auto;">
+        <table class="lead-table" style="min-width:1300px;">
+          <thead><tr>
+            <th>City</th>
+            <th>State</th>
+            <th>Language</th>
+            <th>Source</th>
+            <th>Model</th>
+            <th>Progress</th>
+            <th>Status</th>
+            <th>MF Assigned</th>
+            <th>Created</th>
+            <th>Updated</th>
+            <th>Actions</th>
+          </tr></thead>
           <tbody id="lead-tbody"></tbody>
         </table>
+        </div>
       </div>
     </div>
 
@@ -1733,7 +1784,7 @@ function aTab(btn,tabId){
   const ALL_TABS=['at-dashboard','at-leads','at-newlead','at-videos','at-invest-content','at-guidelines','at-support-content','at-ops-content','at-payments','at-royalty-mgmt','at-settings','at-pay-settings','at-mf-overview','at-mf-accounts','at-mf-create','at-mf-regions','at-franchises','at-franchise-royalty'];
   ALL_TABS.forEach(id=>{const t=document.getElementById(id);if(t)t.classList.remove('active');});
   const el=document.getElementById(tabId);if(el)el.classList.add('active');
-  if(tabId==='at-leads'){loadLeads(null).then(leads=>{LEADS=leads;buildLeadTable('all');});}
+  if(tabId==='at-leads'){loadLeads(null).then(leads=>{LEADS=leads;buildLeadTable(currentLeadFilters);});}
   if(tabId==='at-guidelines')buildGLAdmin();
   if(tabId==='at-mf-accounts'){
     loadMFAccounts().then(mf=>{MF_ACCOUNTS_DATA=mf;populateMFDropdowns();/* table is static HTML for now */});
@@ -1752,30 +1803,129 @@ function avTab(btn,tabId){
   if(parent){parent.querySelectorAll('.adm-tab-btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');}
   const t=document.getElementById(tabId);if(t)t.style.display='block';
 }
-function filterLeads(chip,status){
-  // Only remove active from chips inside the leads tab
-  const leadsTab=document.getElementById('at-leads');
-  if(leadsTab)leadsTab.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+// Active lead filter state (multi-dimensional)
+let currentLeadFilters = {status:'all', state:'all', mf:'all', source:'all', q:''};
+
+function setLeadFilter(chip, dimension, value){
+  // Update active chip within the same dimension only
+  document.querySelectorAll('.filter-chip[data-filter="'+dimension+'"]').forEach(c=>c.classList.remove('active'));
   chip.classList.add('active');
-  const tbody=document.getElementById('lead-tbody');
-  if(tbody){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">Loading leads…</td></tr>';}
-  loadLeads(status==='all'?null:status).then(leads=>{ LEADS=leads; buildLeadTable(status); });
+  currentLeadFilters[dimension] = value;
+  buildLeadTable(currentLeadFilters);
 }
-function buildLeadTable(statusFilter){
+
+function onLeadSearchInput(){
+  const v = (document.getElementById('lead-search')||{}).value || '';
+  currentLeadFilters.q = v.trim().toLowerCase();
+  buildLeadTable(currentLeadFilters);
+}
+
+// Rebuild the state and source chip rows from the data currently loaded.
+function rebuildLeadFilterChips(){
+  // States: union of states present in LEADS (plus the well-known ones)
+  const stateRow = document.getElementById('state-filter-row');
+  if(stateRow){
+    const present = new Set(LEADS.map(l=>l.state).filter(s=>s && s!=='—'));
+    ALL_STATES.forEach(s=>{ if(LEADS.some(l=>l.state===s)) present.add(s); });
+    // Keep "all" chip, rebuild the rest
+    const allChip = stateRow.querySelector('.filter-chip[data-value="all"]');
+    stateRow.innerHTML='';
+    if(allChip) stateRow.appendChild(allChip);
+    // Add "Unknown" chip if any lead has no detected state
+    if(LEADS.some(l=>!l.state || l.state==='—')){
+      const c=document.createElement('div');
+      c.className='filter-chip'+(currentLeadFilters.state==='unknown'?' active':'');
+      c.dataset.filter='state';c.dataset.value='unknown';
+      c.textContent='Unknown';
+      c.onclick=function(){setLeadFilter(c,'state','unknown');};
+      stateRow.appendChild(c);
+    }
+    [...present].sort().forEach(s=>{
+      const c=document.createElement('div');
+      c.className='filter-chip'+(currentLeadFilters.state===s?' active':'');
+      c.dataset.filter='state';c.dataset.value=s;
+      c.textContent=s;
+      c.onclick=function(){setLeadFilter(c,'state',s);};
+      stateRow.appendChild(c);
+    });
+  }
+  // Sources
+  const srcRow = document.getElementById('source-filter-row');
+  if(srcRow){
+    const sources = [...new Set(LEADS.map(l=>l.source).filter(s=>s && s!=='—'))].sort();
+    const allChip = srcRow.querySelector('.filter-chip[data-value="all"]');
+    srcRow.innerHTML='';
+    if(allChip) srcRow.appendChild(allChip);
+    sources.forEach(s=>{
+      const c=document.createElement('div');
+      c.className='filter-chip'+(currentLeadFilters.source===s?' active':'');
+      c.dataset.filter='source';c.dataset.value=s;
+      c.textContent=s;
+      c.onclick=function(){setLeadFilter(c,'source',s);};
+      srcRow.appendChild(c);
+    });
+  }
+}
+
+function fmtDate(iso){
+  if(!iso) return '—';
+  try{
+    const d=new Date(iso);
+    return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  }catch(e){return '—';}
+}
+
+function applyLeadFilters(){
+  const f = currentLeadFilters;
+  return (LEADS||[]).filter(l=>{
+    if(f.status && f.status!=='all' && l.status !== f.status) return false;
+    if(f.state && f.state!=='all'){
+      if(f.state==='unknown'){ if(l.state && l.state!=='—') return false; }
+      else if(l.state !== f.state) return false;
+    }
+    if(f.mf && f.mf!=='all'){
+      if(f.mf==='assigned' && !l.assignedMfId) return false;
+      if(f.mf==='unassigned' && l.assignedMfId) return false;
+    }
+    if(f.source && f.source!=='all' && l.source !== f.source) return false;
+    if(f.q){
+      const hay = [l.name,l.phone,l.email,l.city,l.state,l.mf].filter(Boolean).join(' ').toLowerCase();
+      if(!hay.includes(f.q)) return false;
+    }
+    return true;
+  });
+}
+
+// Back-compat shim: older callers pass a status string or nothing
+function buildLeadTable(arg){
+  // If called the old way (string status), translate it onto the filter object
+  if(typeof arg === 'string'){
+    currentLeadFilters.status = (arg==='all'||!arg) ? 'all' : arg;
+  } else if(arg && typeof arg === 'object'){
+    // already filter object — no-op
+  }
+  rebuildLeadFilterChips();
   const tbody=document.getElementById('lead-tbody');if(!tbody)return;tbody.innerHTML='';
   const statusMap={'new':{lbl:'New',cls:'p-inf'},'in-progress':{lbl:'In Progress',cls:'p-wrn'},'project':{lbl:'Project Active',cls:'p-ok'},'closed':{lbl:'Closed',cls:'p-no'}};
-  const filtered=(!statusFilter||statusFilter==='all')?LEADS:LEADS.filter(l=>l.status===statusFilter);
-  if(filtered.length===0){const tr=document.createElement('tr');tr.innerHTML='<td colspan="7" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">No leads found for this filter.</td>';tbody.appendChild(tr);return;}
+  const filtered = applyLeadFilters();
+  if(filtered.length===0){const tr=document.createElement('tr');tr.innerHTML='<td colspan="11" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">No leads match the current filters.</td>';tbody.appendChild(tr);return;}
   filtered.forEach(l=>{
-    const st=statusMap[l.status]||{lbl:l.status,cls:'p-inf'};
+    const st=statusMap[l.status]||{lbl:l.status||'—',cls:'p-inf'};
     const tr=document.createElement('tr');
     const stepDisp=Math.min(l.step||0,10);
-    tr.innerHTML=`<td><div style="font-weight:600;">${l.name}</div><div style="font-size:11px;color:var(--mut);">${l.phone}</div></td>
-      <td>${l.city}</td>
-      <td><div style="font-size:13px;">Step ${stepDisp}/10</div><div style="font-size:11px;color:var(--mut);">${l.lang}</div></td>
+    const mfDisp = l.mf && l.mf!=='—'
+      ? '<span style="font-size:12px;">'+escapeHtml(l.mf)+'</span>'
+      : '<span class="pill p-wrn">Unassigned</span>';
+    tr.innerHTML=`<td><div style="font-weight:600;">${escapeHtml(l.city||'—')}</div><div style="font-size:11px;color:var(--mut);">${escapeHtml(l.name||'')} · ${escapeHtml(l.phone||'')}</div></td>
+      <td>${escapeHtml(l.state||'—')}</td>
+      <td>${escapeHtml(l.lang||'—')}</td>
+      <td>${escapeHtml(l.source||'—')}</td>
+      <td>${escapeHtml(l.model||'—')}</td>
+      <td><div style="font-size:13px;">Step ${stepDisp}/10</div><div class="pbwrap" style="width:80px;margin:4px 0 0;"><div class="pbfill" style="width:${(stepDisp/10)*100}%;"></div></div></td>
       <td><span class="pill ${st.cls}">${st.lbl}</span></td>
-      <td>${l.model||'—'}</td>
-      <td style="font-size:12px;color:var(--mut);">${l.mf||'—'}</td>
+      <td>${mfDisp}</td>
+      <td style="font-size:12px;color:var(--mut);">${fmtDate(l.createdAt)}</td>
+      <td style="font-size:12px;color:var(--mut);">${fmtDate(l.updatedAt)}</td>
       <td><div class="act-btns">
         <button class="btn btn-xs btn-i" onclick="openLDM('${l.id}')">View</button>
         <button class="btn btn-xs btn-d" onclick="closeLdBtn('${l.id}')">Close</button>
@@ -2574,6 +2724,101 @@ function createMFLogin(){
 // ── SUPABASE DATA FUNCTIONS ──
 // ════════════════════════════════════════════
 
+// ── CITY → STATE MAPPING ──
+// Normalized (lowercase, trimmed) city name → state. Extend freely.
+const CITY_STATE_MAP = {
+  // Telangana
+  'hyderabad':'Telangana','secunderabad':'Telangana','warangal':'Telangana',
+  'karimnagar':'Telangana','nizamabad':'Telangana','khammam':'Telangana',
+  'mahbubnagar':'Telangana','mahabubnagar':'Telangana','nalgonda':'Telangana',
+  'adilabad':'Telangana','ramagundam':'Telangana','suryapet':'Telangana',
+  'siddipet':'Telangana','miryalaguda':'Telangana','jagtial':'Telangana',
+  'mancherial':'Telangana','nirmal':'Telangana','kothagudem':'Telangana',
+  'bhongir':'Telangana','sangareddy':'Telangana','medak':'Telangana',
+  'vikarabad':'Telangana','wanaparthy':'Telangana','gadwal':'Telangana',
+  'kamareddy':'Telangana','peddapalli':'Telangana','jangaon':'Telangana',
+  // Andhra Pradesh
+  'visakhapatnam':'Andhra Pradesh','vizag':'Andhra Pradesh','vijayawada':'Andhra Pradesh',
+  'guntur':'Andhra Pradesh','nellore':'Andhra Pradesh','tirupati':'Andhra Pradesh',
+  'kakinada':'Andhra Pradesh','rajahmundry':'Andhra Pradesh','kadapa':'Andhra Pradesh',
+  'cuddapah':'Andhra Pradesh','kurnool':'Andhra Pradesh','anantapur':'Andhra Pradesh',
+  'eluru':'Andhra Pradesh','ongole':'Andhra Pradesh','chittoor':'Andhra Pradesh',
+  'machilipatnam':'Andhra Pradesh','tenali':'Andhra Pradesh','proddatur':'Andhra Pradesh',
+  'srikakulam':'Andhra Pradesh','vizianagaram':'Andhra Pradesh','hindupur':'Andhra Pradesh',
+  'bhimavaram':'Andhra Pradesh','madanapalle':'Andhra Pradesh','dharmavaram':'Andhra Pradesh',
+  'gudivada':'Andhra Pradesh','narasaraopet':'Andhra Pradesh','tadepalligudem':'Andhra Pradesh',
+  'amaravati':'Andhra Pradesh',
+  // Karnataka
+  'bangalore':'Karnataka','bengaluru':'Karnataka','mysore':'Karnataka','mysuru':'Karnataka',
+  'hubli':'Karnataka','hubballi':'Karnataka','mangalore':'Karnataka','mangaluru':'Karnataka',
+  'belgaum':'Karnataka','belagavi':'Karnataka','gulbarga':'Karnataka','kalaburagi':'Karnataka',
+  'davanagere':'Karnataka','bellary':'Karnataka','ballari':'Karnataka','shimoga':'Karnataka',
+  'tumkur':'Karnataka','tumakuru':'Karnataka','bijapur':'Karnataka','vijayapura':'Karnataka',
+  'raichur':'Karnataka','bidar':'Karnataka','hospet':'Karnataka','udupi':'Karnataka',
+  // Tamil Nadu
+  'chennai':'Tamil Nadu','madras':'Tamil Nadu','coimbatore':'Tamil Nadu','madurai':'Tamil Nadu',
+  'tiruchirappalli':'Tamil Nadu','trichy':'Tamil Nadu','salem':'Tamil Nadu','tirunelveli':'Tamil Nadu',
+  'tiruppur':'Tamil Nadu','erode':'Tamil Nadu','vellore':'Tamil Nadu','thoothukudi':'Tamil Nadu',
+  'tuticorin':'Tamil Nadu','dindigul':'Tamil Nadu','thanjavur':'Tamil Nadu','ranipet':'Tamil Nadu',
+  'sivakasi':'Tamil Nadu','karur':'Tamil Nadu','udhagamandalam':'Tamil Nadu','ooty':'Tamil Nadu',
+  'hosur':'Tamil Nadu','nagercoil':'Tamil Nadu','kanchipuram':'Tamil Nadu','cuddalore':'Tamil Nadu',
+  // Kerala
+  'thiruvananthapuram':'Kerala','trivandrum':'Kerala','kochi':'Kerala','cochin':'Kerala',
+  'ernakulam':'Kerala','kozhikode':'Kerala','calicut':'Kerala','thrissur':'Kerala',
+  'kollam':'Kerala','quilon':'Kerala','palakkad':'Kerala','alappuzha':'Kerala',
+  'kannur':'Kerala','kottayam':'Kerala','malappuram':'Kerala','kasaragod':'Kerala',
+  // Maharashtra
+  'mumbai':'Maharashtra','bombay':'Maharashtra','pune':'Maharashtra','nagpur':'Maharashtra',
+  'thane':'Maharashtra','nashik':'Maharashtra','aurangabad':'Maharashtra','solapur':'Maharashtra',
+  'kolhapur':'Maharashtra','amravati':'Maharashtra','navi mumbai':'Maharashtra',
+  'sangli':'Maharashtra','jalgaon':'Maharashtra','akola':'Maharashtra','latur':'Maharashtra',
+  'dhule':'Maharashtra','ahmednagar':'Maharashtra','chandrapur':'Maharashtra','parbhani':'Maharashtra',
+  // Odisha
+  'bhubaneswar':'Odisha','cuttack':'Odisha','rourkela':'Odisha','berhampur':'Odisha',
+  'sambalpur':'Odisha','puri':'Odisha','balasore':'Odisha','bhadrak':'Odisha',
+};
+const ALL_STATES = ['Andhra Pradesh','Telangana','Karnataka','Tamil Nadu','Kerala','Maharashtra','Odisha'];
+
+function normCity(s){return (s||'').toString().trim().toLowerCase();}
+function getStateForCity(city){
+  const k = normCity(city);
+  if(!k) return null;
+  // exact match
+  if(CITY_STATE_MAP[k]) return CITY_STATE_MAP[k];
+  // try fragments (handles "Karimnagar, Telangana" or "near Karimnagar")
+  for(const knownCity in CITY_STATE_MAP){
+    if(k.includes(knownCity)) return CITY_STATE_MAP[knownCity];
+  }
+  return null;
+}
+
+// Pick the best MF for a given city. Returns mf_id or null.
+// 1) MF whose `cities` (comma-list) contains the lead's city
+// 2) Any MF whose `region` matches the city's state
+// 3) null (no auto-assignment)
+function pickMFForCity(city, mfAccounts){
+  if(!Array.isArray(mfAccounts) || !mfAccounts.length || !city) return null;
+  const cityKey = normCity(city);
+  const state = getStateForCity(city);
+
+  // Pass 1: city match within MF's cities list
+  for(const mf of mfAccounts){
+    if(mf.status && String(mf.status).toLowerCase()!=='active') continue;
+    const list = (mf.cities||'').toString().toLowerCase().split(',').map(s=>s.trim()).filter(Boolean);
+    if(list.some(c => c===cityKey || cityKey.includes(c) || c.includes(cityKey))){
+      return mf.id;
+    }
+  }
+  // Pass 2: state match
+  if(state){
+    for(const mf of mfAccounts){
+      if(mf.status && String(mf.status).toLowerCase()!=='active') continue;
+      if((mf.region||'').trim().toLowerCase() === state.toLowerCase()) return mf.id;
+    }
+  }
+  return null;
+}
+
 // ── LEADS ──
 async function loadLeads(statusFilter){
   // Plain columns only — no embedded FK join. The embedded
@@ -2616,10 +2861,12 @@ async function loadLeads(statusFilter){
     const mfRow = l.assigned_mf_id ? mfMap[l.assigned_mf_id] : null;
     return {
       id:l.id, name:l.name, phone:l.phone, email:l.email,
-      city:l.city, step:l.current_step, status:l.status,
+      city:l.city, state: getStateForCity(l.city) || '—',
+      step:l.current_step, status:l.status,
       lang:l.language, model:l.model_interest||'Not Decided', source:l.source||'—',
       assignedMfId: l.assigned_mf_id || null,
       mf: mfRow ? (mfRow.name+' ('+mfRow.region+')') : '—',
+      mfRegion: mfRow ? mfRow.region : null,
       guidelinesAccepted: !!l.guidelines_accepted,
       pinHash: l.pin_hash || '',
       createdAt: l.created_at, updatedAt: l.updated_at
@@ -2653,23 +2900,37 @@ async function updateLeadStatus(leadId, status){
 }
 
 async function createLead(data){
+  // Auto-assign MF if not provided
+  let assignedMfId = data.assigned_mf_id || null;
+  let autoAssignedNote = '';
+  if(!assignedMfId){
+    const picked = pickMFForCity(data.city, MF_ACCOUNTS_DATA);
+    if(picked){
+      assignedMfId = picked;
+      const mf = MF_ACCOUNTS_DATA.find(m=>m.id===picked);
+      autoAssignedNote = mf ? ('Auto-assigned to '+mf.name+' ('+(mf.region||'')+') based on city: '+data.city) : '';
+    }
+  }
   const {error} = await sb.from('leads').insert({
     name:data.name, phone:data.phone, email:data.email||null,
     city:data.city, language:data.language||'English',
     model_interest:data.model||'Not Decided', source:data.source||'Direct',
     pin_hash:data.pin_hash||null,
-    assigned_mf_id: data.assigned_mf_id || null,
+    assigned_mf_id: assignedMfId,
     status:'new', current_step:0,
     created_by_type:'admin',
     created_by_admin: adminSession?.id || null
   });
   if(error){alert('Failed to create lead: '+error.message);return false;}
+  // Lookup new lead id for notes
+  const {data:newLead}=await sb.from('leads').select('id').eq('phone',data.phone).order('created_at',{ascending:false}).limit(1).maybeSingle();
+  // Add auto-assignment note
+  if(newLead && autoAssignedNote){
+    await sb.from('lead_notes').insert({lead_id:newLead.id,note:autoAssignedNote,added_by_type:'admin',added_by_admin:adminSession?.id||null});
+  }
   // Add initial note if provided
-  if(data.note&&data.note.trim()){
-    const {data:newLead}=await sb.from('leads').select('id').eq('phone',data.phone).single();
-    if(newLead){
-      await sb.from('lead_notes').insert({lead_id:newLead.id,note:data.note,added_by_type:'admin',added_by_admin:adminSession?.id||null});
-    }
+  if(newLead && data.note && data.note.trim()){
+    await sb.from('lead_notes').insert({lead_id:newLead.id,note:data.note,added_by_type:'admin',added_by_admin:adminSession?.id||null});
   }
   return true;
 }
@@ -2678,6 +2939,28 @@ async function deleteLead(leadId){
   const {error} = await sb.from('leads').delete().eq('id', leadId);
   if(error){alert('Failed to delete lead: '+error.message);return false;}
   return true;
+}
+
+// Bulk auto-assign any leads that don't yet have an MF
+async function autoAssignUnassignedLeads(){
+  if(!Array.isArray(MF_ACCOUNTS_DATA) || !MF_ACCOUNTS_DATA.length){
+    alert('No Master Franchise accounts loaded yet. Try again in a moment.');
+    return;
+  }
+  const targets = (LEADS||[]).filter(l=>!l.assignedMfId);
+  if(!targets.length){alert('All leads already have an MF assignment.');return;}
+  let assigned=0, skipped=0;
+  for(const l of targets){
+    const mfId = pickMFForCity(l.city, MF_ACCOUNTS_DATA);
+    if(!mfId){skipped++;continue;}
+    const {error} = await sb.from('leads')
+      .update({assigned_mf_id:mfId, updated_at:new Date().toISOString()})
+      .eq('id', l.id);
+    if(error){console.error('autoAssign failed for', l.id, error.message);skipped++;continue;}
+    assigned++;
+  }
+  alert('✓ Auto-assigned '+assigned+' lead(s). '+(skipped?(skipped+' could not be matched (unknown city / no MF in state).'):''));
+  loadLeads(null).then(leads=>{LEADS=leads;buildLeadTable(currentLeadFilters);});
 }
 
 // ── GUIDELINES ──
@@ -3369,10 +3652,15 @@ function doAdminLogin(){
     if(err)err.style.display='none';
     document.getElementById('admin-login-screen').style.display='none';
     document.getElementById('admin-main-wrap').style.display='flex';
-    loadLeads().then(leads=>{LEADS=leads;buildLeadTable();});
+    // Load MF accounts FIRST so leads can show MF labels and auto-assign correctly
+    loadMFAccounts().then(mf=>{
+      MF_ACCOUNTS_DATA=mf;
+      populateMFDropdowns();
+      // Now load leads
+      loadLeads().then(leads=>{LEADS=leads;buildLeadTable(currentLeadFilters);});
+    });
     loadVideos();
     loadGuidelines().then(g=>{GUIDELINES=g;});
-    loadMFAccounts().then(mf=>{MF_ACCOUNTS_DATA=mf;populateMFDropdowns();});
     loadFranchises().then(f=>{FRANCHISES=f;});
     loadPaymentSettings().then(ps=>{
       if(ps){
