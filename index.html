@@ -23,7 +23,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1
 .hero-title span{color:var(--yellow);}
 .hero-sub{font-size:15px;color:rgba(255,255,255,0.62);max-width:480px;margin:0 auto;line-height:1.7;}
 
-.portal-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;max-width:1160px;margin:0 auto;padding:48px 32px;}
+.portal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:1320px;margin:0 auto;padding:48px 32px;}
 
 .portal-card{background:var(--surf);border-radius:20px;border:0.5px solid var(--bdr);overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06);transition:transform .2s,box-shadow .2s;text-decoration:none;display:flex;flex-direction:column;}
 .portal-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.12);}
@@ -31,12 +31,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1
 .pc-header{padding:28px 28px 22px;position:relative;}
 .pc-header.admin{background:linear-gradient(135deg,#0D3B2E 0%,#1a5c44 100%);}
 .pc-header.franchise{background:linear-gradient(135deg,#1a3a6b 0%,#2956a8 100%);}
+.pc-header.team{background:linear-gradient(135deg,#6b1a4a 0%,#a8295e 100%);}
 .pc-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:16px;}
 .pc-header.admin .pc-icon{background:rgba(245,209,0,0.18);}
 .pc-header.franchise .pc-icon{background:rgba(255,255,255,0.15);}
+.pc-header.team .pc-icon{background:rgba(255,255,255,0.15);}
 .pc-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;}
 .pc-header.admin .pc-badge{background:rgba(245,209,0,0.2);color:var(--yellow);}
 .pc-header.franchise .pc-badge{background:rgba(255,255,255,0.18);color:#fff;}
+.pc-header.team .pc-badge{background:rgba(255,255,255,0.18);color:#fff;}
 .pc-title{font-size:22px;font-weight:800;color:#fff;margin-bottom:5px;}
 .pc-sub{font-size:13px;color:rgba(255,255,255,0.62);line-height:1.6;}
 
@@ -47,12 +50,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1
 .pc-features li::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0;}
 .admin-li::before{background:#0D3B2E;}
 .franchise-li::before{background:#2956a8;}
+.team-li::before{background:#a8295e;}
 
 .pc-btn{display:block;width:100%;padding:13px;border-radius:10px;font-size:14px;font-weight:700;text-align:center;text-decoration:none;cursor:pointer;border:none;font-family:inherit;transition:all .15s;}
 .pc-btn.admin-btn{background:var(--green);color:#fff;}
 .pc-btn.admin-btn:hover{background:#0a2e22;}
 .pc-btn.franchise-btn{background:#1a3a6b;color:#fff;}
 .pc-btn.franchise-btn:hover{background:#142d57;}
+.pc-btn.team-btn{background:#6b1a4a;color:#fff;}
+.pc-btn.team-btn:hover{background:#52133a;}
 
 .divider{width:100%;max-width:1160px;margin:0 auto 0;padding:0 32px;}
 .divider-line{height:0.5px;background:var(--bdr);}
@@ -65,8 +71,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#1
 footer{background:var(--green);padding:20px 32px;text-align:center;margin-top:auto;}
 footer p{font-size:12px;color:rgba(255,255,255,0.45);}
 
+@media(max-width:1200px){
+  .portal-grid{grid-template-columns:repeat(2,1fr);}
+}
 @media(max-width:900px){
-  .portal-grid{grid-template-columns:1fr 1fr;}
+  .portal-grid{grid-template-columns:repeat(2,1fr);}
 }
 @media(max-width:640px){
   .portal-grid{grid-template-columns:1fr;padding:28px 18px;}
@@ -92,8 +101,8 @@ footer p{font-size:12px;color:rgba(255,255,255,0.45);}
 
 <section class="hero">
   <div class="hero-eyebrow">Budget Barber Franchise System</div>
-  <h1 class="hero-title">One Brand,<br/><span>Three Powerful Portals</span></h1>
-  <p class="hero-sub">Complete franchise management — Admin, Master Franchise &amp; Lead onboarding — all powered by Supabase.</p>
+  <h1 class="hero-title">One Brand,<br/><span>Four Powerful Portals</span></h1>
+  <p class="hero-sub">Complete franchise management — Admin, Master Franchise, Franchise Team &amp; Lead onboarding — all powered by Supabase.</p>
 </section>
 
 
@@ -143,6 +152,28 @@ footer p{font-size:12px;color:rgba(255,255,255,0.45);}
     </div>
   </a>
 
+  <!-- FRANCHISE TEAM PORTAL -->
+  <a href="franchise_team.html" class="portal-card">
+    <div class="pc-header team">
+      <div class="pc-badge">👥 Sales Team</div>
+      <div class="pc-icon">📋</div>
+      <div class="pc-title">Franchise Team</div>
+      <div class="pc-sub">Sales team workspace — handle leads end-to-end, from first call to final handover.</div>
+    </div>
+    <div class="pc-body">
+      <ul class="pc-features">
+        <li class="team-li">Two roles — Sales Head &amp; Sales Executive</li>
+        <li class="team-li">Region-scoped access (assigned by Admin)</li>
+        <li class="team-li">Sales Head assigns leads &amp; team members</li>
+        <li class="team-li">End-to-end lead pipeline — call to handover</li>
+        <li class="team-li">Activity log, notes, follow-ups, timeline</li>
+        <li class="team-li">Payment tracking &amp; project handover checklist</li>
+        <li class="team-li">Personal performance dashboard per executive</li>
+      </ul>
+      <div class="pc-btn team-btn">Open Franchise Team →</div>
+    </div>
+  </a>
+
   <!-- FRANCHISE APP -->
   <a href="franchise_lead.html" class="portal-card">
     <div class="pc-header franchise">
@@ -170,13 +201,13 @@ footer p{font-size:12px;color:rgba(255,255,255,0.45);}
 <div class="divider"><div class="divider-line"></div></div>
 
 <div class="info-strip">
+  <div class="is-item"><div class="is-num">4</div><div class="is-lbl">Connected Portals</div></div>
   <div class="is-item"><div class="is-num">4</div><div class="is-lbl">Languages Supported</div></div>
-  <div class="is-item"><div class="is-num">17</div><div class="is-lbl">Supabase Tables</div></div>
-  <div class="is-item"><div class="is-num">3</div><div class="is-lbl">Franchise Models</div></div>
+  <div class="is-item"><div class="is-num">19</div><div class="is-lbl">Supabase Tables</div></div>
 </div>
 
 <footer>
-  <p>© 2026 Budget Barber Pvt Ltd. All rights reserved. · Admin · Master Franchise · Franchise Lead App</p>
+  <p>© 2026 Budget Barber Pvt Ltd. All rights reserved. · Admin · Master Franchise · Franchise Team · Franchise Lead App</p>
 </footer>
 
 </body>
