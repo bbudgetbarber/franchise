@@ -2824,6 +2824,30 @@ async function openWaPicker(leadId){
   if(!l && typeof MF_LEADS!=='undefined') l = MF_LEADS.find(x=>x.id===leadId);
   if(!l){ alert('Lead not found.'); return; }
 
+  // Last-resort PIN guarantee: if this lead somehow still has no PIN
+  // (backfill failed, row was just inserted from elsewhere, etc.) mint
+  // one now so the WhatsApp template never falls back to the placeholder.
+  if(!l.pin_code && !l.pin){
+    try{
+      const newPin  = bbGeneratePin();
+      const newHash = await bbHashPin(newPin);
+      const {error} = await sb.from('leads').update({
+        pin_code: newPin,
+        pin_hash: newHash,
+        updated_at: new Date().toISOString()
+      }).eq('id', l.id);
+      if(!error){
+        l.pin_code = newPin;
+        l.pin_hash = newHash;
+        console.log('[FT WA picker] auto-minted PIN for lead',l.id);
+      } else {
+        console.warn('[FT WA picker] failed to mint PIN — template will show placeholder:',error.message);
+      }
+    }catch(e){
+      console.warn('[FT WA picker] PIN mint exception:',e);
+    }
+  }
+
   // Normalise field names — admin/MF use camelCase; team uses snake_case
   WA_CURRENT_LEAD = {
     id:   l.id,
@@ -2833,7 +2857,10 @@ async function openWaPicker(leadId){
     model_interest: l.model_interest || l.model || 'Not Decided',
     language: l.language || l.lang || 'English',
     current_step: (l.current_step !== undefined) ? l.current_step : (l.step||0),
-    status: l.status
+    status: l.status,
+    // Carry over the portal PIN so the Inquiry template can embed it.
+    // Without this, bbBuildTemplate falls back to the placeholder string.
+    pin_code: l.pin_code || l.pin || null
   };
 
   await bbWaLoadSettings();
