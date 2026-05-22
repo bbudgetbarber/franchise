@@ -129,7 +129,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--team-purple);backgrou
 .pipe-stage{background:var(--surf2);border-radius:var(--rad);padding:10px 6px;text-align:center;border-bottom:3px solid var(--bdr);min-width:0;}
 .pipe-stage.done{border-bottom-color:var(--ok-tx);background:var(--ok-bg);}
 .pipe-stage.current{border-bottom-color:var(--team-purple);background:rgba(31,58,95,0.1);}
-.pipe-stage-lbl{font-size:10px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;line-height:1.2;}
+.pipe-stage-lbl{font-size:10px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.03em;line-height:1.15;word-break:break-word;overflow-wrap:break-word;hyphens:auto;}
 .pipe-stage-n{font-size:16px;font-weight:800;color:var(--txt);margin-top:4px;}
 @media(max-width:900px){
   .pipe-wide{grid-template-columns:repeat(5,1fr);} /* wraps to 2 rows on mobile */
@@ -1346,6 +1346,7 @@ async function loadLeads(){
     }
     FT_LEADS = data || [];
     debugVoiceColumns(FT_LEADS, 'exec');
+    await backfillMissingPins();
     return;
   }
 
@@ -1404,6 +1405,44 @@ async function loadLeads(){
               '(owned:',ownedRes.data?.length||0,
               'unassigned:',unassignedRes.data?.length||0,')');
   debugVoiceColumns(FT_LEADS, 'head');
+  await backfillMissingPins();
+}
+
+// ════════════════════════════════════════════════════════════════
+// ── PIN BACKFILL ─────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════
+// Any lead loaded without a pin_code (legacy rows created before the
+// auto-generate logic existed) gets a fresh PIN assigned in-place.
+// This guarantees every WhatsApp template that embeds {pin} ends up
+// with a real value instead of the "— (regenerate via Lead Detail)"
+// fallback. Runs after every loadLeads(); failures are logged but
+// non-fatal so the UI still functions.
+async function backfillMissingPins(){
+  if(!Array.isArray(FT_LEADS) || !FT_LEADS.length) return;
+  const missing = FT_LEADS.filter(l => !l.pin_code);
+  if(!missing.length) return;
+  console.log(`[FT pin-backfill] generating PINs for ${missing.length} lead(s)…`);
+  let ok = 0, fail = 0;
+  for(const l of missing){
+    try{
+      const pin  = bbGeneratePin();
+      const hash = await bbHashPin(pin);
+      const {error} = await sb.from('leads').update({
+        pin_code: pin,
+        pin_hash: hash,
+        updated_at: new Date().toISOString()
+      }).eq('id', l.id);
+      if(error){ fail++; console.warn('[FT pin-backfill] failed for',l.id,error.message); continue; }
+      // Mutate local cache so UI reflects immediately
+      l.pin_code = pin;
+      l.pin_hash = hash;
+      ok++;
+    }catch(e){
+      fail++;
+      console.warn('[FT pin-backfill] exception for',l.id,e);
+    }
+  }
+  console.log(`[FT pin-backfill] done — ${ok} updated, ${fail} failed.`);
 }
 
 // Diagnostic helper — logs the first lead's voice columns to the browser
@@ -2336,7 +2375,7 @@ const BB_WA_STAGES = [
   {idx:6, lbl:'Token Received', templateKey:'token_received'},
   {idx:7, lbl:'Agreement',      templateKey:'agreement'},
   {idx:8, lbl:'Handover',       templateKey:'handover'},
-  {idx:9, lbl:'Welcome',        templateKey:'welcome'}
+  {idx:9, lbl:'Outlet Live',    templateKey:'welcome'}
 ];
 // Returns 0-9 indicating which WA stage this lead currently sits in.
 function bbWaStageIndex(lead){
@@ -2769,7 +2808,7 @@ const BB_WA_TEMPLATE_LIST = [
   {key:'token_received', label:'7 · Token Received — Confirmation'},
   {key:'agreement',      label:'8 · Agreement — Sign-off instructions'},
   {key:'handover',       label:'9 · Handover — Fit-out progress'},
-  {key:'welcome',        label:'10 · Welcome — Outlet live 🎉'},
+  {key:'welcome',        label:'10 · Outlet Live — Congratulations 🎉'},
   {key:'reengage',       label:'⚡ Re-engage closed-lost lead'},
   {key:'custom',         label:'✍ Custom — Empty template'}
 ];
