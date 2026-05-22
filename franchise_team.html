@@ -1331,8 +1331,8 @@ async function loadLeads(){
     ho_payment_status, ho_agreement_status, ho_site_status, ho_site_address,
     ho_fitout_pct, ho_equipment_status, ho_staff_status, ho_launch_eta,
     ho_status_note, ho_launched, ho_updated_at, ho_updated_by_team,
-    voice_agent, voice_budget_ready, voice_lead_stage, voice_store_location,
-    voice_transcript_summary, voice_call_duration_secs, voice_job`;
+    agent, budget_ready, lead_stage, store_location,
+    transcript_summary, call_duration_secs, job`;
 
   if(ftSession.role === 'sales_executive'){
     const {data, error} = await sb.from('leads')
@@ -1345,6 +1345,7 @@ async function loadLeads(){
       FT_LEADS = []; return;
     }
     FT_LEADS = data || [];
+    debugVoiceColumns(FT_LEADS, 'exec');
     return;
   }
 
@@ -1402,6 +1403,32 @@ async function loadLeads(){
   console.log('[FT loadLeads] head sees',FT_LEADS.length,
               '(owned:',ownedRes.data?.length||0,
               'unassigned:',unassignedRes.data?.length||0,')');
+  debugVoiceColumns(FT_LEADS, 'head');
+}
+
+// Diagnostic helper — logs the first lead's voice columns to the browser
+// console so we can confirm whether Supabase is actually returning data
+// for these fields. Remove or quiet once verified in production.
+function debugVoiceColumns(leads, scope){
+  if(!leads || !leads.length){
+    console.log(`[FT voice-debug:${scope}] no leads loaded`);
+    return;
+  }
+  const sample = leads[0];
+  const voiceFields = ['agent','budget_ready','lead_stage','store_location',
+                       'transcript_summary','call_duration_secs','job'];
+  const present = {};
+  const populated = {};
+  for(const f of voiceFields){
+    present[f]   = (f in sample);
+    populated[f] = sample[f] != null && sample[f] !== '';
+  }
+  // Count how many leads have ANY voice data
+  const withAny = leads.filter(l => voiceFields.some(f => l[f] != null && l[f] !== '')).length;
+  console.log(`[FT voice-debug:${scope}] First lead "${sample.name}" — fields present in row object:`, present);
+  console.log(`[FT voice-debug:${scope}] First lead — fields populated (non-null):`, populated);
+  console.log(`[FT voice-debug:${scope}] ${withAny}/${leads.length} leads have at least one voice field populated.`);
+  console.log(`[FT voice-debug:${scope}] Full first row:`, sample);
 }
 
 async function loadLeadNotes(leadId){
@@ -1665,15 +1692,15 @@ function renderLeadTable(){
     }
 
     // Voice-agent cells (ElevenLabs) — highlighted with voice-col background
-    const vAgent       = l.voice_agent || '';
-    const vBudget      = l.voice_budget_ready || '';
-    const vLeadStage   = l.voice_lead_stage || '';
-    const vStore       = l.voice_store_location || '';
-    const vSummary     = l.voice_transcript_summary || '';
-    const vDur         = l.voice_call_duration_secs
-                         ? `${Math.floor(l.voice_call_duration_secs/60)}:${String(l.voice_call_duration_secs%60).padStart(2,'0')}`
+    const vAgent       = l.agent || '';
+    const vBudget      = l.budget_ready || '';
+    const vLeadStage   = l.lead_stage || '';
+    const vStore       = l.store_location || '';
+    const vSummary     = l.transcript_summary || '';
+    const vDur         = l.call_duration_secs
+                         ? `${Math.floor(l.call_duration_secs/60)}:${String(l.call_duration_secs%60).padStart(2,'0')}`
                          : '';
-    const vJob         = l.voice_job || '';
+    const vJob         = l.job || '';
     const vCellEmpty   = '<span class="muted text-sm">—</span>';
     // Colour the budget-ready cell by sentiment
     const budgetCls = (() => {
@@ -2256,24 +2283,24 @@ async function openLeadModal(leadId){
 
   // Voice-agent panel — show only if any voice data exists
   const hasVoice = !!(
-    l.voice_agent || l.voice_budget_ready || l.voice_lead_stage ||
-    l.voice_store_location || l.voice_transcript_summary ||
-    l.voice_call_duration_secs || l.voice_job
+    l.agent || l.budget_ready || l.lead_stage ||
+    l.store_location || l.transcript_summary ||
+    l.call_duration_secs || l.job
   );
   document.getElementById('lm-voice-empty').style.display = hasVoice ? 'none' : 'block';
   document.getElementById('lm-voice-body').style.display  = hasVoice ? 'block' : 'none';
   if(hasVoice){
-    document.getElementById('lm-voice-agent').value     = l.voice_agent || '';
-    document.getElementById('lm-voice-budget').value    = l.voice_budget_ready || '';
-    document.getElementById('lm-voice-leadstage').value = l.voice_lead_stage || '';
-    document.getElementById('lm-voice-store').value     = l.voice_store_location || '';
-    document.getElementById('lm-voice-job').value       = l.voice_job || '';
-    const dur = l.voice_call_duration_secs
-                ? `${Math.floor(l.voice_call_duration_secs/60)} min ${l.voice_call_duration_secs%60} sec`
+    document.getElementById('lm-voice-agent').value     = l.agent || '';
+    document.getElementById('lm-voice-budget').value    = l.budget_ready || '';
+    document.getElementById('lm-voice-leadstage').value = l.lead_stage || '';
+    document.getElementById('lm-voice-store').value     = l.store_location || '';
+    document.getElementById('lm-voice-job').value       = l.job || '';
+    const dur = l.call_duration_secs
+                ? `${Math.floor(l.call_duration_secs/60)} min ${l.call_duration_secs%60} sec`
                 : '—';
     document.getElementById('lm-voice-duration').value  = dur;
-    document.getElementById('lm-voice-summary').value   = l.voice_transcript_summary || '';
-    document.getElementById('lm-voice-status').textContent = l.voice_agent ? `Agent: ${l.voice_agent}` : '';
+    document.getElementById('lm-voice-summary').value   = l.transcript_summary || '';
+    document.getElementById('lm-voice-status').textContent = l.agent ? `Agent: ${l.agent}` : '';
   } else {
     document.getElementById('lm-voice-status').textContent = '';
   }
