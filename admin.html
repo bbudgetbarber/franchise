@@ -116,6 +116,16 @@ textarea{resize:vertical;min-height:80px;line-height:1.5;}
 /* ── FORMS ── */
 .form-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .form-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+
+/* ── REGION CHIPS (multi-region Sales Head support) ── */
+.region-chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.region-chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;background:var(--surf2);padding:3px 4px 3px 9px;border-radius:99px;color:var(--txt);border:0.5px solid var(--bdr2);}
+.region-chip-x{background:none;border:0;cursor:pointer;color:var(--mut);font-size:14px;line-height:1;padding:0 4px;border-radius:50%;}
+.region-chip-x:hover{background:var(--no-bg);color:var(--no-tx);}
+.region-chip-readonly{display:inline-flex;align-items:center;font-size:11px;background:var(--surf2);padding:3px 9px;border-radius:99px;color:var(--mut);border:0.5px solid var(--bdr2);}
+.region-picker{display:flex;gap:6px;align-items:center;margin-top:6px;}
+.region-picker select{flex:1;}
+
 .irow{display:flex;justify-content:space-between;font-size:13px;padding:7px 0;border-bottom:0.5px solid var(--bdr);}
 .irow:last-child{border-bottom:none;}
 .ilbl{color:var(--mut);}
@@ -1136,10 +1146,10 @@ input:checked + .slider:before{transform:translateX(16px);}
     <!-- FRANCHISE TEAM — ACCOUNTS -->
     <div id="at-team-accounts" class="admin-tab">
       <div class="adm-page-title">Franchise Team — Accounts</div>
-      <div class="adm-page-sub">All Sales Heads and Sales Executives across regions. Each region is led by one Sales Head; executives report to that Head.</div>
+      <div class="adm-page-sub">All Sales Heads and Sales Executives across regions. A Sales Head can cover one or more regions; executives report to that Head.</div>
 
       <div class="stat-grid">
-        <div class="stat-card"><div class="stat-num" id="team-stat-heads" style="color:var(--hi);">—</div><div class="stat-lbl">Sales Heads</div><div class="stat-delta" style="color:var(--mut);">One per active region</div></div>
+        <div class="stat-card"><div class="stat-num" id="team-stat-heads" style="color:var(--hi);">—</div><div class="stat-lbl">Sales Heads</div><div class="stat-delta" style="color:var(--mut);">Can cover multiple regions</div></div>
         <div class="stat-card"><div class="stat-num" id="team-stat-execs" style="color:var(--inf-tx);">—</div><div class="stat-lbl">Sales Executives</div><div class="stat-delta" style="color:var(--mut);">Across all regions</div></div>
         <div class="stat-card"><div class="stat-num" id="team-stat-active" style="color:var(--ok-tx);">—</div><div class="stat-lbl">Active Members</div><div class="stat-delta" style="color:var(--mut);">Status = Active</div></div>
         <div class="stat-card"><div class="stat-num" id="team-stat-leads-assigned" style="color:var(--wrn-tx);">—</div><div class="stat-lbl">Leads w/ Team Owner</div><div class="stat-delta" style="color:var(--mut);">assigned_team_id ≠ null</div></div>
@@ -1189,7 +1199,7 @@ input:checked + .slider:before{transform:translateX(16px);}
 
       <div class="adm-card" style="max-width:680px;">
         <div class="adm-card-title">New Sales Head Account</div>
-        <div class="adm-card-sub">Sales Heads see all leads in their assigned region and can route them to executives.</div>
+        <div class="adm-card-sub">Sales Heads see all leads in their assigned region(s) and can route them to executives. A single Head can cover multiple regions.</div>
         <div class="form-2col">
           <div class="fr"><label class="fl">Full Name *</label><input type="text" id="th-name" placeholder="e.g. Ramesh Kumar"/></div>
           <div class="fr"><label class="fl">Phone *</label><input type="tel" id="th-phone" placeholder="+91…"/></div>
@@ -1198,11 +1208,19 @@ input:checked + .slider:before{transform:translateX(16px);}
           <div class="fr"><label class="fl">Email (Login ID) *</label><input type="email" id="th-email" placeholder="name@team.budgetbarber"/></div>
           <div class="fr"><label class="fl">Initial Password *</label><input type="text" id="th-pass" placeholder="Min 8 chars"/></div>
         </div>
-        <div class="form-2col">
-          <div class="fr"><label class="fl">Region *</label>
-            <select id="th-region"><option value="">— Select Region —</option></select>
+        <div class="fr">
+          <label class="fl">Regions * <span style="font-weight:500;color:var(--mut);">(one Sales Head can cover multiple regions)</span></label>
+          <div id="th-regions-chips" class="region-chips" style="min-height:30px;padding:6px;background:var(--surf2);border:0.5px solid var(--bdr2);border-radius:var(--rad);">
+            <span id="th-regions-empty" style="font-size:12px;color:var(--hnt);">No regions added yet. Pick from dropdown below.</span>
           </div>
-          <div class="fr"><label class="fl">Cities (comma separated)</label><input type="text" id="th-cities" placeholder="e.g. Hyderabad, Secunderabad"/></div>
+          <div class="region-picker">
+            <select id="th-region-pick"><option value="">— Select a region to add —</option></select>
+            <button type="button" class="btn btn-sm btn-i" onclick="addSalesHeadRegion()">+ Add</button>
+          </div>
+          <input type="hidden" id="th-region"/>
+        </div>
+        <div class="fr"><label class="fl">Cities (comma separated)</label><input type="text" id="th-cities" placeholder="e.g. Hyderabad, Secunderabad, Mumbai, Pune"/>
+          <div style="font-size:11px;color:var(--hnt);margin-top:4px;">Cities should belong to one of the selected regions above.</div>
         </div>
         <button class="btn btn-p" onclick="createSalesHead()">+ Create Sales Head</button>
         <div id="th-err" style="display:none;margin-top:10px;color:var(--no-tx);font-size:12px;"></div>
@@ -1211,10 +1229,11 @@ input:checked + .slider:before{transform:translateX(16px);}
       <div class="adm-card" style="background:#fef9e7;border-color:#f0d970;">
         <div class="adm-card-title">📌 How the team hierarchy works</div>
         <ul style="font-size:13px;line-height:1.8;color:var(--mut);padding-left:18px;">
-          <li>One <strong>Sales Head</strong> per region (created here by Admin).</li>
-          <li>Each Head adds <strong>Sales Executives</strong> from their portal — they're auto-scoped to the Head's region.</li>
-          <li>Heads can assign / reassign any unassigned lead in their region to any executive.</li>
+          <li>A <strong>Sales Head</strong> can cover <strong>one or more regions</strong> (created here by Admin).</li>
+          <li>Each Head adds <strong>Sales Executives</strong> from their portal — they're auto-scoped to the Head's region(s).</li>
+          <li>Heads can assign / reassign any unassigned lead in their region(s) to any executive.</li>
           <li>Executives only see leads where <code>assigned_team_id = themselves</code>.</li>
+          <li>Multi-region heads see leads from <strong>all</strong> their assigned regions in a single dashboard.</li>
           <li>WhatsApp follow-ups are stage-aware and trigger the lead toward the final token payment.</li>
         </ul>
       </div>
@@ -1716,6 +1735,49 @@ input:checked + .slider:before{transform:translateX(16px);}
         <button class="btn" onclick="closeWaModal()">Cancel</button>
         <button class="btn btn-i" onclick="copyWaMessage()">📋 Copy</button>
         <button class="btn btn-p" onclick="sendWaMessage()">📲 Open WhatsApp →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT SALES HEAD REGIONS MODAL -->
+<div class="lead-detail-modal" id="eth-modal">
+  <div class="ldm-box" style="max-width:560px;">
+    <div class="ldm-hdr">
+      <div>
+        <div style="font-size:16px;font-weight:700;">🗺 Edit Sales Head Regions</div>
+        <div style="font-size:12px;color:var(--mut);margin-top:3px;">
+          <strong id="eth-name">—</strong> · <span id="eth-email">—</span>
+        </div>
+      </div>
+      <button class="btn btn-sm" onclick="closeEditTeamRegions()">✕ Close</button>
+    </div>
+    <div class="ldm-body">
+      <div class="card">
+        <div class="sec">Assigned Regions</div>
+        <div style="font-size:12px;color:var(--mut);margin-bottom:10px;">
+          This Sales Head will see leads from <strong>all</strong> the regions listed below.
+          Add or remove regions as needed. Changes propagate to any executives reporting to this Head.
+        </div>
+        <div id="eth-regions-chips" class="region-chips" style="min-height:36px;padding:8px;background:var(--surf2);border:0.5px solid var(--bdr2);border-radius:var(--rad);margin-bottom:10px;"></div>
+        <div class="region-picker">
+          <select id="eth-region-pick"><option value="">— Select a region to add —</option></select>
+          <button type="button" class="btn btn-sm btn-i" onclick="addEditRegion()">+ Add</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec">Assigned Cities</div>
+        <div class="fr">
+          <label class="fl">Cities (comma separated)</label>
+          <input type="text" id="eth-cities" placeholder="e.g. Hyderabad, Bangalore, Mumbai"/>
+          <div style="font-size:11px;color:var(--hnt);margin-top:4px;">
+            Cities should belong to one of the assigned regions above. Used for routing unassigned leads.
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;">
+        <button class="btn" onclick="closeEditTeamRegions()">Cancel</button>
+        <button class="btn btn-p" onclick="saveEditTeamRegions()">💾 Save Changes</button>
       </div>
     </div>
   </div>
@@ -4577,9 +4639,32 @@ function buildTeamStats(){
 function buildTeamFilters(){
   const sel = document.getElementById('team-filt-region');
   if(!sel) return;
-  const regions = [...new Set(TEAM_ACCOUNTS.map(t=>t.region).filter(Boolean))].sort();
+  // Heads may now have comma-separated regions. Flatten them all.
+  const all = [];
+  TEAM_ACCOUNTS.forEach(t=>{
+    parseRegions(t.region).forEach(r=>all.push(r));
+  });
+  const regions = [...new Set(all)].sort();
   sel.innerHTML = '<option value="all">All Regions</option>'
     + regions.map(r=>`<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`).join('');
+}
+
+// ── Multi-region helpers ──────────────────────────────────────────
+// A Sales Head's `region` field may be a single name ("South") or a
+// comma-separated list ("South, West"). These helpers normalise.
+function parseRegions(regionStr){
+  if(!regionStr) return [];
+  return String(regionStr).split(',').map(s=>s.trim()).filter(Boolean);
+}
+function formatRegions(regionStr){
+  const arr = parseRegions(regionStr);
+  if(arr.length===0) return '<span style="color:var(--hnt);">—</span>';
+  if(arr.length===1) return escapeHtml(arr[0]);
+  return '<div class="region-chips">' + arr.map(r=>`<span class="region-chip-readonly">${escapeHtml(r)}</span>`).join('') + '</div>';
+}
+function teamMemberCoversRegion(t, region){
+  // True if `region` appears in this member's comma-separated region list.
+  return parseRegions(t.region).includes(region);
 }
 
 function buildTeamTable(){
@@ -4589,7 +4674,8 @@ function buildTeamTable(){
   const regFilt  = document.getElementById('team-filt-region')?.value || 'all';
   let rows = TEAM_ACCOUNTS;
   if(roleFilt!=='all') rows = rows.filter(t=>t.role===roleFilt);
-  if(regFilt!=='all')  rows = rows.filter(t=>t.region===regFilt);
+  // Match if the filter region is ANY of the member's regions.
+  if(regFilt!=='all')  rows = rows.filter(t=>teamMemberCoversRegion(t, regFilt));
   if(!rows.length){
     tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">No team members match these filters. Create a Sales Head from the "Create Sales Head" tab to get started.</td></tr>';
     return;
@@ -4602,17 +4688,22 @@ function buildTeamTable(){
     const statusPill = t.status==='Active'
       ? '<span class="pill p-ok">Active</span>'
       : '<span class="pill p-no">Inactive</span>';
+    // Edit-regions button is only meaningful for heads (execs inherit from their head).
+    const editBtn = t.role==='sales_head'
+      ? `<button class="btn btn-xs btn-i" onclick="openEditTeamRegions('${t.id}')">Edit Regions</button>`
+      : '';
     return `<tr>
       <td style="padding:10px 14px;"><strong>${escapeHtml(t.name||'—')}</strong></td>
       <td style="padding:10px 14px;">${roleLbl}</td>
       <td style="padding:10px 14px;font-size:12px;color:var(--mut);">${escapeHtml(t.email||'—')}</td>
       <td style="padding:10px 14px;font-size:12px;">${escapeHtml(t.phone||'—')}</td>
-      <td style="padding:10px 14px;">${escapeHtml(t.region||'—')}</td>
+      <td style="padding:10px 14px;">${formatRegions(t.region)}</td>
       <td style="padding:10px 14px;font-size:12px;color:var(--mut);">${escapeHtml(t.cities||'—')}</td>
       <td style="padding:10px 14px;font-size:12px;">${head}</td>
       <td style="padding:10px 14px;"><strong>${leadCount}</strong></td>
       <td style="padding:10px 14px;">${statusPill}</td>
-      <td style="padding:10px 14px;"><div class="act-btns">
+      <td style="padding:10px 14px;"><div class="act-btns" style="display:flex;gap:6px;flex-wrap:wrap;">
+        ${editBtn}
         <button class="btn btn-xs btn-d" onclick="toggleTeamMemberStatus('${t.id}','${t.status||'Active'}')">${t.status==='Active'?'Disable':'Enable'}</button>
         <button class="btn btn-xs" onclick="resetTeamMemberPassword('${t.id}','${escapeHtml(t.name||'').replace(/'/g,'')}')">Reset PW</button>
       </div></td>
@@ -4649,13 +4740,51 @@ async function bbSha256(str){
 }
 
 // ── Create Sales Head form ──
+// State holding the regions currently being added to a new Sales Head.
+let TH_REGIONS = [];
+
 function populateTeamRegionDropdown(){
-  const sel = document.getElementById('th-region');
+  const sel = document.getElementById('th-region-pick');
   if(!sel) return;
   // pull regions from existing MF accounts so admin doesn't have to type them
   const regions = [...new Set((MF_ACCOUNTS_DATA||[]).map(m=>m.region).filter(Boolean))].sort();
-  sel.innerHTML = '<option value="">— Select Region —</option>'
-    + regions.map(r=>`<option>${escapeHtml(r)}</option>`).join('');
+  // Exclude regions already added
+  const available = regions.filter(r=>!TH_REGIONS.includes(r));
+  sel.innerHTML = '<option value="">— Select a region to add —</option>'
+    + available.map(r=>`<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`).join('');
+  renderSalesHeadRegionChips();
+}
+
+function renderSalesHeadRegionChips(){
+  const wrap = document.getElementById('th-regions-chips');
+  const empty = document.getElementById('th-regions-empty');
+  const hidden = document.getElementById('th-region');
+  if(!wrap || !hidden) return;
+  if(TH_REGIONS.length===0){
+    wrap.innerHTML = '<span id="th-regions-empty" style="font-size:12px;color:var(--hnt);">No regions added yet. Pick from dropdown below.</span>';
+  } else {
+    wrap.innerHTML = TH_REGIONS.map((r,i)=>`
+      <span class="region-chip">
+        ${escapeHtml(r)}
+        <button type="button" class="region-chip-x" onclick="removeSalesHeadRegion(${i})" title="Remove">×</button>
+      </span>`).join('');
+  }
+  hidden.value = TH_REGIONS.join(', ');
+}
+
+function addSalesHeadRegion(){
+  const sel = document.getElementById('th-region-pick');
+  if(!sel) return;
+  const v = sel.value.trim();
+  if(!v){ alert('Please pick a region from the dropdown first.'); return; }
+  if(TH_REGIONS.includes(v)){ alert('That region is already added.'); return; }
+  TH_REGIONS.push(v);
+  populateTeamRegionDropdown(); // re-renders chips and refreshes the dropdown options
+}
+
+function removeSalesHeadRegion(idx){
+  TH_REGIONS.splice(idx, 1);
+  populateTeamRegionDropdown();
 }
 
 async function createSalesHead(){
@@ -4663,12 +4792,13 @@ async function createSalesHead(){
   const phone = document.getElementById('th-phone').value.trim();
   const email = document.getElementById('th-email').value.trim().toLowerCase();
   const pass = document.getElementById('th-pass').value;
-  const region = document.getElementById('th-region').value.trim();
+  // Multi-region: take from chip state, not a single dropdown
+  const region = TH_REGIONS.join(', ');
   const cities = document.getElementById('th-cities').value.trim();
   const err = document.getElementById('th-err');
   err.style.display = 'none';
-  if(!name || !phone || !email || !pass || !region){
-    err.textContent = 'Please fill all required fields (name, phone, email, password, region).';
+  if(!name || !phone || !email || !pass || TH_REGIONS.length===0){
+    err.textContent = 'Please fill all required fields (name, phone, email, password) and add at least one region.';
     err.style.display = 'block'; return;
   }
   if(pass.length < 8){
@@ -4692,8 +4822,107 @@ async function createSalesHead(){
   ['th-name','th-phone','th-email','th-pass','th-cities'].forEach(id=>{
     const e=document.getElementById(id); if(e) e.value='';
   });
-  alert('✓ Sales Head created. They can now sign in to the Franchise Team Portal.');
+  TH_REGIONS = [];
+  populateTeamRegionDropdown();
+  alert('✓ Sales Head created with '+parseRegions(region).length+' region(s): '+region+'.\nThey can now sign in to the Franchise Team Portal.');
   await loadTeamAccounts(); buildTeamFilters(); buildTeamStats();
+}
+
+// ════════════════════════════════════════════════════════════════
+// ── EDIT SALES HEAD REGIONS (in-place modal) ────────────────────
+// ════════════════════════════════════════════════════════════════
+// Admins can change the region set on an existing Sales Head without
+// recreating the account. Cities are also editable here since they're
+// region-scoped.
+let EDIT_TH_ID = null;
+let EDIT_TH_REGIONS = [];
+
+function openEditTeamRegions(teamId){
+  const t = TEAM_ACCOUNTS.find(x=>x.id===teamId);
+  if(!t){ alert('Team member not found.'); return; }
+  if(t.role !== 'sales_head'){
+    alert('Only Sales Heads have region assignments managed here. Executives inherit their Head\'s region(s).');
+    return;
+  }
+  EDIT_TH_ID = teamId;
+  EDIT_TH_REGIONS = parseRegions(t.region);
+  document.getElementById('eth-name').textContent = t.name || '—';
+  document.getElementById('eth-email').textContent = t.email || '—';
+  document.getElementById('eth-cities').value = t.cities || '';
+  renderEditRegionChips();
+  populateEditRegionDropdown();
+  document.getElementById('eth-modal').classList.add('open');
+}
+
+function closeEditTeamRegions(){
+  document.getElementById('eth-modal').classList.remove('open');
+  EDIT_TH_ID = null;
+  EDIT_TH_REGIONS = [];
+}
+
+function populateEditRegionDropdown(){
+  const sel = document.getElementById('eth-region-pick');
+  if(!sel) return;
+  const regions = [...new Set((MF_ACCOUNTS_DATA||[]).map(m=>m.region).filter(Boolean))].sort();
+  const available = regions.filter(r=>!EDIT_TH_REGIONS.includes(r));
+  sel.innerHTML = '<option value="">— Select a region to add —</option>'
+    + available.map(r=>`<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`).join('');
+}
+
+function renderEditRegionChips(){
+  const wrap = document.getElementById('eth-regions-chips');
+  if(!wrap) return;
+  if(EDIT_TH_REGIONS.length===0){
+    wrap.innerHTML = '<span style="font-size:12px;color:var(--no-tx);">⚠ No regions assigned — this Head will see no leads.</span>';
+  } else {
+    wrap.innerHTML = EDIT_TH_REGIONS.map((r,i)=>`
+      <span class="region-chip">
+        ${escapeHtml(r)}
+        <button type="button" class="region-chip-x" onclick="removeEditRegion(${i})" title="Remove">×</button>
+      </span>`).join('');
+  }
+}
+
+function addEditRegion(){
+  const sel = document.getElementById('eth-region-pick');
+  if(!sel) return;
+  const v = sel.value.trim();
+  if(!v){ alert('Please pick a region from the dropdown first.'); return; }
+  if(EDIT_TH_REGIONS.includes(v)){ alert('That region is already added.'); return; }
+  EDIT_TH_REGIONS.push(v);
+  renderEditRegionChips();
+  populateEditRegionDropdown();
+}
+
+function removeEditRegion(idx){
+  EDIT_TH_REGIONS.splice(idx, 1);
+  renderEditRegionChips();
+  populateEditRegionDropdown();
+}
+
+async function saveEditTeamRegions(){
+  if(!EDIT_TH_ID){ alert('No Sales Head selected.'); return; }
+  if(EDIT_TH_REGIONS.length===0){
+    if(!confirm('You are about to save with NO regions assigned. This Head will see no leads until at least one region is added. Continue?')) return;
+  }
+  const newRegion = EDIT_TH_REGIONS.join(', ');
+  const newCities = (document.getElementById('eth-cities').value || '').trim();
+  const {error} = await sb.from('franchise_team_accounts')
+    .update({region: newRegion, cities: newCities, updated_at: new Date().toISOString()})
+    .eq('id', EDIT_TH_ID);
+  if(error){ alert('Failed to save: '+error.message); return; }
+  // Also propagate the region change to all executives reporting to this Head,
+  // so their region label stays in sync. (Cities are NOT auto-copied to execs —
+  // each exec has their own city scope set by the Head.)
+  const {error: execErr} = await sb.from('franchise_team_accounts')
+    .update({region: newRegion, updated_at: new Date().toISOString()})
+    .eq('head_id', EDIT_TH_ID);
+  if(execErr){
+    console.warn('Could not sync region to executives — they may show stale region:', execErr);
+  }
+  alert('✓ Regions updated. The Sales Head and any executives under them now cover: '+(newRegion||'(none)'));
+  closeEditTeamRegions();
+  await loadTeamAccounts(); buildTeamFilters(); buildTeamStats(); buildTeamTable();
 }
 
 // ── Performance rendering ──
@@ -4702,15 +4931,18 @@ function renderTeamPerformance(){
   const execTbody   = document.getElementById('team-perf-exec-tbody');
   const allLeads = LEADS || [];
 
-  // Group by region
-  const regions = [...new Set(TEAM_ACCOUNTS.map(t=>t.region).filter(Boolean))];
+  // Group by region. A multi-region head appears under EACH of their regions
+  // (lead counts are attributed by region via the executive's region scope).
+  const allRegions = [];
+  TEAM_ACCOUNTS.forEach(t=>parseRegions(t.region).forEach(r=>allRegions.push(r)));
+  const regions = [...new Set(allRegions)].sort();
   if(regionTbody){
     if(!regions.length){
       regionTbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--hnt);font-size:13px;">No regions configured yet.</td></tr>';
     } else {
       regionTbody.innerHTML = regions.map(r=>{
-        const teamInRegion = TEAM_ACCOUNTS.filter(t=>t.region===r);
-        const head = teamInRegion.find(t=>t.role==='sales_head');
+        const teamInRegion = TEAM_ACCOUNTS.filter(t=>teamMemberCoversRegion(t, r));
+        const heads = teamInRegion.filter(t=>t.role==='sales_head');
         const execs = teamInRegion.filter(t=>t.role==='sales_executive');
         const teamIds = teamInRegion.map(t=>t.id);
         const regionLeads = allLeads.filter(l=>teamIds.includes(l.assignedTeamId));
@@ -4720,9 +4952,17 @@ function renderTeamPerformance(){
         const won = regionLeads.filter(l=>(l.status==='closed_won'||l.status==='project') && inMonth(l.updatedAt)).length;
         const lost = regionLeads.filter(l=>l.status==='closed_lost' && inMonth(l.updatedAt)).length;
         const conv = regionLeads.length ? Math.round((won/regionLeads.length)*100)+'%' : '0%';
+        // Render head names — there may be more than one if multiple multi-region
+        // heads overlap on the same region, or none.
+        const headHtml = heads.length
+          ? heads.map(h=>{
+              const extra = parseRegions(h.region).length > 1 ? ' <span style="color:var(--hnt);font-size:11px;">(multi-region)</span>' : '';
+              return escapeHtml(h.name)+extra;
+            }).join('<br/>')
+          : '<span style="color:var(--no-tx);">No Head</span>';
         return `<tr>
           <td style="padding:10px 14px;"><strong>${escapeHtml(r)}</strong></td>
-          <td style="padding:10px 14px;">${head?escapeHtml(head.name):'<span style="color:var(--no-tx);">No Head</span>'}</td>
+          <td style="padding:10px 14px;">${headHtml}</td>
           <td style="padding:10px 14px;">${execs.length}</td>
           <td style="padding:10px 14px;">${active}</td>
           <td style="padding:10px 14px;"><span class="pill p-ok">${won}</span></td>
@@ -4747,7 +4987,7 @@ function renderTeamPerformance(){
         const conv = mine.length ? Math.round((won/mine.length)*100)+'%' : '0%';
         return `<tr>
           <td style="padding:10px 14px;"><strong>${escapeHtml(e.name)}</strong></td>
-          <td style="padding:10px 14px;">${escapeHtml(e.region||'—')}</td>
+          <td style="padding:10px 14px;">${formatRegions(e.region)}</td>
           <td style="padding:10px 14px;">${mine.length}</td>
           <td style="padding:10px 14px;">${active}</td>
           <td style="padding:10px 14px;"><span class="pill p-ok">${won}</span></td>
@@ -4767,7 +5007,12 @@ function populateTeamDropdownLDM(){
   sel.innerHTML = '<option value="">— Unassigned —</option>'
     + active.map(t=>{
         const tag = t.role==='sales_head' ? 'Head' : 'Exec';
-        return `<option value="${t.id}">${escapeHtml(t.name)} · ${tag} · ${escapeHtml(t.region||'—')}</option>`;
+        // Show all regions for multi-region heads (e.g. "South · West")
+        const regions = parseRegions(t.region);
+        const regionLbl = regions.length === 0 ? '—'
+                        : regions.length === 1 ? regions[0]
+                        : regions.join(' · ');
+        return `<option value="${t.id}">${escapeHtml(t.name)} · ${tag} · ${escapeHtml(regionLbl)}</option>`;
       }).join('');
 }
 
