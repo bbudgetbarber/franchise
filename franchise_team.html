@@ -1070,6 +1070,76 @@ async function bbHashPin(pin){
 // ════════════════════════════════════════════════════════════════
 // ── LOGIN ───────────────────────────────────────────────────────
 // ════════════════════════════════════════════════════════════════
+// Session persistence:
+//   We store the logged-in user's id+email in localStorage under
+//   FT_SESSION_KEY so the page stays logged-in across refreshes
+//   and browser restarts. On page load we re-fetch the full row
+//   from Supabase to (a) catch admin-disabled accounts and
+//   (b) pick up any profile changes. Logout is the ONLY thing
+//   that clears this key.
+const FT_SESSION_KEY = 'bb_ft_session_v1';
+
+function saveSessionToStorage(data){
+  try {
+    localStorage.setItem(FT_SESSION_KEY, JSON.stringify({
+      id: data.id,
+      email: data.email,
+      ts: Date.now()
+    }));
+  } catch(e){ console.warn('[FT] Could not persist session to localStorage:', e); }
+}
+function clearSessionFromStorage(){
+  try { localStorage.removeItem(FT_SESSION_KEY); }
+  catch(e){ /* ignore */ }
+}
+function readSessionFromStorage(){
+  try {
+    const raw = localStorage.getItem(FT_SESSION_KEY);
+    if(!raw) return null;
+    const parsed = JSON.parse(raw);
+    if(!parsed || !parsed.id || !parsed.email) return null;
+    return parsed;
+  } catch(e){ return null; }
+}
+
+// Tries to restore an active session on page load. Returns true if a
+// session was restored and onFTLoginSuccess was called; false otherwise
+// (in which case the login screen stays visible).
+async function tryRestoreSession(){
+  const cached = readSessionFromStorage();
+  if(!cached) return false;
+  // Re-verify against Supabase — admin may have disabled this account
+  try {
+    const {data, error} = await sb.from('franchise_team_accounts')
+      .select('id, name, email, phone, role, region, cities, status, head_id, password_hash')
+      .eq('id', cached.id)
+      .maybeSingle();
+    if(error){
+      // Network or RPC error — fall back to cached session so a flaky
+      // connection doesn't kick the user out. We can't load fresh data
+      // here, but the next loadLeads/loadTeam call will retry.
+      console.warn('[FT] Session re-verify failed, using cached identity:', error);
+      // Minimal session reconstruction
+      onFTLoginSuccess({
+        id: cached.id, name: cached.email.split('@')[0], email: cached.email,
+        phone:'', role:'sales_executive', region:'', cities:'', status:'Active', head_id:null
+      });
+      return true;
+    }
+    if(!data || data.status !== 'Active'){
+      // Account no longer exists or has been disabled — clear and force re-login
+      console.warn('[FT] Cached session account is missing or inactive; clearing.');
+      clearSessionFromStorage();
+      return false;
+    }
+    onFTLoginSuccess(data);
+    return true;
+  } catch(e){
+    console.warn('[FT] Unexpected error restoring session:', e);
+    return false;
+  }
+}
+
 function doFTLogin(){
   const user = (document.getElementById('ft-login-user').value||'').trim().toLowerCase();
   const pass = document.getElementById('ft-login-pass').value||'';
@@ -1102,6 +1172,7 @@ function doFTLogin(){
         err.style.display='block'; return;
       }
       err.style.display='none';
+      saveSessionToStorage(data); // ← persist for next reload
       onFTLoginSuccess(data);
     });
 }
@@ -1157,6 +1228,10 @@ async function onFTLoginSuccess(data){
 }
 
 function doFTLogout(){
+  // Explicit logout — this is the ONLY thing that clears the
+  // persisted session. Page refresh / browser restart / tab close
+  // all preserve the login.
+  clearSessionFromStorage();
   ftSession = null;
   document.getElementById('ft-main-wrap').style.display='none';
   document.getElementById('ft-login-screen').style.display='flex';
@@ -2845,6 +2920,17 @@ async function resharePinViaWhatsapp(){
   await openWaPicker(CURRENT_LEAD_ID);
   selectWaTemplate('inquiry');
 }
+
+// ════════════════════════════════════════════════════════════════
+// ── BOOTSTRAP — auto-restore session on page load ───────────────
+// ════════════════════════════════════════════════════════════════
+// Runs once when the script finishes parsing. If a session exists
+// in localStorage, the user lands straight on the dashboard;
+// otherwise the login screen stays visible.
+(async function ftBootstrap(){
+  try { await tryRestoreSession(); }
+  catch(e){ console.warn('[FT bootstrap] Restore failed:', e); }
+})();
 </script>
 </body>
 </html>
