@@ -417,11 +417,13 @@ input:focus,select:focus,textarea:focus{border-color:var(--team-purple);backgrou
               <th>Name</th><th>Phone</th><th>Email</th><th>City</th><th>Lang</th>
               <th>Model</th><th>Source</th><th>Stage</th><th>Status</th>
               <th>Assigned To</th><th>Next Follow-up</th><th>Latest Sales Comment</th>
+              <th class="voice-th">🎙️ Agent</th>
+              <th class="voice-th">🎙️ Budget Ready</th>
+              <th class="voice-th">🎙️ Lead Stage (Agent)</th>
               <th class="voice-th">🎙️ Store Location</th>
-              <th class="voice-th">🎙️ Call Status</th>
-              <th class="voice-th">🎙️ Duration</th>
               <th class="voice-th">🎙️ Transcript Summary</th>
-              <th class="voice-th">🎙️ Call At</th>
+              <th class="voice-th">🎙️ Duration</th>
+              <th class="voice-th">🎙️ Job</th>
               <th>Created</th><th>Actions</th>
             </tr></thead>
             <tbody id="leads-tbody"></tbody>
@@ -838,7 +840,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--team-purple);backgrou
         <div class="flex-row" style="justify-content:space-between;margin-bottom:8px;">
           <div>
             <span class="voice-badge">🎙️ Voice Agent (ElevenLabs)</span>
-            <span class="text-xs muted" style="margin-left:8px;">Read-only — populated by agent webhook</span>
+            <span class="text-xs muted" style="margin-left:8px;">Read-only — synced from Supabase, populated by agent webhook</span>
           </div>
           <span id="lm-voice-status" class="text-xs muted"></span>
         </div>
@@ -846,22 +848,32 @@ input:focus,select:focus,textarea:focus{border-color:var(--team-purple);backgrou
         <div id="lm-voice-body" style="display:none;">
           <div class="frow">
             <div class="fr" style="margin-bottom:8px;">
-              <label class="fl">Store Location (heard by agent)</label>
-              <input type="text" id="lm-voice-store" readonly style="background:var(--surf);"/>
+              <label class="fl">Agent</label>
+              <input type="text" id="lm-voice-agent" readonly style="background:var(--surf);"/>
             </div>
             <div class="fr" style="margin-bottom:8px;">
-              <label class="fl">Call Duration</label>
-              <input type="text" id="lm-voice-duration" readonly style="background:var(--surf);"/>
+              <label class="fl">Budget Ready</label>
+              <input type="text" id="lm-voice-budget" readonly style="background:var(--surf);"/>
             </div>
           </div>
           <div class="frow">
             <div class="fr" style="margin-bottom:8px;">
-              <label class="fl">Call Status</label>
-              <input type="text" id="lm-voice-callstatus" readonly style="background:var(--surf);"/>
+              <label class="fl">Lead Stage (per Agent)</label>
+              <input type="text" id="lm-voice-leadstage" readonly style="background:var(--surf);"/>
             </div>
             <div class="fr" style="margin-bottom:8px;">
-              <label class="fl">Called At</label>
-              <input type="text" id="lm-voice-callat" readonly style="background:var(--surf);"/>
+              <label class="fl">Store Location (heard by agent)</label>
+              <input type="text" id="lm-voice-store" readonly style="background:var(--surf);"/>
+            </div>
+          </div>
+          <div class="frow">
+            <div class="fr" style="margin-bottom:8px;">
+              <label class="fl">Job / Occupation</label>
+              <input type="text" id="lm-voice-job" readonly style="background:var(--surf);"/>
+            </div>
+            <div class="fr" style="margin-bottom:8px;">
+              <label class="fl">Call Duration</label>
+              <input type="text" id="lm-voice-duration" readonly style="background:var(--surf);"/>
             </div>
           </div>
           <div class="fr" style="margin-bottom:0;">
@@ -1244,8 +1256,8 @@ async function loadLeads(){
     ho_payment_status, ho_agreement_status, ho_site_status, ho_site_address,
     ho_fitout_pct, ho_equipment_status, ho_staff_status, ho_launch_eta,
     ho_status_note, ho_launched, ho_updated_at, ho_updated_by_team,
-    voice_store_location, voice_transcript_summary, voice_call_status,
-    voice_call_duration_sec, voice_call_at, voice_agent_id`;
+    voice_agent, voice_budget_ready, voice_lead_stage, voice_store_location,
+    voice_transcript_summary, voice_call_duration_secs, voice_job`;
 
   if(ftSession.role === 'sales_executive'){
     const {data, error} = await sb.from('leads')
@@ -1552,7 +1564,7 @@ function renderLeadTable(){
 
   const tbody = document.getElementById('leads-tbody');
   if(rows.length===0){
-    tbody.innerHTML = `<tr><td colspan="19" class="muted text-sm" style="text-align:center;padding:30px;">No leads match your filters. <button class="btn btn-xs" style="margin-left:8px;" onclick="clearLeadFilters()">Clear filters</button></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="21" class="muted text-sm" style="text-align:center;padding:30px;">No leads match your filters. <button class="btn btn-xs" style="margin-left:8px;" onclick="clearLeadFilters()">Clear filters</button></td></tr>`;
     return;
   }
 
@@ -1577,14 +1589,27 @@ function renderLeadTable(){
       fuDisp = `<span class="pill ${cls}">${lbl}</span>`;
     }
 
-    // Voice-agent cells (highlighted with voice-col background)
-    const vStore = l.voice_store_location || '';
-    const vStatus = l.voice_call_status || '';
-    const vDur = l.voice_call_duration_sec ? `${Math.floor(l.voice_call_duration_sec/60)}:${String(l.voice_call_duration_sec%60).padStart(2,'0')}` : '';
-    const vSummary = l.voice_transcript_summary || '';
-    const vAt = l.voice_call_at ? fmtDateTime(l.voice_call_at) : '';
-    const vCellEmpty = '<span class="muted text-sm">—</span>';
-    const vStatusCell = vStatus ? `<span class="voice-badge">${esc(vStatus)}</span>` : vCellEmpty;
+    // Voice-agent cells (ElevenLabs) — highlighted with voice-col background
+    const vAgent       = l.voice_agent || '';
+    const vBudget      = l.voice_budget_ready || '';
+    const vLeadStage   = l.voice_lead_stage || '';
+    const vStore       = l.voice_store_location || '';
+    const vSummary     = l.voice_transcript_summary || '';
+    const vDur         = l.voice_call_duration_secs
+                         ? `${Math.floor(l.voice_call_duration_secs/60)}:${String(l.voice_call_duration_secs%60).padStart(2,'0')}`
+                         : '';
+    const vJob         = l.voice_job || '';
+    const vCellEmpty   = '<span class="muted text-sm">—</span>';
+    // Colour the budget-ready cell by sentiment
+    const budgetCls = (() => {
+      const b = vBudget.toLowerCase();
+      if(b==='yes' || b.includes('ready'))    return 'p-ok';
+      if(b==='no'  || b.includes('not'))      return 'p-no';
+      if(b==='maybe'||b.includes('partial')||b.includes('later')) return 'p-wrn';
+      return '';
+    })();
+    const vBudgetCell  = vBudget ? `<span class="pill ${budgetCls||''}">${esc(vBudget)}</span>` : vCellEmpty;
+    const vAgentCell   = vAgent  ? `<span class="voice-badge">${esc(vAgent)}</span>` : vCellEmpty;
 
     return `<tr>
       <td><strong>${esc(l.name||'—')}</strong></td>
@@ -1603,11 +1628,13 @@ function renderLeadTable(){
                          <div class="text-sm" style="color:var(--mut);">${esc(noteSnippet)}</div>`
                       : '<span class="muted text-sm">No comments yet</span>'}
       </td>
+      <td class="voice-col">${vAgentCell}</td>
+      <td class="voice-col">${vBudgetCell}</td>
+      <td class="voice-col">${vLeadStage ? esc(vLeadStage) : vCellEmpty}</td>
       <td class="voice-col">${vStore ? esc(vStore) : vCellEmpty}</td>
-      <td class="voice-col">${vStatusCell}</td>
-      <td class="voice-col">${vDur || vCellEmpty}</td>
       <td class="voice-col" style="max-width:300px;">${vSummary ? `<div class="text-sm">${esc(vSummary.slice(0,140))}${vSummary.length>140?'…':''}</div>` : vCellEmpty}</td>
-      <td class="voice-col text-sm">${vAt || vCellEmpty}</td>
+      <td class="voice-col">${vDur || vCellEmpty}</td>
+      <td class="voice-col">${vJob ? esc(vJob) : vCellEmpty}</td>
       <td class="muted text-sm">${fmtDate(l.created_at)}</td>
       <td><div class="act-btns">
         <button class="btn btn-xs btn-p" onclick="openLeadModal('${l.id}')">Open</button>
@@ -2153,19 +2180,25 @@ async function openLeadModal(leadId){
   document.getElementById('lm-pin').value       = l.pin_code || '— not generated —';
 
   // Voice-agent panel — show only if any voice data exists
-  const hasVoice = !!(l.voice_store_location || l.voice_transcript_summary || l.voice_call_status || l.voice_call_at);
+  const hasVoice = !!(
+    l.voice_agent || l.voice_budget_ready || l.voice_lead_stage ||
+    l.voice_store_location || l.voice_transcript_summary ||
+    l.voice_call_duration_secs || l.voice_job
+  );
   document.getElementById('lm-voice-empty').style.display = hasVoice ? 'none' : 'block';
   document.getElementById('lm-voice-body').style.display  = hasVoice ? 'block' : 'none';
   if(hasVoice){
-    document.getElementById('lm-voice-store').value      = l.voice_store_location || '';
-    const dur = l.voice_call_duration_sec
-                ? `${Math.floor(l.voice_call_duration_sec/60)} min ${l.voice_call_duration_sec%60} sec`
+    document.getElementById('lm-voice-agent').value     = l.voice_agent || '';
+    document.getElementById('lm-voice-budget').value    = l.voice_budget_ready || '';
+    document.getElementById('lm-voice-leadstage').value = l.voice_lead_stage || '';
+    document.getElementById('lm-voice-store').value     = l.voice_store_location || '';
+    document.getElementById('lm-voice-job').value       = l.voice_job || '';
+    const dur = l.voice_call_duration_secs
+                ? `${Math.floor(l.voice_call_duration_secs/60)} min ${l.voice_call_duration_secs%60} sec`
                 : '—';
-    document.getElementById('lm-voice-duration').value   = dur;
-    document.getElementById('lm-voice-callstatus').value = l.voice_call_status || '';
-    document.getElementById('lm-voice-callat').value     = l.voice_call_at ? fmtDateTime(l.voice_call_at) : '';
-    document.getElementById('lm-voice-summary').value    = l.voice_transcript_summary || '';
-    document.getElementById('lm-voice-status').textContent = `Agent: ${l.voice_agent_id || 'unknown'}`;
+    document.getElementById('lm-voice-duration').value  = dur;
+    document.getElementById('lm-voice-summary').value   = l.voice_transcript_summary || '';
+    document.getElementById('lm-voice-status').textContent = l.voice_agent ? `Agent: ${l.voice_agent}` : '';
   } else {
     document.getElementById('lm-voice-status').textContent = '';
   }
